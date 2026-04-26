@@ -7,6 +7,7 @@ export async function signupAction(formData: FormData) {
   const email = String(formData.get("email") || "")
     .trim()
     .toLowerCase();
+  const password = String(formData.get("password") || "");
   const fullName = String(formData.get("full_name") || "").trim();
 
   if (!email || !email.includes("@")) {
@@ -15,15 +16,16 @@ export async function signupAction(formData: FormData) {
   if (!fullName) {
     redirect("/signup?error=Please%20enter%20your%20name");
   }
+  if (password.length < 8) {
+    redirect("/signup?error=Password%20must%20be%20at%20least%208%20characters");
+  }
 
   const supabase = await createClient();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-  const { error } = await supabase.auth.signInWithOtp({
+  const { data, error } = await supabase.auth.signUp({
     email,
+    password,
     options: {
-      shouldCreateUser: true,
-      emailRedirectTo: `${siteUrl}/auth/callback?next=/onboarding`,
       data: {
         full_name: fullName,
       },
@@ -34,5 +36,14 @@ export async function signupAction(formData: FormData) {
     redirect(`/signup?error=${encodeURIComponent(error.message)}`);
   }
 
+  // If email confirmation is OFF (recommended for fast iteration),
+  // session is set immediately and we go straight to onboarding.
+  // If email confirmation is ON, data.session will be null — we'd
+  // want to show a "check your email" state.
+  if (data.session) {
+    redirect("/onboarding");
+  }
+
+  // Email confirmation enabled but no SMTP yet — show check-email page.
   redirect(`/check-email?email=${encodeURIComponent(email)}`);
 }

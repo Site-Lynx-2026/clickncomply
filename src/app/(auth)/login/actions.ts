@@ -7,31 +7,29 @@ export async function loginAction(formData: FormData) {
   const email = String(formData.get("email") || "")
     .trim()
     .toLowerCase();
+  const password = String(formData.get("password") || "");
 
   if (!email || !email.includes("@")) {
     redirect("/login?error=Please%20enter%20a%20valid%20email%20address");
   }
+  if (!password) {
+    redirect("/login?error=Please%20enter%20your%20password");
+  }
 
   const supabase = await createClient();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-  const { error } = await supabase.auth.signInWithOtp({
+  const { error } = await supabase.auth.signInWithPassword({
     email,
-    options: {
-      shouldCreateUser: false,
-      emailRedirectTo: `${siteUrl}/auth/callback?next=/dashboard`,
-    },
+    password,
   });
 
   if (error) {
-    // Don't leak whether the email exists — generic friendly message.
-    if (error.message.toLowerCase().includes("not found")) {
-      redirect(
-        "/login?error=No%20account%20found%20for%20that%20email%20%E2%80%94%20try%20signing%20up"
-      );
+    // Generic friendly error — don't leak whether the email exists
+    if (error.message.toLowerCase().includes("invalid")) {
+      redirect("/login?error=Email%20or%20password%20is%20wrong");
     }
     redirect(`/login?error=${encodeURIComponent(error.message)}`);
   }
 
-  redirect(`/check-email?email=${encodeURIComponent(email)}`);
+  redirect("/dashboard");
 }

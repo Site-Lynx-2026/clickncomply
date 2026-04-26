@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: "ClickNComply — The consultant in your laptop",
   description:
     "Manage every compliance system your business has. ISO 9001, BS EN 1090, CHAS, ConstructionLine, and more. From £2/month. No phone calls. No upsells.",
-  metadataBase: new URL("https://clickncomply.app"),
+  metadataBase: new URL("https://clickncomply.co.uk"),
 };
 
 export default function RootLayout({

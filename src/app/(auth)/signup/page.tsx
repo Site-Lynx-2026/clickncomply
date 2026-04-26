@@ -20,7 +20,7 @@ export default function SignupPage({
           Start free
         </h1>
         <p className="text-sm text-muted-foreground">
-          Magic link login. No password. No card.
+          Email + password. Done in 10 seconds. No card needed.
         </p>
       </div>
 
@@ -47,11 +47,23 @@ export default function SignupPage({
             autoComplete="email"
           />
         </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="At least 8 characters"
+            required
+            minLength={8}
+            autoComplete="new-password"
+          />
+        </div>
 
         <ErrorBanner searchParams={searchParams} />
 
         <Button type="submit" className="w-full">
-          Send me the link
+          Create my account
         </Button>
       </form>
 

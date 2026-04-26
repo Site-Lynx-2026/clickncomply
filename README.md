@@ -6,7 +6,8 @@ Universal compliance management platform. Manage every system your business has 
 ISO 9001, BS EN 1090, CHAS, ConstructionLine, ISO 14001/45001/27001, Cyber
 Essentials, GDPR, CDM 2015, HACCP — all in one place. £9 a month.
 
-**Domains:** clickncomply.com / .co.uk / .app
+**Primary domain:** clickncomply.co.uk
+**Aliases:** clickncomply.com → 301 redirect to .co.uk · clickncomply.app → parked / future use
 **Repo:** https://github.com/Site-Lynx-2026/clickncomply (private)
 
 ## Status — V0.1 scaffold

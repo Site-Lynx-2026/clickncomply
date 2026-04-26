@@ -20,7 +20,7 @@ export default function LoginPage({
           Welcome back
         </h1>
         <p className="text-sm text-muted-foreground">
-          Magic link, every time. No password to remember.
+          Email + password. We don&apos;t send you reminders.
         </p>
       </div>
 
@@ -36,11 +36,21 @@ export default function LoginPage({
             autoComplete="email"
           />
         </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            required
+            autoComplete="current-password"
+          />
+        </div>
 
         <ErrorBanner searchParams={searchParams} />
 
         <Button type="submit" className="w-full">
-          Send me the link
+          Log in
         </Button>
       </form>
 
