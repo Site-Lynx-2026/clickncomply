@@ -24,8 +24,9 @@ export default async function AppLayout({
         <div className="container mx-auto max-w-6xl px-6 h-14 flex items-center justify-between">
           <Link
             href="/dashboard"
-            className="font-mono text-xs uppercase tracking-widest hover:text-foreground/70 transition"
+            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest hover:text-foreground/70 transition"
           >
+            <span className="size-1.5 rounded-full bg-brand" />
             ClickNComply
           </Link>
           <div className="flex items-center gap-3">

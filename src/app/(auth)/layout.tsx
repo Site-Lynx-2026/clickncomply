@@ -10,8 +10,9 @@ export default function AuthLayout({
       <div className="w-full max-w-sm">
         <Link
           href="/"
-          className="block text-center font-mono text-xs uppercase tracking-widest text-muted-foreground mb-8 hover:text-foreground transition"
+          className="inline-flex items-center justify-center gap-2 w-full font-mono text-xs uppercase tracking-widest text-muted-foreground mb-8 hover:text-foreground transition"
         >
+          <span className="size-1.5 rounded-full bg-brand" />
           ClickNComply
         </Link>
         <div className="bg-background border rounded-lg p-6">{children}</div>

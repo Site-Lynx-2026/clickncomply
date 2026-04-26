@@ -10,12 +10,10 @@ export default function HomePage() {
       {/* Hero */}
       <section className="container mx-auto max-w-5xl px-6 pt-24 pb-20">
         <div className="text-center">
-          <Badge
-            variant="outline"
-            className="mb-6 font-mono text-xs uppercase tracking-widest"
-          >
-            From £2/month · No card needed for trial
-          </Badge>
+          <span className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full bg-brand text-brand-foreground font-mono text-[10px] uppercase tracking-widest font-medium">
+            <span className="size-1.5 rounded-full bg-brand-foreground" />
+            From £2/month · No card needed
+          </span>
           <h1 className="text-5xl md:text-7xl font-semibold tracking-tight mb-6 leading-[1.05]">
             The compliance consultant
             <br />
