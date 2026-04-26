@@ -39,6 +39,8 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -48,41 +50,77 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+ * ClickNComply theme
+ * Locked: light mode only. Pure white background, near-black text + buttons,
+ * single lime accent reserved for branded flourishes.
+ * 26 Apr 2026.
+ */
+
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Surfaces */
+  --background: oklch(1 0 0);                /* pure white */
+  --foreground: oklch(0.145 0 0);            /* near-black text */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+
+  /* Primary (CTAs, headers) — true near-black */
+  --primary: oklch(0.145 0 0);
+  --primary-foreground: oklch(1 0 0);
+
+  /* Secondary (subtle bg areas) */
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
+
+  /* Muted (paragraph secondary text + section bg) */
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  --muted-foreground: oklch(0.45 0 0);
+
+  /* Accent (hover states, subtle highlights) */
   --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --accent-foreground: oklch(0.145 0 0);
+
+  /* Brand — lime (#d4ff00). Used for flourishes only:
+     "free tier" badges, marketing highlights, single signature stripe */
+  --brand: oklch(0.95 0.27 119);
+  --brand-foreground: oklch(0.145 0 0);
+
+  /* Status */
   --destructive: oklch(0.577 0.245 27.325);
+
+  /* Borders + ring */
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --ring: oklch(0.145 0 0);
+
+  /* Charts (kept neutral — we don't show charts in this product, but shadcn references) */
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+
+  /* Sidebar */
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary: oklch(0.145 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-accent-foreground: oklch(0.145 0 0);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-ring: oklch(0.145 0 0);
+
+  /* Radius — sharper than shadcn default for the brutalist feel */
+  --radius: 0.5rem;
 }
 
+/*
+ * Dark mode is NOT active in ClickNComply Group products.
+ * Light mode is the locked aesthetic. Tokens kept here for completeness only —
+ * no UI sets the .dark class. Do not toggle.
+ */
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -98,6 +136,8 @@
   --muted-foreground: oklch(0.708 0 0);
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
+  --brand: oklch(0.95 0.27 119);
+  --brand-foreground: oklch(0.145 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
@@ -123,8 +163,23 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
   html {
     @apply font-sans;
   }
+}
+
+/* Brand utility — for lime flourishes (badges, headers, accents) */
+@utility bg-brand {
+  background-color: var(--brand);
+  color: var(--brand-foreground);
+}
+
+@utility text-brand {
+  color: var(--brand);
+}
+
+@utility border-brand {
+  border-color: var(--brand);
 }
