@@ -1,6 +1,42 @@
 # Status — 27 Apr 2026
 
-## Latest: Every builder is now picker-first. The library IS the product.
+## Latest: Full RAMs is live — picker-first, single scroll page, 10 sections
+
+**The headline tool now works end-to-end.** Pick a trade, all 10 sections populate. Scroll down, tweak what you want, hit download. One PDF, every requirement.
+
+How it differs from SL's RAMs (and is intentionally simpler):
+
+| SL approach | CnC Full RAMs approach |
+|---|---|
+| 12 tabbed steps with rail navigation | Single scrolling page with 10 collapsible sections |
+| Heavy form per step | Each section short, library-driven |
+| Sequential flow (Next/Back) | Free-scroll, jump anchors at top |
+| Type to fill | Trade pick fills 90% — review and tweak |
+
+**Trade pick fills:**
+- Method statement (8 pre-written steps)
+- PPE selection (chip toggle grid)
+- Risk assessment (every relevant hazard from the trade's `raItems`)
+- HAVs tools (with vibration magnitudes)
+- Noise sources (with typical dB)
+- Default emergency / welfare / environmental copy
+- Plus title + scope auto-set
+
+**Sections in the document (in scroll order):**
+1. Project info (title, trade, scope, site, dates)
+2. Method statement (numbered editable steps)
+3. PPE (chip toggle grid, 15 items)
+4. Risk assessment (collapsible — pulled from trade)
+5. COSHH (add from 50-substance library inline)
+6. HAVs (auto-calc EAV/ELV with status pill)
+7. Noise (per-activity dB + hours)
+8. Emergency procedures (first aid / fire / A&E / contacts)
+9. Welfare & environment
+10. Sign-off
+
+**PDF output** is one comprehensive document — branded cover banner with trade name, then each section as a numbered chapter. HAVs and noise tables. Risk assessment cards with coloured I/R pills. COSHH cards with risk-level pills. Free-tier watermarked.
+
+## Earlier same day: Every builder is now picker-first. The library IS the product.
 
 **Design rule locked:** every builder opens with a card-grid gallery of pickable items. Typing is reserved for company name, project title, and the rare item not in the library. A 10-year-old should be able to assemble a full RAM by clicking through the libraries — no keyboard.
 
@@ -119,7 +155,6 @@ These can grow in waves — each addition is purely additive and shows up in the
 
 ## What's NOT wired yet
 
-- Full RAMs 12-step bodies — the rail navigates but step components are stubbed for SL port
 - 31 stubbed builders show ComingSoon screen — vote-to-build email capture needs `/api/rams/vote-builder` route
 - RA Library "Use in builder" button on `/tools/rams/ra-library` — works inside the RA builder gallery but not from the standalone library page
 - Send-to-client / email-pack flow (SL has it, CnC doesn't yet)

@@ -7,6 +7,7 @@ import { renderRiskAssessment } from "@/lib/pdf/templates/risk-assessment";
 import { renderToolboxTalk } from "@/lib/pdf/templates/toolbox-talk";
 import { renderCoshh } from "@/lib/pdf/templates/coshh";
 import { renderHavs } from "@/lib/pdf/templates/havs";
+import { renderFullRams } from "@/lib/pdf/templates/full-rams";
 
 /**
  * GET /api/rams/[id]/pdf
@@ -67,6 +68,13 @@ export async function GET(
   const formData = (docRow.form_data ?? {}) as Record<string, unknown>;
   let bytes: Uint8Array;
   switch (docRow.builder_slug) {
+    case "full":
+      bytes = await renderFullRams(
+        formData as Parameters<typeof renderFullRams>[0],
+        branding,
+        ref
+      );
+      break;
     case "method-statement":
       bytes = await renderMethodStatement(
         formData as Parameters<typeof renderMethodStatement>[0],
