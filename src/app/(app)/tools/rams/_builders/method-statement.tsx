@@ -17,6 +17,8 @@ import { toast } from "sonner";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
 import { LibraryGallery } from "../_components/library-gallery";
+import { useProjectAutofill } from "../_components/use-project-autofill";
+import type { ProjectRow } from "../_components/projects-context";
 import { RAMS_TRADES, TRADE_CATEGORIES } from "@/lib/rams/library";
 
 interface MethodStep {
@@ -45,6 +47,16 @@ function emptyForm(): MethodStatementForm {
   };
 }
 
+/** Map a picked project to Method Statement field defaults.
+ *  Module-level for stable identity. Hook only fills EMPTY fields. */
+function methodStatementAutofill(
+  project: ProjectRow
+): Partial<MethodStatementForm> {
+  return {
+    title: `Method Statement — ${project.name}`,
+  };
+}
+
 export function MethodStatementBuilder() {
   const {
     form,
@@ -59,6 +71,9 @@ export function MethodStatementBuilder() {
     emptyForm,
     titleFromForm: (f) => f.title || (f.trade ? `Method Statement — ${f.trade}` : null),
   });
+
+  // Project picker → title auto-populates if empty
+  useProjectAutofill({ form, update, map: methodStatementAutofill });
 
   const [aiBusy, setAiBusy] = useState(false);
 

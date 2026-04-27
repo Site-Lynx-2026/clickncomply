@@ -12,6 +12,11 @@ import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
 import { LibraryGallery } from "../_components/library-gallery";
 import {
+  useProjectAutofill,
+  combineAddress,
+} from "../_components/use-project-autofill";
+import type { ProjectRow } from "../_components/projects-context";
+import {
   RAMS_TRADES,
   TRADE_CATEGORIES,
   RA_LIBRARY,
@@ -144,6 +149,18 @@ function emptyForm(): FullRamsForm {
   };
 }
 
+/** Maps a picked project to Full RAMs site fields. Module-level for
+ *  stable identity in the useProjectAutofill effect. Hook only fills
+ *  EMPTY fields, so this never clobbers user input. */
+function fullRamsAutofill(project: ProjectRow): Partial<FullRamsForm> {
+  return {
+    title: `RAMs — ${project.name}`,
+    siteName: project.name,
+    siteAddress: combineAddress(project),
+    dateOfWorks: project.start_date ?? "",
+  };
+}
+
 export function FullRamsBuilder() {
   const {
     form,
@@ -158,6 +175,9 @@ export function FullRamsBuilder() {
     emptyForm,
     titleFromForm: (f) => f.title || (f.trade ? `Full RAMs — ${f.trade}` : null),
   });
+
+  // Project picker → site fields auto-populate (only empty ones).
+  useProjectAutofill({ form, update, map: fullRamsAutofill });
 
   /**
    * Trade pick — fills every relevant section of the document in one shot.
