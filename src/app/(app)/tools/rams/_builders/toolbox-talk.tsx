@@ -13,7 +13,10 @@ import {
 } from "@/components/ui/card";
 import { Download, Megaphone } from "lucide-react";
 import { AIButton } from "@/components/ui/ai-button";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useBuilderDocument } from "../_components/use-builder-document";
+import { SaveStatus } from "../_components/save-status";
 
 const TOPIC_GROUPS: { label: string; topics: string[] }[] = [
   {
@@ -73,26 +76,73 @@ const TOPIC_GROUPS: { label: string; topics: string[] }[] = [
   },
 ];
 
+interface ToolboxTalkForm {
+  topic: string;
+  audience: string;
+  duration: string;
+  generated: string;
+}
+
+function emptyForm(): ToolboxTalkForm {
+  return { topic: "", audience: "", duration: "5 mins", generated: "" };
+}
+
 export function ToolboxTalkBuilder() {
-  const [topic, setTopic] = useState("");
-  const [audience, setAudience] = useState("");
-  const [duration, setDuration] = useState("5 mins");
-  const [generated, setGenerated] = useState("");
+  const {
+    form,
+    update,
+    saving,
+    lastSaved,
+    downloading,
+    manualSave,
+    downloadPdf,
+  } = useBuilderDocument<ToolboxTalkForm>({
+    builderSlug: "toolbox-talk",
+    emptyForm,
+    titleFromForm: (f) => (f.topic ? `Toolbox Talk — ${f.topic}` : null),
+  });
+
   const [generating, setGenerating] = useState(false);
 
   async function handleGenerate() {
-    if (!topic.trim()) return;
+    if (!form.topic.trim()) {
+      toast.error("Pick a topic first.");
+      return;
+    }
     setGenerating(true);
-    // Real integration calls /api/rams/toolbox-talk → Anthropic Haiku
-    await new Promise((r) => setTimeout(r, 800));
-    setGenerated(
-      `[Toolbox Talk — ${topic}]\n\nIntro:\nWe're talking today about ${topic.toLowerCase()}. This is something every one of us encounters on site, and it's a hazard that has injured workers across the industry.\n\nWhy it matters:\n- HSE statistics show this is a leading cause of injury in our trade.\n- Recent incidents in the supply chain reinforce the importance of getting this right.\n\nKey controls:\n- [Control 1 — specific to ${topic.toLowerCase()}]\n- [Control 2 — equipment / procedure]\n- [Control 3 — supervision / sign-off]\n\nWhat I expect from you today:\n- Use the controls every time, not just when you feel like it.\n- Stop the job if you spot something unsafe — that's your right and duty.\n- Speak up if you don't understand or aren't trained on something.\n\nQuestions?\n[Capture questions and answers below]\n\n— AI-generated draft. Review before delivery.`
-    );
-    setGenerating(false);
+    try {
+      const res = await fetch(`/api/ai/toolbox-talk`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          topic: form.topic,
+          audience: form.audience || undefined,
+          duration: form.duration || undefined,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        toast.error(err.error || "AI generation failed.");
+        return;
+      }
+      const { text } = await res.json();
+      if (!text) {
+        toast.error("AI returned no usable content.");
+        return;
+      }
+      update({ generated: text });
+      toast.success("Briefing ready. Edit, then download.");
+    } catch {
+      toast.error("AI generation failed.");
+    } finally {
+      setGenerating(false);
+    }
   }
 
   return (
     <div className="space-y-6">
+      <SaveStatus saving={saving} lastSaved={lastSaved} />
+
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Toolbox Talk</CardTitle>
@@ -102,8 +152,8 @@ export function ToolboxTalkBuilder() {
             <Label htmlFor="tt-topic">Topic</Label>
             <Input
               id="tt-topic"
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
+              value={form.topic}
+              onChange={(e) => update({ topic: e.target.value })}
               placeholder="e.g. Safe use of disc cutters"
             />
           </div>
@@ -112,8 +162,8 @@ export function ToolboxTalkBuilder() {
               <Label htmlFor="tt-audience">Audience</Label>
               <Input
                 id="tt-audience"
-                value={audience}
-                onChange={(e) => setAudience(e.target.value)}
+                value={form.audience}
+                onChange={(e) => update({ audience: e.target.value })}
                 placeholder="e.g. M&E first fix crew"
               />
             </div>
@@ -121,8 +171,8 @@ export function ToolboxTalkBuilder() {
               <Label htmlFor="tt-duration">Duration</Label>
               <select
                 id="tt-duration"
-                value={duration}
-                onChange={(e) => setDuration(e.target.value)}
+                value={form.duration}
+                onChange={(e) => update({ duration: e.target.value })}
                 className="w-full border rounded-md h-9 px-2 text-sm bg-background"
               >
                 <option>3 mins</option>
@@ -133,7 +183,7 @@ export function ToolboxTalkBuilder() {
           </div>
           <AIButton
             onClick={handleGenerate}
-            disabled={!topic.trim()}
+            disabled={!form.topic.trim()}
             loading={generating}
           >
             AI write the talk
@@ -141,7 +191,7 @@ export function ToolboxTalkBuilder() {
         </CardContent>
       </Card>
 
-      {!generated && (
+      {!form.generated && (
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Or pick a topic</CardTitle>
@@ -160,7 +210,7 @@ export function ToolboxTalkBuilder() {
                   {group.topics.map((t) => (
                     <button
                       key={t}
-                      onClick={() => setTopic(t)}
+                      onClick={() => update({ topic: t })}
                       className={cn(
                         "text-xs px-2.5 py-1 rounded-full border transition",
                         "bg-background hover:bg-muted text-muted-foreground hover:text-foreground"
@@ -176,23 +226,25 @@ export function ToolboxTalkBuilder() {
         </Card>
       )}
 
-      {generated && (
+      {form.generated && (
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0">
-            <div>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Megaphone className="size-4" />
-                Briefing
-              </CardTitle>
-            </div>
-            <Button variant="outline" size="sm" onClick={() => setGenerated("")}>
+            <CardTitle className="text-base flex items-center gap-2">
+              <Megaphone className="size-4" />
+              Briefing
+            </CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => update({ generated: "" })}
+            >
               Try again
             </Button>
           </CardHeader>
           <CardContent>
             <Textarea
-              value={generated}
-              onChange={(e) => setGenerated(e.target.value)}
+              value={form.generated}
+              onChange={(e) => update({ generated: e.target.value })}
               rows={20}
               className="font-mono text-xs leading-relaxed"
             />
@@ -201,10 +253,12 @@ export function ToolboxTalkBuilder() {
       )}
 
       <div className="flex items-center justify-between border-t pt-4">
-        <Button variant="outline">Save draft</Button>
-        <Button disabled={!generated}>
+        <Button variant="outline" onClick={manualSave} disabled={saving}>
+          {saving ? "Saving…" : "Save draft"}
+        </Button>
+        <Button onClick={downloadPdf} disabled={downloading || !form.generated}>
           <Download className="size-3.5 mr-1.5" />
-          Generate Toolbox Talk PDF
+          {downloading ? "Generating…" : "Download Toolbox Talk PDF"}
         </Button>
       </div>
     </div>

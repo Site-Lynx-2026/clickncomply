@@ -1,6 +1,20 @@
 # Status — 27 Apr 2026
 
-## Last session: RAMs Builder spine + Method Statement end-to-end
+## Latest: Risk Assessment, COSHH, HAVs, Toolbox Talk all wired + Documents page
+
+Five builders are now fully end-to-end. Each has:
+- Form UI with auto-save (1.5s after last edit, "Saved at HH:MM" indicator)
+- AI assist where it adds value (RA controls suggest, COSHH fill all fields, Toolbox Talk write, Method Statement fill)
+- Branded PDF download (light-lime cover, watermarked on free tier, clean on paid)
+- Loads from `?doc=<id>` so refreshing a tab resumes the draft
+
+The shared `useBuilderDocument` hook handles save/load/PDF for every builder — adding a new builder is 1 component file + 1 PDF template now.
+
+`/tools/rams/documents` lists everything you've saved across all five builders. Drafts and Complete grouped, click to edit or download PDF inline.
+
+Sidebar gets a "Documents" entry just under "Dashboard" so it's always one click from the builder you're in.
+
+## Earlier same session: RAMs Builder spine + Method Statement end-to-end
 
 ### What's wired now
 
@@ -69,12 +83,12 @@ This is the pattern. Every other builder (Risk Assessment, COSHH, HAVs, Toolbox 
 
 ## What's NOT wired yet
 
-- Risk Assessment, COSHH, HAVs, Toolbox Talk save/load/PDF — they have UI but no API hookup yet
 - Full RAMs 12-step bodies — the rail navigates but step components are stubbed for SL port
 - 31 stubbed builders show ComingSoon screen — vote-to-build email capture needs `/api/rams/vote-builder` route
-- PDF templates for Risk Assessment / COSHH / HAVs / Toolbox Talk — only Method Statement template built
-- RA Library "Use in builder" button — currently just a copy-text fallback
+- RA Library "Use in builder" button on `/tools/rams/ra-library` — works inside the RA builder modal but not from the standalone library page
+- Send-to-client / email-pack flow (SL has it, CnC doesn't yet)
 - Stripe paywall on PDF download — tier check exists but no upgrade prompt yet
+- Real drag-to-reorder on Method Statement steps (UI handle is there but not functional)
 
 ## Critical reminders (still apply)
 
@@ -86,40 +100,32 @@ From earlier session:
 - "AI-generated draft" label everywhere (already in PDF footer + ComingSoon copy)
 - EU OSS VAT — register from first EU B2C sale
 
-## Files changed this session
+## Files changed across this work
+
+**First push (commit 1c0def1):** RAMs spine + Method Statement end-to-end.
+
+**Second push (this one):** four more builders end-to-end + Documents page.
 
 ```
-NEW:
-  src/app/(app)/tools/rams/layout.tsx
-  src/app/(app)/tools/rams/page.tsx
-  src/app/(app)/tools/rams/[builder]/page.tsx
-  src/app/(app)/tools/rams/_components/{sidebar,builder-shell,coming-soon}.tsx
-  src/app/(app)/tools/rams/_builders/{full,method-statement,risk-assessment,coshh,havs,toolbox-talk,ra-library}.tsx
-  src/lib/rams/{config,library,tools,builders}.ts
-  src/lib/anthropic/tasks.ts
-  src/lib/pdf/render.ts
-  src/lib/pdf/templates/method-statement.ts
-  src/components/ui/ai-button.tsx
-  src/app/api/rams/route.ts
-  src/app/api/rams/_helpers.ts
-  src/app/api/rams/[id]/route.ts
-  src/app/api/rams/[id]/pdf/route.ts
-  src/app/api/ai/[task]/route.ts
-  supabase/migrations/0003_rams_documents.sql
+NEW (second push):
+  src/app/(app)/tools/rams/_components/{use-builder-document.ts,save-status.tsx}
+  src/app/(app)/tools/rams/documents/page.tsx
+  src/lib/pdf/templates/{risk-assessment,toolbox-talk,coshh,havs}.ts
 
-UPDATED:
-  src/types/supabase.ts                    (added rams_documents row/insert/update types)
-  supabase/MIGRATIONS_APPLIED.md           (marked 0003 as applied)
-  STATUS.md                                (this file)
+UPDATED (second push):
+  src/app/(app)/tools/rams/_builders/{method-statement,risk-assessment,coshh,havs,toolbox-talk}.tsx
+  src/app/(app)/tools/rams/_components/sidebar.tsx     (added Documents nav entry)
+  src/app/api/rams/[id]/pdf/route.ts                    (4 more template branches in switch)
+  STATUS.md                                              (this file)
 ```
 
 ## Next session
 
-In order of impact, my recommended build path:
+In order of impact:
 
-1. **Wire Risk Assessment end-to-end** — copy the Method Statement save/load/PDF pattern, add a `risk-assessment.ts` PDF template. The RA library picker is already done so this is mostly the spine wiring. ~3 hours.
-2. **Wire Toolbox Talk** — simplest of the four because output is free-form text. ~2 hours.
-3. **Wire COSHH + HAVs** — same pattern. ~3 hours each.
-4. **Port the SL 12-step bodies into Full RAMs** — heavier (~6 hours) but mostly mechanical from `sitelynx-v2/src/components/rams/steps/*`.
-5. **`/api/rams/vote-builder`** — captures email + builder slug for the 31 ComingSoon routes. Demand signal before building. ~30 min.
-6. **Stripe paywall** — when free user hits Download PDF, watermark works; for clean PDFs, show upgrade modal. Needs Stripe products created first.
+1. **Port the SL 12-step bodies into Full RAMs** — the headline tool. Heavier (~6 hours) but mostly mechanical from `sitelynx-v2/src/components/rams/steps/*`. Step 1 (project info) and Step 2 (method statement) overlap with what's already built — can reuse the Method Statement form inline.
+2. **Send-to-client flow** — branded email with PDF attached. SL already does this; copy the pattern. Needs Resend wired (key in .env.local already template). ~3 hours.
+3. **`/api/rams/vote-builder`** — captures email + builder slug for the 31 ComingSoon routes. Demand signal before building. ~30 min.
+4. **Stripe paywall** — when free user hits Download PDF, watermark works; for clean PDFs, show upgrade modal. Needs Stripe products created first.
+5. **Real drag-to-reorder on Method Statement steps** — small polish. Use `@dnd-kit/sortable`. ~30 min.
+6. **RA Library "Use in builder"** from the standalone library page (currently only works in the modal inside RA builder). ~30 min.

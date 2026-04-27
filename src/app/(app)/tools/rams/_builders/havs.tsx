@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,8 @@ import {
 import { Plus, Trash2, Download, Activity } from "lucide-react";
 import { calcHAVSPoints, HAVS_EAV, HAVS_ELV } from "@/lib/rams/config";
 import { cn } from "@/lib/utils";
+import { useBuilderDocument } from "../_components/use-builder-document";
+import { SaveStatus } from "../_components/save-status";
 
 interface Tool {
   id: string;
@@ -21,14 +23,38 @@ interface Tool {
   hours: number;
 }
 
+interface HavsBuilderForm {
+  title: string;
+  workerName: string;
+  tools: Tool[];
+}
+
+function emptyForm(): HavsBuilderForm {
+  return { title: "", workerName: "", tools: [] };
+}
+
 export function HavsBuilder() {
-  const [title, setTitle] = useState("");
-  const [tools, setTools] = useState<Tool[]>([]);
+  const {
+    form,
+    update,
+    saving,
+    lastSaved,
+    downloading,
+    manualSave,
+    downloadPdf,
+  } = useBuilderDocument<HavsBuilderForm>({
+    builderSlug: "havs",
+    emptyForm,
+    titleFromForm: (f) => f.title || (f.workerName ? `HAVs — ${f.workerName}` : null),
+  });
 
   const totalPoints = useMemo(
     () =>
-      tools.reduce((sum, t) => sum + calcHAVSPoints(t.magnitude, t.hours), 0),
-    [tools]
+      form.tools.reduce(
+        (sum, t) => sum + calcHAVSPoints(t.magnitude, t.hours),
+        0
+      ),
+    [form.tools]
   );
 
   const exposureLevel = useMemo(() => {
@@ -40,40 +66,54 @@ export function HavsBuilder() {
   }, [totalPoints]);
 
   function addTool() {
-    setTools((t) => [
-      ...t,
-      { id: crypto.randomUUID(), name: "", magnitude: 0, hours: 0 },
-    ]);
+    update({
+      tools: [
+        ...form.tools,
+        { id: crypto.randomUUID(), name: "", magnitude: 0, hours: 0 },
+      ],
+    });
   }
 
-  function update(id: string, patch: Partial<Tool>) {
-    setTools((t) => t.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+  function updateTool(id: string, patch: Partial<Tool>) {
+    update({
+      tools: form.tools.map((t) => (t.id === id ? { ...t, ...patch } : t)),
+    });
   }
 
-  function remove(id: string) {
-    setTools((t) => t.filter((x) => x.id !== id));
+  function removeTool(id: string) {
+    update({ tools: form.tools.filter((t) => t.id !== id) });
   }
 
   return (
     <div className="space-y-6">
+      <SaveStatus saving={saving} lastSaved={lastSaved} />
+
       <Card>
         <CardHeader>
           <CardTitle className="text-base">HAVs Assessment</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <Label htmlFor="havs-title">Worker / task</Label>
+            <Label htmlFor="havs-title">Title</Label>
             <Input
               id="havs-title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Scott Kennedy — Fixings install"
+              value={form.title}
+              onChange={(e) => update({ title: e.target.value })}
+              placeholder="e.g. Daily fixings install"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="havs-worker">Worker</Label>
+            <Input
+              id="havs-worker"
+              value={form.workerName}
+              onChange={(e) => update({ workerName: e.target.value })}
+              placeholder="e.g. Scott Kennedy"
             />
           </div>
         </CardContent>
       </Card>
 
-      {/* Exposure dashboard */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Daily exposure</CardTitle>
@@ -99,9 +139,9 @@ export function HavsBuilder() {
           <div>
             <CardTitle className="text-base">
               Tools used today
-              {tools.length > 0 && (
+              {form.tools.length > 0 && (
                 <span className="ml-2 text-muted-foreground font-normal text-sm">
-                  ({tools.length})
+                  ({form.tools.length})
                 </span>
               )}
             </CardTitle>
@@ -115,7 +155,7 @@ export function HavsBuilder() {
           </Button>
         </CardHeader>
         <CardContent>
-          {tools.length === 0 ? (
+          {form.tools.length === 0 ? (
             <div className="border-2 border-dashed rounded-md p-10 text-center bg-muted/20">
               <Activity className="size-6 mx-auto mb-3 text-muted-foreground" />
               <p className="text-sm text-muted-foreground mb-3">
@@ -135,12 +175,12 @@ export function HavsBuilder() {
                 <div className="text-right">Points</div>
                 <div></div>
               </div>
-              {tools.map((t) => (
+              {form.tools.map((t) => (
                 <ToolRow
                   key={t.id}
                   tool={t}
-                  onUpdate={(patch) => update(t.id, patch)}
-                  onRemove={() => remove(t.id)}
+                  onUpdate={(patch) => updateTool(t.id, patch)}
+                  onRemove={() => removeTool(t.id)}
                 />
               ))}
             </div>
@@ -149,10 +189,15 @@ export function HavsBuilder() {
       </Card>
 
       <div className="flex items-center justify-between border-t pt-4">
-        <Button variant="outline">Save draft</Button>
-        <Button disabled={tools.length === 0}>
+        <Button variant="outline" onClick={manualSave} disabled={saving}>
+          {saving ? "Saving…" : "Save draft"}
+        </Button>
+        <Button
+          onClick={downloadPdf}
+          disabled={downloading || form.tools.length === 0}
+        >
           <Download className="size-3.5 mr-1.5" />
-          Generate HAVs PDF
+          {downloading ? "Generating…" : "Download HAVs PDF"}
         </Button>
       </div>
     </div>

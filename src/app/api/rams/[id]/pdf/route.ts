@@ -3,6 +3,10 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { resolveContext } from "../../_helpers";
 import { applyWatermark } from "@/lib/pdf/watermark";
 import { renderMethodStatement } from "@/lib/pdf/templates/method-statement";
+import { renderRiskAssessment } from "@/lib/pdf/templates/risk-assessment";
+import { renderToolboxTalk } from "@/lib/pdf/templates/toolbox-talk";
+import { renderCoshh } from "@/lib/pdf/templates/coshh";
+import { renderHavs } from "@/lib/pdf/templates/havs";
 
 /**
  * GET /api/rams/[id]/pdf
@@ -60,11 +64,40 @@ export async function GET(
   };
   const ref = `RAMS-${docRow.id.slice(0, 8).toUpperCase()}`;
 
+  const formData = (docRow.form_data ?? {}) as Record<string, unknown>;
   let bytes: Uint8Array;
   switch (docRow.builder_slug) {
     case "method-statement":
       bytes = await renderMethodStatement(
-        (docRow.form_data ?? {}) as Parameters<typeof renderMethodStatement>[0],
+        formData as Parameters<typeof renderMethodStatement>[0],
+        branding,
+        ref
+      );
+      break;
+    case "risk-assessment":
+      bytes = await renderRiskAssessment(
+        formData as Parameters<typeof renderRiskAssessment>[0],
+        branding,
+        ref
+      );
+      break;
+    case "toolbox-talk":
+      bytes = await renderToolboxTalk(
+        formData as Parameters<typeof renderToolboxTalk>[0],
+        branding,
+        ref
+      );
+      break;
+    case "coshh":
+      bytes = await renderCoshh(
+        formData as Parameters<typeof renderCoshh>[0],
+        branding,
+        ref
+      );
+      break;
+    case "havs":
+      bytes = await renderHavs(
+        formData as Parameters<typeof renderHavs>[0],
         branding,
         ref
       );

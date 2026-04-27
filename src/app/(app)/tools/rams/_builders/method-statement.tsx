@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,9 +11,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { GripVertical, Plus, Trash2, Download, Check } from "lucide-react";
+import { GripVertical, Plus, Trash2, Download } from "lucide-react";
 import { AIButton } from "@/components/ui/ai-button";
 import { toast } from "sonner";
+import { useBuilderDocument } from "../_components/use-builder-document";
+import { SaveStatus } from "../_components/save-status";
 
 interface MethodStep {
   id: string;
@@ -25,92 +27,38 @@ interface MethodStatementForm {
   title: string;
   scope: string;
   trade: string;
+  preparedBy: string;
+  preparedByRole: string;
   steps: MethodStep[];
 }
-
-const BUILDER_SLUG = "method-statement";
 
 function emptyForm(): MethodStatementForm {
   return {
     title: "",
     scope: "",
     trade: "",
-    steps: [
-      { id: crypto.randomUUID(), description: "", responsible: "" },
-    ],
+    preparedBy: "",
+    preparedByRole: "",
+    steps: [{ id: crypto.randomUUID(), description: "", responsible: "" }],
   };
 }
 
 export function MethodStatementBuilder() {
-  const [form, setForm] = useState<MethodStatementForm>(emptyForm);
-  const [docId, setDocId] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-  const [lastSaved, setLastSaved] = useState<string>("");
+  const {
+    form,
+    update,
+    saving,
+    lastSaved,
+    downloading,
+    manualSave,
+    downloadPdf,
+  } = useBuilderDocument<MethodStatementForm>({
+    builderSlug: "method-statement",
+    emptyForm,
+    titleFromForm: (f) => f.title || null,
+  });
+
   const [aiBusy, setAiBusy] = useState(false);
-  const [downloading, setDownloading] = useState(false);
-  const autoSaveTimer = useRef<NodeJS.Timeout | null>(null);
-  const dirty = useRef(false);
-
-  // Auto-save 1.5s after last edit.
-  const save = useCallback(
-    async (next: MethodStatementForm, currentId: string | null) => {
-      setSaving(true);
-      try {
-        const payload = {
-          title: next.title || null,
-          form_data: next as unknown as Record<string, unknown>,
-        };
-        let res: Response;
-        if (currentId) {
-          res = await fetch(`/api/rams/${currentId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-        } else {
-          res = await fetch(`/api/rams`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ builder_slug: BUILDER_SLUG, ...payload }),
-          });
-          if (res.ok) {
-            const { id } = await res.json();
-            setDocId(id);
-            window.history.replaceState(
-              null,
-              "",
-              `/tools/rams/${BUILDER_SLUG}?doc=${id}`
-            );
-          }
-        }
-        if (!res.ok) throw new Error(await res.text());
-        setLastSaved(
-          new Date().toLocaleTimeString("en-GB", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
-        );
-        dirty.current = false;
-      } catch {
-        toast.error("Couldn't save — check your connection.");
-      } finally {
-        setSaving(false);
-      }
-    },
-    []
-  );
-
-  function update(patch: Partial<MethodStatementForm>) {
-    setForm((f) => {
-      const next = { ...f, ...patch };
-      dirty.current = true;
-      if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
-      autoSaveTimer.current = setTimeout(() => {
-        if (dirty.current) save(next, docId);
-      }, 1500);
-      return next;
-    });
-  }
 
   function updateStep(id: string, patch: Partial<MethodStep>) {
     update({
@@ -130,30 +78,6 @@ export function MethodStatementBuilder() {
   function removeStep(id: string) {
     update({ steps: form.steps.filter((s) => s.id !== id) });
   }
-
-  // Load existing doc from ?doc=... if present.
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("doc");
-    if (!id) return;
-    setDocId(id);
-    fetch(`/api/rams/${id}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((doc) => {
-        if (doc?.form_data) {
-          setForm({ ...emptyForm(), ...doc.form_data });
-        }
-      })
-      .catch(() => {});
-  }, []);
-
-  // Cleanup pending save on unmount.
-  useEffect(
-    () => () => {
-      if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
-    },
-    []
-  );
 
   async function aiFillFromTrade() {
     if (!form.trade.trim()) {
@@ -191,30 +115,6 @@ export function MethodStatementBuilder() {
       toast.error("AI generation failed.");
     } finally {
       setAiBusy(false);
-    }
-  }
-
-  async function downloadPdf() {
-    if (!docId) {
-      toast.error("Save the document first.");
-      return;
-    }
-    setDownloading(true);
-    try {
-      const res = await fetch(`/api/rams/${docId}/pdf`);
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        toast.error(err.error || "PDF generation failed.");
-        return;
-      }
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      window.open(url, "_blank");
-      setTimeout(() => URL.revokeObjectURL(url), 30_000);
-    } catch {
-      toast.error("PDF generation failed.");
-    } finally {
-      setDownloading(false);
     }
   }
 
@@ -329,42 +229,41 @@ export function MethodStatementBuilder() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Prepared by</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="preparedBy">Name</Label>
+            <Input
+              id="preparedBy"
+              value={form.preparedBy}
+              onChange={(e) => update({ preparedBy: e.target.value })}
+              placeholder="Your name"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="preparedByRole">Role</Label>
+            <Input
+              id="preparedByRole"
+              value={form.preparedByRole}
+              onChange={(e) => update({ preparedByRole: e.target.value })}
+              placeholder="e.g. Site Supervisor"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="flex items-center justify-between border-t pt-4">
-        <Button
-          variant="outline"
-          onClick={() => save(form, docId)}
-          disabled={saving}
-        >
+        <Button variant="outline" onClick={manualSave} disabled={saving}>
           {saving ? "Saving…" : "Save draft"}
         </Button>
-        <Button onClick={downloadPdf} disabled={downloading || !docId}>
+        <Button onClick={downloadPdf} disabled={downloading}>
           <Download className="size-3.5 mr-1.5" />
           {downloading ? "Generating…" : "Download PDF"}
         </Button>
       </div>
     </div>
   );
-}
-
-function SaveStatus({
-  saving,
-  lastSaved,
-}: {
-  saving: boolean;
-  lastSaved: string;
-}) {
-  if (saving) {
-    return (
-      <p className="text-xs text-muted-foreground">Saving…</p>
-    );
-  }
-  if (lastSaved) {
-    return (
-      <p className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
-        <Check className="size-3 text-foreground" />
-        Saved at {lastSaved}
-      </p>
-    );
-  }
-  return null;
 }

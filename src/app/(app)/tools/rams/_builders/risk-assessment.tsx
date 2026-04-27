@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +21,9 @@ import { riskScore } from "@/lib/rams/config";
 import { BookOpen, Plus, Search, Trash2, Download, X } from "lucide-react";
 import { AIButton } from "@/components/ui/ai-button";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { useBuilderDocument } from "../_components/use-builder-document";
+import { SaveStatus } from "../_components/save-status";
 
 interface Hazard {
   id: string;
@@ -35,69 +38,162 @@ interface Hazard {
   fromLibrary?: boolean;
 }
 
+interface RiskAssessmentForm {
+  title: string;
+  scope: string;
+  preparedBy: string;
+  preparedByRole: string;
+  hazards: Hazard[];
+}
+
+function emptyForm(): RiskAssessmentForm {
+  return {
+    title: "",
+    scope: "",
+    preparedBy: "",
+    preparedByRole: "",
+    hazards: [],
+  };
+}
+
 export function RiskAssessmentBuilder() {
-  const [title, setTitle] = useState("");
-  const [hazards, setHazards] = useState<Hazard[]>([]);
+  const {
+    form,
+    update,
+    saving,
+    lastSaved,
+    downloading,
+    manualSave,
+    downloadPdf,
+  } = useBuilderDocument<RiskAssessmentForm>({
+    builderSlug: "risk-assessment",
+    emptyForm,
+    titleFromForm: (f) => f.title || null,
+  });
+
   const [showLibrary, setShowLibrary] = useState(false);
+  const [aiBusyFor, setAiBusyFor] = useState<string | null>(null);
 
   function addLibraryItem(item: RALibraryItem) {
-    setHazards((h) => [
-      ...h,
-      {
-        id: crypto.randomUUID(),
-        hazard: item.hazard,
-        whoAtRisk: item.whoAtRisk,
-        consequences: item.consequences,
-        initialL: item.initialL,
-        initialS: item.initialS,
-        controls: item.controls,
-        residualL: item.residualL,
-        residualS: item.residualS,
-        fromLibrary: true,
-      },
-    ]);
+    update({
+      hazards: [
+        ...form.hazards,
+        {
+          id: crypto.randomUUID(),
+          hazard: item.hazard,
+          whoAtRisk: item.whoAtRisk,
+          consequences: item.consequences,
+          initialL: item.initialL,
+          initialS: item.initialS,
+          controls: item.controls,
+          residualL: item.residualL,
+          residualS: item.residualS,
+          fromLibrary: true,
+        },
+      ],
+    });
   }
 
   function addBlank() {
-    setHazards((h) => [
-      ...h,
-      {
-        id: crypto.randomUUID(),
-        hazard: "",
-        whoAtRisk: "",
-        consequences: "",
-        initialL: 3,
-        initialS: 3,
-        controls: "",
-        residualL: 1,
-        residualS: 3,
-      },
-    ]);
+    update({
+      hazards: [
+        ...form.hazards,
+        {
+          id: crypto.randomUUID(),
+          hazard: "",
+          whoAtRisk: "",
+          consequences: "",
+          initialL: 3,
+          initialS: 3,
+          controls: "",
+          residualL: 1,
+          residualS: 3,
+        },
+      ],
+    });
   }
 
-  function update(id: string, patch: Partial<Hazard>) {
-    setHazards((h) => h.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+  function updateHazard(id: string, patch: Partial<Hazard>) {
+    update({
+      hazards: form.hazards.map((h) =>
+        h.id === id ? { ...h, ...patch } : h
+      ),
+    });
   }
 
-  function remove(id: string) {
-    setHazards((h) => h.filter((x) => x.id !== id));
+  function removeHazard(id: string) {
+    update({ hazards: form.hazards.filter((h) => h.id !== id) });
+  }
+
+  async function aiSuggestControls(hazardId: string) {
+    const h = form.hazards.find((x) => x.id === hazardId);
+    if (!h || !h.hazard.trim()) {
+      toast.error("Add the hazard description first.");
+      return;
+    }
+    setAiBusyFor(hazardId);
+    try {
+      const res = await fetch(`/api/ai/ra-controls`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ hazard: h.hazard, whoAtRisk: h.whoAtRisk }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        toast.error(err.error || "AI suggestion failed.");
+        return;
+      }
+      const { text } = await res.json();
+      if (!text) {
+        toast.error("AI returned no usable content.");
+        return;
+      }
+      updateHazard(hazardId, { controls: text });
+      toast.success("Controls suggested.");
+    } catch {
+      toast.error("AI suggestion failed.");
+    } finally {
+      setAiBusyFor(null);
+    }
   }
 
   return (
     <div className="space-y-6">
+      <SaveStatus saving={saving} lastSaved={lastSaved} />
+
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Risk Assessment</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="ra-title">Title</Label>
             <Input
               id="ra-title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={form.title}
+              onChange={(e) => update({ title: e.target.value })}
               placeholder="e.g. Roofing works — Plot 12"
             />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="ra-scope">Scope</Label>
+              <Input
+                id="ra-scope"
+                value={form.scope}
+                onChange={(e) => update({ scope: e.target.value })}
+                placeholder="What this assessment covers..."
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="ra-prep">Prepared by</Label>
+              <Input
+                id="ra-prep"
+                value={form.preparedBy}
+                onChange={(e) => update({ preparedBy: e.target.value })}
+                placeholder="Name"
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -107,19 +203,18 @@ export function RiskAssessmentBuilder() {
           <div>
             <CardTitle className="text-base">
               Hazards
-              {hazards.length > 0 && (
+              {form.hazards.length > 0 && (
                 <span className="ml-2 text-muted-foreground font-normal text-sm">
-                  ({hazards.length})
+                  ({form.hazards.length})
                 </span>
               )}
             </CardTitle>
             <p className="text-xs text-muted-foreground mt-1">
-              5×5 matrix. Pick from the library of {RA_LIBRARY.length}+
-              pre-built hazards or add custom.
+              5×5 matrix. Pick from {RA_LIBRARY.length}+ pre-built hazards or
+              add custom. AI suggests controls per hazard.
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <AIButton size="sm">AI suggest from trade</AIButton>
             <Button
               variant="outline"
               size="sm"
@@ -135,7 +230,7 @@ export function RiskAssessmentBuilder() {
           </div>
         </CardHeader>
         <CardContent>
-          {hazards.length === 0 ? (
+          {form.hazards.length === 0 ? (
             <div className="border-2 border-dashed rounded-md p-10 text-center bg-muted/20">
               <p className="text-sm text-muted-foreground mb-3">
                 No hazards added yet.
@@ -151,12 +246,14 @@ export function RiskAssessmentBuilder() {
             </div>
           ) : (
             <div className="space-y-3">
-              {hazards.map((h) => (
+              {form.hazards.map((h) => (
                 <HazardRow
                   key={h.id}
                   hazard={h}
-                  onUpdate={(patch) => update(h.id, patch)}
-                  onRemove={() => remove(h.id)}
+                  aiBusy={aiBusyFor === h.id}
+                  onUpdate={(patch) => updateHazard(h.id, patch)}
+                  onRemove={() => removeHazard(h.id)}
+                  onAiSuggest={() => aiSuggestControls(h.id)}
                 />
               ))}
             </div>
@@ -165,10 +262,15 @@ export function RiskAssessmentBuilder() {
       </Card>
 
       <div className="flex items-center justify-between border-t pt-4">
-        <Button variant="outline">Save draft</Button>
-        <Button disabled={hazards.length === 0}>
+        <Button variant="outline" onClick={manualSave} disabled={saving}>
+          {saving ? "Saving…" : "Save draft"}
+        </Button>
+        <Button
+          onClick={downloadPdf}
+          disabled={downloading || form.hazards.length === 0}
+        >
           <Download className="size-3.5 mr-1.5" />
-          Generate Risk Assessment PDF
+          {downloading ? "Generating…" : "Download Risk Assessment PDF"}
         </Button>
       </div>
 
@@ -187,12 +289,16 @@ export function RiskAssessmentBuilder() {
 
 function HazardRow({
   hazard,
+  aiBusy,
   onUpdate,
   onRemove,
+  onAiSuggest,
 }: {
   hazard: Hazard;
+  aiBusy: boolean;
   onUpdate: (patch: Partial<Hazard>) => void;
   onRemove: () => void;
+  onAiSuggest: () => void;
 }) {
   const initial = riskScore(hazard.initialL, hazard.initialS);
   const residual = riskScore(hazard.residualL, hazard.residualS);
@@ -259,7 +365,12 @@ function HazardRow({
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-xs">Control measures</Label>
+        <div className="flex items-center justify-between">
+          <Label className="text-xs">Control measures</Label>
+          <AIButton size="sm" onClick={onAiSuggest} loading={aiBusy}>
+            AI suggest
+          </AIButton>
+        </div>
         <Textarea
           value={hazard.controls}
           onChange={(e) => onUpdate({ controls: e.target.value })}

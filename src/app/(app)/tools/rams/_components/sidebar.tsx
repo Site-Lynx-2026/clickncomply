@@ -10,7 +10,7 @@ import {
   type Builder,
   type BuilderSection,
 } from "@/lib/rams/builders";
-import { ArrowLeft, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { ArrowLeft, ChevronsLeft, ChevronsRight, FolderOpen } from "lucide-react";
 
 const SECTION_ORDER: BuilderSection[] = [
   "build",
@@ -73,6 +73,26 @@ export function RAMsSidebar() {
       >
         <ArrowLeft className="size-3.5 shrink-0" />
         {!collapsed && <span>Dashboard</span>}
+      </Link>
+
+      {/* Documents — saved RAMs across all builders */}
+      <Link
+        href="/tools/rams/documents"
+        className={cn(
+          "relative flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors hover:bg-sidebar-accent border-b",
+          collapsed && "justify-center px-0",
+          pathname === "/tools/rams/documents" && "bg-sidebar-accent font-medium"
+        )}
+        title="Documents"
+      >
+        {pathname === "/tools/rams/documents" && (
+          <span
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[2px] rounded-r bg-brand"
+            aria-hidden
+          />
+        )}
+        <FolderOpen className="size-4 shrink-0" strokeWidth={1.6} />
+        {!collapsed && <span>Documents</span>}
       </Link>
 
       {/* Nav — sections + builders */}
