@@ -39,7 +39,10 @@ const ProjectSchema = z.object({
 function nullEmpty(v: FormDataEntryValue | null): string | null {
   if (!v) return null;
   const s = String(v).trim();
-  return s.length === 0 ? null : s;
+  // "_none" is a UI sentinel for "no value picked" — Radix Select doesn't allow
+  // an empty-string SelectItem so we use this and treat it as null server-side.
+  if (s.length === 0 || s === "_none") return null;
+  return s;
 }
 
 export async function createProjectAction(formData: FormData) {
