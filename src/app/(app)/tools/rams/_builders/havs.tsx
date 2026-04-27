@@ -76,24 +76,22 @@ export function HavsBuilder() {
   }, [totalPoints]);
 
   /**
-   * Click a tool from the library — adds a row pre-filled with the typical
-   * vibration magnitude. Operator just sets hours.
+   * Pick multiple tools — adds rows pre-filled with typical vibration
+   * magnitudes. Operator just sets hours per tool.
    */
-  function pickTool(libId: string) {
-    const lib = HAVS_LIBRARY.find((l) => l.id === libId);
-    if (!lib) return;
-    update({
-      tools: [
-        ...form.tools,
-        {
-          id: crypto.randomUUID(),
-          name: lib.tool,
-          magnitude: lib.vibrationMag,
-          hours: 1,
-        },
-      ],
-    });
-    toast.success(`${lib.tool} added (${lib.vibrationMag} m/s²).`);
+  function pickTools(libIds: string[]) {
+    const libs = libIds
+      .map((id) => HAVS_LIBRARY.find((l) => l.id === id))
+      .filter((x): x is NonNullable<typeof x> => Boolean(x));
+    if (libs.length === 0) return;
+    const newRows = libs.map((lib) => ({
+      id: crypto.randomUUID(),
+      name: lib.tool,
+      magnitude: lib.vibrationMag,
+      hours: 1,
+    }));
+    update({ tools: [...form.tools, ...newRows] });
+    toast.success(`${libs.length} tool${libs.length === 1 ? "" : "s"} added.`);
   }
 
   function addCustomTool() {
@@ -164,7 +162,10 @@ export function HavsBuilder() {
             subtitle: `Typical use ${t.typicalUse}`,
             meta: `${t.vibrationMag.toFixed(1)} m/s²`,
           }))}
-          onPick={(item) => pickTool(item.id)}
+          onPickMany={(picks) => pickTools(picks.map((p) => p.id))}
+          continueLabel={(n) =>
+            `Add ${n} tool${n === 1 ? "" : "s"} to assessment`
+          }
           customLabel="Add a custom tool"
           onAddCustom={addCustomTool}
           searchableFields={(item) => [item.title]}

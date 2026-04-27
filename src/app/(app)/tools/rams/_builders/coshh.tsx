@@ -103,11 +103,16 @@ export function CoshhBuilder() {
   const [aiBusyFor, setAiBusyFor] = useState<string | null>(null);
   const [showGallery, setShowGallery] = useState(true);
 
-  function pickSubstance(libId: string) {
-    const lib = COSHH_SUBSTANCES.find((s) => s.id === libId);
-    if (!lib) return;
-    update({ substances: [...form.substances, fromLibrary(lib)] });
-    toast.success(`${lib.name} added (${lib.riskLevel.toUpperCase()} risk).`);
+  function pickSubstances(libIds: string[]) {
+    const libs = libIds
+      .map((id) => COSHH_SUBSTANCES.find((s) => s.id === id))
+      .filter((x): x is NonNullable<typeof x> => Boolean(x));
+    if (libs.length === 0) return;
+    update({ substances: [...form.substances, ...libs.map(fromLibrary)] });
+    toast.success(
+      `${libs.length} substance${libs.length === 1 ? "" : "s"} added.`
+    );
+    setShowGallery(false);
   }
 
   function addCustomSubstance() {
@@ -228,7 +233,10 @@ export function CoshhBuilder() {
             label: c.label,
             icon: c.icon,
           }))}
-          onPick={(item) => pickSubstance(item.id)}
+          onPickMany={(picks) => pickSubstances(picks.map((p) => p.id))}
+          continueLabel={(n) =>
+            `Add ${n} substance${n === 1 ? "" : "s"} to assessment`
+          }
           customLabel="Add a custom substance"
           onAddCustom={addCustomSubstance}
           searchableFields={(item) => [item.title, item.subtitle ?? ""]}

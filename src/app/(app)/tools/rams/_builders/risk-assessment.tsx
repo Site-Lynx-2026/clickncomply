@@ -128,11 +128,16 @@ export function RiskAssessmentBuilder() {
     setMode("editing");
   }
 
-  function pickHazard(libId: string) {
-    const item = RA_LIBRARY.find((x) => x.id === libId);
-    if (!item) return;
-    update({ hazards: [...form.hazards, fromLibrary(item)] });
-    toast.success("Hazard added.");
+  function pickHazards(libIds: string[]) {
+    const items = libIds
+      .map((id) => RA_LIBRARY.find((x) => x.id === id))
+      .filter((x): x is RALibraryItem => Boolean(x));
+    if (items.length === 0) return;
+    update({ hazards: [...form.hazards, ...items.map(fromLibrary)] });
+    toast.success(
+      `${items.length} hazard${items.length === 1 ? "" : "s"} added.`
+    );
+    setMode("editing");
   }
 
   function addBlank() {
@@ -251,7 +256,10 @@ export function RiskAssessmentBuilder() {
             label: c.label,
             icon: c.icon,
           }))}
-          onPick={(item) => pickHazard(item.id)}
+          onPickMany={(picks) => pickHazards(picks.map((p) => p.id))}
+          continueLabel={(n) =>
+            `Add ${n} hazard${n === 1 ? "" : "s"} to assessment`
+          }
           customLabel="Add a custom hazard"
           onAddCustom={addBlank}
           searchableFields={(item) => [item.title, item.subtitle ?? ""]}

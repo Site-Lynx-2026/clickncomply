@@ -1,6 +1,25 @@
 # Status — 27 Apr 2026
 
-## Latest: Library expansion in full — every picker now dense
+## Latest: Multi-pick mode in galleries + CLAUDE_PICKUP.md hand-off doc
+
+Three of the dense libraries (RA hazards, COSHH substances, HAVs tools) now
+support shopping-cart selection. Click as many cards as you need; sticky bar
+at the bottom shows the running count; one Continue commits everything in
+one transition.
+
+Before: building a 12-hazard RA was 24 clicks (12 picks + 12 back-to-gallery
+trips). Now: 13 clicks (12 picks + 1 Continue).
+
+Method Statement and Toolbox Talk stay single-pick because picking one trade
+or one topic is the natural unit. Full RAMs trade picker stays single for
+now — multi-trade is the next strategic build.
+
+Added `CLAUDE_PICKUP.md` at the repo root — a conversational hand-off doc
+that lets the next Claude session (or Jamie reading it later) resume cold.
+Lives alongside this STATUS.md; this stays the formal feature ledger, that
+file captures what's just been done + how Jamie works + what to do next.
+
+## Earlier same day: Library expansion in full — every picker now dense
 
 The library IS the product. After this push:
 
