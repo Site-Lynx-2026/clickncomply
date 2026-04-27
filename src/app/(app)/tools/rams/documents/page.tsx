@@ -7,6 +7,7 @@ import { BUILDERS } from "@/lib/rams/builders";
 import { FileText, Download, Pencil, Plus, Folder, ArrowRight } from "@/lib/icons";
 import { X } from "lucide-react";
 import type { Database } from "@/types/supabase";
+import { PageHeader } from "@/components/page-header";
 
 export const metadata = {
   title: "Documents — RAMs Builder — ClickNComply",
@@ -153,28 +154,28 @@ export default async function DocumentsPage({
 
   return (
     <div className="px-8 py-10 max-w-5xl mx-auto">
-      <header className="flex items-start justify-between mb-6 gap-4">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight mb-1">
-            Documents
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {docs.length === 0
-              ? filterActive
-                ? "Nothing matches those filters."
-                : "Nothing saved yet — start a builder from the sidebar."
-              : `${docs.length} document${docs.length === 1 ? "" : "s"}${
-                  filterActive ? " (filtered)" : " across all RAMs builders"
-                }.`}
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/tools/rams">
-            <Plus className="size-3.5 mr-1.5" />
-            New
-          </Link>
-        </Button>
-      </header>
+      <PageHeader
+        eyebrow="Safety"
+        title="My Documents"
+        subtitle={
+          docs.length === 0
+            ? filterActive
+              ? "Nothing matches those filters."
+              : "Nothing saved yet — start a builder from the sidebar."
+            : `${docs.length} document${docs.length === 1 ? "" : "s"}${
+                filterActive ? " (filtered)" : " across all RAMs builders"
+              }.`
+        }
+        size="md"
+        actions={
+          <Button asChild>
+            <Link href="/tools/rams">
+              <Plus className="size-3.5 mr-1.5" />
+              New
+            </Link>
+          </Button>
+        }
+      />
 
       {/* Filters bar */}
       {(projects.length > 0 || clients.length > 0) && (

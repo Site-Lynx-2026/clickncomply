@@ -17,6 +17,7 @@ import {
 import { INDUSTRY_GROUPS } from "@/lib/industries";
 import { trialState, trialDaysRemaining } from "@/lib/billing";
 import { DeleteAccountDialog } from "./_components/delete-account-dialog";
+import { PageHeader } from "@/components/page-header";
 import {
   updateProfileAction,
   updateOrgAction,
@@ -84,10 +85,12 @@ export default async function AccountPage({
 
   return (
     <div className="container mx-auto max-w-2xl px-6 py-10">
-      <h1 className="text-2xl font-semibold tracking-tight mb-1">Account</h1>
-      <p className="text-sm text-muted-foreground mb-8">
-        Manage your profile, organisation, password, and account.
-      </p>
+      <PageHeader
+        eyebrow="Settings"
+        title="Account"
+        subtitle="Manage your profile, organisation, password, and account."
+        size="md"
+      />
 
       {okMessage && (
         <div className="mb-6 rounded-md border border-brand/30 bg-brand/10 px-3 py-2 text-sm">

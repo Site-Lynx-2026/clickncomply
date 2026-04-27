@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Pencil, Trash2 } from "@/lib/icons";
 import { ClientFormDialog } from "./_components/client-form-dialog";
 import { archiveClientAction } from "./actions";
+import { PageHeader } from "@/components/page-header";
 
 export const metadata = {
   title: "Clients — ClickNComply",
@@ -69,20 +70,20 @@ export default async function ClientsPage({
 
   return (
     <div className="container mx-auto max-w-5xl px-6 py-10">
-      <div className="flex items-start justify-between mb-8 gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight mb-1">Clients</h1>
-          <p className="text-sm text-muted-foreground">
-            Companies you deliver work for. Each can have multiple projects.
-          </p>
-        </div>
-        <ClientFormDialog open={params.add === "1"} mode="create">
-          <Button>
-            <Plus className="size-4 mr-1" />
-            Add client
-          </Button>
-        </ClientFormDialog>
-      </div>
+      <PageHeader
+        eyebrow="Workspace"
+        title="Clients"
+        subtitle="Companies you deliver work for. Each can have multiple projects."
+        size="md"
+        actions={
+          <ClientFormDialog open={params.add === "1"} mode="create">
+            <Button>
+              <Plus className="size-4 mr-1" />
+              Add client
+            </Button>
+          </ClientFormDialog>
+        }
+      />
 
       {error && (
         <div className="mb-6 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">

@@ -18,6 +18,7 @@ import {
 } from "@/lib/icons";
 import { trialState, trialDaysRemaining } from "@/lib/billing";
 import { cn } from "@/lib/utils";
+import { PageHeader } from "@/components/page-header";
 
 export const metadata = {
   title: "Dashboard — ClickNComply",
@@ -122,35 +123,32 @@ export default async function DashboardPage() {
     <div className="container mx-auto max-w-6xl px-6 py-10">
       <TrialBanner tier={tier} daysLeft={daysLeft} />
 
-      {/* Greeting — SL signature: tiny eyebrow + Barlow Condensed uppercase */}
-      <div className="mb-10">
-        <div className="text-[11px] text-muted-foreground uppercase tracking-[0.18em] font-bold mb-2">
-          Dashboard
-        </div>
-        <h1 className="font-display font-extrabold uppercase text-[44px] md:text-[56px] leading-[0.95] tracking-tight text-foreground mb-3">
-          {greeting}, {firstName}
-        </h1>
-        <p className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
-          <span>Here&apos;s what&apos;s happening at</span>
-          <span className="font-semibold text-foreground">
-            {org?.name || "your workspace"}
-          </span>
-          <span>·</span>
-          <Badge
-            variant={tier === "paid" ? "default" : "secondary"}
-            className="text-[10px] uppercase tracking-wider"
-          >
-            {tier === "paid"
-              ? "Pro"
-              : tier === "active"
-              ? "Trial"
-              : tier === "expired"
-              ? "Free"
-              : "Free"}
-          </Badge>
-          {industry && <span className="hidden sm:inline">· {industry.label}</span>}
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Dashboard"
+        title={`${greeting}, ${firstName}`}
+        subtitle={
+          <>
+            <span>Here&apos;s what&apos;s happening at</span>
+            <span className="font-semibold text-foreground">
+              {org?.name || "your workspace"}
+            </span>
+            <span>·</span>
+            <Badge
+              variant={tier === "paid" ? "default" : "secondary"}
+              className="text-[10px] uppercase tracking-wider"
+            >
+              {tier === "paid"
+                ? "Pro"
+                : tier === "active"
+                ? "Trial"
+                : tier === "expired"
+                ? "Free"
+                : "Free"}
+            </Badge>
+            {industry && <span className="hidden sm:inline">· {industry.label}</span>}
+          </>
+        }
+      />
 
       {/* Stats grid */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">

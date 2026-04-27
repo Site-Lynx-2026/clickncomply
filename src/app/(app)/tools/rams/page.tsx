@@ -7,6 +7,7 @@ import {
   type BuilderSection,
 } from "@/lib/rams/builders";
 import { Sparkles, ArrowRight } from "lucide-react";
+import { PageHeader } from "@/components/page-header";
 
 const SECTION_ORDER: BuilderSection[] = [
   "documents",
@@ -30,19 +31,11 @@ export default function RAMsLandingPage() {
 
   return (
     <div className="px-8 py-10 max-w-6xl mx-auto">
-      {/* Hero — Barlow Condensed uppercase, SL signature */}
-      <div className="mb-10">
-        <div className="text-[11px] text-muted-foreground uppercase tracking-[0.18em] font-bold mb-2">
-          Safety
-        </div>
-        <h1 className="font-display font-extrabold uppercase text-[44px] md:text-[56px] leading-[0.95] tracking-tight text-foreground mb-3">
-          RAMs Builder
-        </h1>
-        <p className="text-sm text-muted-foreground max-w-2xl">
-          Risk assessments, method statements, COSHH, HAVs, noise, permits,
-          toolbox talks. Pick a builder, fill the gaps, download a branded PDF.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Safety"
+        title="RAMs Builder"
+        subtitle="Risk assessments, method statements, COSHH, HAVs, noise, permits, toolbox talks. Pick a builder, fill the gaps, download a branded PDF."
+      />
 
       {/* One-Click Full RAMs hero tile */}
       {fullRams && <FullRamsHero builder={fullRams} />}

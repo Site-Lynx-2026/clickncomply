@@ -9,6 +9,7 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
+import { PageHeader } from "@/components/page-header";
 
 export const metadata = {
   title: "Tools — ClickNComply",
@@ -115,20 +116,11 @@ export default function ToolsCatalogPage() {
 
   return (
     <div className="container mx-auto max-w-6xl px-6 py-10">
-      {/* Hero — Barlow Condensed uppercase, SL signature */}
-      <div className="mb-12">
-        <div className="text-[11px] text-muted-foreground uppercase tracking-[0.18em] font-bold mb-2">
-          Compliance Suite
-        </div>
-        <h1 className="font-display font-extrabold uppercase text-[44px] md:text-[56px] leading-[0.95] tracking-tight text-foreground mb-3">
-          Every Tool, One Login
-        </h1>
-        <p className="text-base text-muted-foreground max-w-2xl">
-          One simple login. Every compliance document your business hands an
-          auditor. Pay only for the modules you actually use — never the whole
-          suite.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Compliance Suite"
+        title="Every Tool, One Login"
+        subtitle="One simple login. Every compliance document your business hands an auditor. Pay only for the modules you actually use — never the whole suite."
+      />
 
       {/* Live modules */}
       <section className="mb-14">

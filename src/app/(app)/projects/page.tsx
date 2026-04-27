@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Pencil, Trash2 } from "@/lib/icons";
 import { ProjectFormDialog } from "./_components/project-form-dialog";
 import { archiveProjectAction } from "./actions";
+import { PageHeader } from "@/components/page-header";
 
 export const metadata = {
   title: "Projects — ClickNComply",
@@ -70,27 +71,24 @@ export default async function ProjectsPage({
 
   return (
     <div className="container mx-auto max-w-5xl px-6 py-10">
-      <div className="flex items-start justify-between mb-8 gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight mb-1">
-            Projects
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Discrete jobs. Every RAMs / QA you generate can be tied to one —
-            and auto-fills site address, dates, and client details.
-          </p>
-        </div>
-        <ProjectFormDialog
-          open={params.add === "1"}
-          mode="create"
-          clients={clients ?? []}
-        >
-          <Button>
-            <Plus className="size-4 mr-1" />
-            New project
-          </Button>
-        </ProjectFormDialog>
-      </div>
+      <PageHeader
+        eyebrow="Workspace"
+        title="Projects"
+        subtitle="Discrete jobs. Every RAMs / QA you generate can be tied to one — and auto-fills site address, dates, and client details."
+        size="md"
+        actions={
+          <ProjectFormDialog
+            open={params.add === "1"}
+            mode="create"
+            clients={clients ?? []}
+          >
+            <Button>
+              <Plus className="size-4 mr-1" />
+              New project
+            </Button>
+          </ProjectFormDialog>
+        }
+      />
 
       {error && (
         <div className="mb-6 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
