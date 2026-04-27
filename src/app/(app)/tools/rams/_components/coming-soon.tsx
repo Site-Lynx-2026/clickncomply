@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sparkles, Bell, Check } from "lucide-react";
 import { getBuilder } from "@/lib/rams/builders";
+import { toast } from "sonner";
 
 export function ComingSoon({ slug }: { slug: string }) {
   const builder = getBuilder(slug);
@@ -16,11 +17,29 @@ export function ComingSoon({ slug }: { slug: string }) {
 
   async function handleVote(e: React.FormEvent) {
     e.preventDefault();
+    if (submitting) return;
     setSubmitting(true);
-    // Hook this to /api/rams/vote-builder later — for now optimistic UX.
-    await new Promise((r) => setTimeout(r, 400));
-    setSubmitting(false);
-    setVoted(true);
+    try {
+      const res = await fetch("/api/rams/vote-builder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug, email: email.trim().toLowerCase() }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        toast.error(err.error || "Couldn't log your vote — try again.");
+        return;
+      }
+      const result = await res.json().catch(() => ({}));
+      setVoted(true);
+      if (result.alreadyVoted) {
+        toast.success("You're already on the list — we'll email you when it ships.");
+      }
+    } catch {
+      toast.error("Network error — try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (

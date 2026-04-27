@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { newTrialEndsAt } from "@/lib/billing";
 
 function slugify(input: string): string {
   return input
@@ -65,6 +66,7 @@ export async function onboardingAction(formData: FormData) {
     redirect(
       `/onboarding?error=${encodeURIComponent(orgErr?.message || "Could not create organisation")}`
     );
+    return; // unreachable but helps TS narrow
   }
 
   // Add user as owner
@@ -78,11 +80,16 @@ export async function onboardingAction(formData: FormData) {
     redirect(`/onboarding?error=${encodeURIComponent(memberErr.message)}`);
   }
 
-  // Create free-tier subscription row (no specific tool yet — they pick after)
+  // Create subscription with 5-day Pro trial active.
+  // After trial expires, hasProAccess() flips to false and PDF route
+  // returns watermarked output. A future cron will flip the status field
+  // from 'trialing' → 'canceled' for tidier reporting; for now the
+  // trial_ends_at timestamp is the source of truth.
   await admin.from("subscriptions").insert({
     organisation_id: org.id,
-    tier: "free",
-    status: "active",
+    tier: "pro",
+    status: "trialing",
+    trial_ends_at: newTrialEndsAt(),
   });
 
   // Mark profile onboarded

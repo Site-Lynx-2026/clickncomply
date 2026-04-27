@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { resolveContext } from "../../_helpers";
-import { applyWatermark } from "@/lib/pdf/watermark";
+import { applyWatermark, applyDraftFooter } from "@/lib/pdf/watermark";
+import { hasProAccess } from "@/lib/billing";
 import { renderMethodStatement } from "@/lib/pdf/templates/method-statement";
 import { renderRiskAssessment } from "@/lib/pdf/templates/risk-assessment";
 import { renderToolboxTalk } from "@/lib/pdf/templates/toolbox-talk";
@@ -12,13 +13,14 @@ import { renderFullRams } from "@/lib/pdf/templates/full-rams";
 /**
  * GET /api/rams/[id]/pdf
  *
- * Renders the document to PDF on demand. Free tier outputs go through the
- * watermark engine; paid tier outputs are returned clean. The reference
- * number is the document UUID's first 8 chars, so it's stable + searchable.
+ * Renders the document to PDF on demand.
  *
- * Templates per builder live in src/lib/pdf/templates/. Right now only
- * Method Statement is wired — the rest fall through to a 501 until they
- * land in subsequent commits.
+ * Tier gate (single source of truth — `hasProAccess()` in src/lib/billing.ts):
+ *   - Pro (paid OR within 5-day trial) → clean PDF + universal AI-draft footer
+ *   - Free / expired trial            → watermarked PDF + universal AI-draft footer
+ *
+ * The reference number is the document UUID's first 8 chars, so it's stable
+ * + searchable.
  */
 export async function GET(
   _req: NextRequest,
@@ -42,7 +44,7 @@ export async function GET(
   if (!docRow)
     return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  // Tier — paid tier skips the watermark.
+  // Branding + tier in parallel
   const [{ data: org }, { data: sub }] = await Promise.all([
     admin
       .from("organisations")
@@ -51,14 +53,12 @@ export async function GET(
       .single(),
     admin
       .from("subscriptions")
-      .select("tier, status")
+      .select("tier, status, trial_ends_at")
       .eq("organisation_id", ctx.organisationId)
       .maybeSingle(),
   ]);
 
-  const isPaid =
-    sub?.tier === "pro" &&
-    (sub?.status === "active" || sub?.status === "trialing");
+  const isPro = hasProAccess(sub);
   const branding = {
     name: org?.name || "Your Company",
     logoUrl: org?.logo_url ?? null,
@@ -119,14 +119,17 @@ export async function GET(
       );
   }
 
-  const finalBytes = isPaid ? bytes : await applyWatermark(bytes);
+  // Pro tier: clean + draft footer. Free / expired trial: full watermark.
+  const finalBytes = isPro
+    ? await applyDraftFooter(bytes)
+    : await applyWatermark(bytes);
 
   // Mark generation timestamp + watermark flag (best-effort, non-blocking).
   await admin
     .from("rams_documents")
     .update({
       generated_at: new Date().toISOString(),
-      is_watermarked: !isPaid,
+      is_watermarked: !isPro,
     })
     .eq("id", id);
 

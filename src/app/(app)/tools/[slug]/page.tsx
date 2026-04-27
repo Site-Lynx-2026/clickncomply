@@ -1,7 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TOOLS, type ToolSlug, formatPricing } from "@/tools";
 import { ArrowLeft, Sparkles } from "@/lib/icons";

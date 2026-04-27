@@ -229,6 +229,7 @@ export interface Database {
           pdf_storage_path: string | null;
           is_watermarked: boolean;
           generated_at: string | null;
+          project_id: string | null;
           created_by: string | null;
           updated_by: string | null;
           created_at: string;
@@ -244,6 +245,7 @@ export interface Database {
           pdf_storage_path?: string | null;
           is_watermarked?: boolean;
           generated_at?: string | null;
+          project_id?: string | null;
           created_by?: string | null;
           updated_by?: string | null;
         };
@@ -257,8 +259,122 @@ export interface Database {
           pdf_storage_path?: string | null;
           is_watermarked?: boolean;
           generated_at?: string | null;
+          project_id?: string | null;
           created_by?: string | null;
           updated_by?: string | null;
+        };
+        Relationships: [];
+      };
+      clients: {
+        Row: {
+          id: string;
+          organisation_id: string;
+          name: string;
+          contact_name: string | null;
+          contact_email: string | null;
+          contact_phone: string | null;
+          address: string | null;
+          notes: string | null;
+          archived: boolean;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organisation_id: string;
+          name: string;
+          contact_name?: string | null;
+          contact_email?: string | null;
+          contact_phone?: string | null;
+          address?: string | null;
+          notes?: string | null;
+          archived?: boolean;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          organisation_id?: string;
+          name?: string;
+          contact_name?: string | null;
+          contact_email?: string | null;
+          contact_phone?: string | null;
+          address?: string | null;
+          notes?: string | null;
+          archived?: boolean;
+          created_by?: string | null;
+        };
+        Relationships: [];
+      };
+      projects: {
+        Row: {
+          id: string;
+          organisation_id: string;
+          client_id: string | null;
+          name: string;
+          code: string | null;
+          site_address: string | null;
+          site_postcode: string | null;
+          start_date: string | null;
+          end_date: string | null;
+          status: "active" | "paused" | "completed" | "archived";
+          notes: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organisation_id: string;
+          client_id?: string | null;
+          name: string;
+          code?: string | null;
+          site_address?: string | null;
+          site_postcode?: string | null;
+          start_date?: string | null;
+          end_date?: string | null;
+          status?: "active" | "paused" | "completed" | "archived";
+          notes?: string | null;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          organisation_id?: string;
+          client_id?: string | null;
+          name?: string;
+          code?: string | null;
+          site_address?: string | null;
+          site_postcode?: string | null;
+          start_date?: string | null;
+          end_date?: string | null;
+          status?: "active" | "paused" | "completed" | "archived";
+          notes?: string | null;
+          created_by?: string | null;
+        };
+        Relationships: [];
+      };
+      builder_votes: {
+        Row: {
+          id: string;
+          builder_slug: string;
+          email: string;
+          organisation_id: string | null;
+          user_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          builder_slug: string;
+          email: string;
+          organisation_id?: string | null;
+          user_id?: string | null;
+        };
+        Update: {
+          id?: string;
+          builder_slug?: string;
+          email?: string;
+          organisation_id?: string | null;
+          user_id?: string | null;
         };
         Relationships: [];
       };

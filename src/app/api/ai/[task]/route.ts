@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { anthropic, DEFAULT_MODEL } from "@/lib/anthropic/client";
 import { resolveContext } from "../../rams/_helpers";
 import { getTask } from "@/lib/anthropic/tasks";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 /**
  * POST /api/ai/[task]
@@ -10,7 +11,19 @@ import { getTask } from "@/lib/anthropic/tasks";
  * Body shape depends on the task slug — validated against the task's Zod
  * schema. Returns either { text } for free-form tasks or { data } for JSON
  * tasks. Anthropic prompt-caches the system prompt across calls.
+ *
+ * Protections:
+ *   - Auth required (resolveContext)
+ *   - Rate limit: 30 requests per user per minute
+ *     (generous for normal use, blocks runaway automation)
+ *   - Per-call usage forwarded to client + logged for cost tracking
  */
+
+const AI_RATE_LIMIT_PER_MINUTE = 30;
+const AI_RATE_LIMIT_WINDOW_MS = 60 * 1000;
+
+// Force Node runtime (rate-limit Map is in-memory, only safe outside Edge)
+export const runtime = "nodejs";
 
 export async function POST(
   req: NextRequest,
@@ -18,6 +31,33 @@ export async function POST(
 ) {
   const ctx = await resolveContext();
   if (!ctx) return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
+
+  // Rate limit per user (not per org — protects per-user runaway)
+  const rl = checkRateLimit(
+    `ai:${ctx.userId}`,
+    AI_RATE_LIMIT_PER_MINUTE,
+    AI_RATE_LIMIT_WINDOW_MS
+  );
+  if (!rl.allowed) {
+    const retryAfterSec = Math.max(
+      1,
+      Math.ceil((rl.resetAtMs - Date.now()) / 1000)
+    );
+    return NextResponse.json(
+      {
+        error: `Slow down — you're hitting the AI a lot. Try again in ${retryAfterSec}s.`,
+      },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(retryAfterSec),
+          "X-RateLimit-Limit": String(AI_RATE_LIMIT_PER_MINUTE),
+          "X-RateLimit-Remaining": "0",
+          "X-RateLimit-Reset": String(rl.resetAtMs),
+        },
+      }
+    );
+  }
 
   const { task: slug } = await params;
   const task = getTask(slug);
@@ -63,6 +103,23 @@ export async function POST(
       ],
       messages: [{ role: "user", content: userMessage }],
     });
+
+    // Lightweight cost tracking — log to stdout so Vercel captures it.
+    // When usage goes meaningful, replace with a `ai_usage` table insert.
+    if (message.usage) {
+      console.log(
+        JSON.stringify({
+          ev: "ai_usage",
+          task: slug,
+          user: ctx.userId,
+          org: ctx.organisationId,
+          input: message.usage.input_tokens,
+          output: message.usage.output_tokens,
+          cache_read: message.usage.cache_read_input_tokens ?? 0,
+          cache_create: message.usage.cache_creation_input_tokens ?? 0,
+        })
+      );
+    }
 
     const text = extractText(message);
     if (!text) {

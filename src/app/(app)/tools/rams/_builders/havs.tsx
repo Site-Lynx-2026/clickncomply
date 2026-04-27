@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Plus, Trash2, Download, Activity, ChevronLeft } from "lucide-react";
+import { Plus, Trash2, Download, ChevronLeft } from "lucide-react";
 import { calcHAVSPoints, HAVS_EAV, HAVS_ELV } from "@/lib/rams/config";
 import { HAVS_LIBRARY } from "@/lib/rams/library";
 import { cn } from "@/lib/utils";

@@ -76,7 +76,7 @@ export async function renderFullRams(
   ref: string
 ): Promise<Uint8Array> {
   const { doc, fonts } = await newDocument();
-  let ctx = newPage(doc, fonts);
+  const ctx = newPage(doc, fonts);
 
   drawCoverBanner(
     ctx,

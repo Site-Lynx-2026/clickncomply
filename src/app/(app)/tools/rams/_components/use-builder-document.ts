@@ -54,9 +54,21 @@ export function useBuilderDocument<TForm extends object>({
   const [downloading, setDownloading] = useState(false);
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dirty = useRef(false);
+  // Authoritative copy of docId for callbacks — refreshed inside persist().
+  // Avoids the stale-closure race where downloadPdf reads docId BEFORE the
+  // setDocId() from a freshly-created doc has flushed to React state.
+  const docIdRef = useRef<string | null>(null);
 
+  /**
+   * Persist a form snapshot.
+   *
+   * Returns the resolved doc id (newly minted on first save, otherwise the
+   * existing id). Callers that need to act on a brand-new doc immediately
+   * (e.g. downloadPdf when no docId is set yet) should use this return value
+   * rather than reading state — state updates are async.
+   */
   const persist = useCallback(
-    async (next: TForm, currentId: string | null) => {
+    async (next: TForm, currentId: string | null): Promise<string | null> => {
       setSaving(true);
       try {
         const title =
@@ -66,6 +78,8 @@ export function useBuilderDocument<TForm extends object>({
           form_data: next as unknown as Record<string, unknown>,
         };
         let res: Response;
+        let resolvedId: string | null = currentId;
+
         if (currentId) {
           res = await fetch(`/api/rams/${currentId}`, {
             method: "PUT",
@@ -80,6 +94,8 @@ export function useBuilderDocument<TForm extends object>({
           });
           if (res.ok) {
             const { id } = await res.json();
+            resolvedId = id as string;
+            docIdRef.current = id as string;
             setDocId(id);
             // Replace URL so a refresh resumes the draft.
             const url = new URL(window.location.href);
@@ -95,8 +111,10 @@ export function useBuilderDocument<TForm extends object>({
           })
         );
         dirty.current = false;
+        return resolvedId;
       } catch {
         toast.error("Couldn't save — check your connection.");
+        return null;
       } finally {
         setSaving(false);
       }
@@ -110,7 +128,7 @@ export function useBuilderDocument<TForm extends object>({
       dirty.current = true;
       if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
       autoSaveTimer.current = setTimeout(() => {
-        if (dirty.current) persist(next, docId);
+        if (dirty.current) persist(next, docIdRef.current);
       }, 1500);
       return next;
     });
@@ -121,15 +139,21 @@ export function useBuilderDocument<TForm extends object>({
     const params = new URLSearchParams(window.location.search);
     const id = params.get("doc");
     if (!id) return;
-    setDocId(id);
+    let cancelled = false;
     fetch(`/api/rams/${id}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((doc) => {
+        if (cancelled) return;
         if (doc?.form_data) {
+          docIdRef.current = id;
+          setDocId(id);
           setForm({ ...emptyForm(), ...doc.form_data });
         }
       })
       .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
     // Intentional: only run on mount. emptyForm should be stable per builder.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -144,17 +168,19 @@ export function useBuilderDocument<TForm extends object>({
 
   async function manualSave() {
     if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
-    await persist(form, docId);
+    await persist(form, docIdRef.current);
   }
 
   async function downloadPdf() {
-    let id = docId;
+    let id = docIdRef.current ?? docId;
     if (!id) {
       // Force a save first so we have an id to render against.
-      await manualSave();
-      id = docId;
+      // Use persist's return value directly — don't read state which is async.
+      if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+      const saved = await persist(form, null);
+      id = saved;
       if (!id) {
-        toast.error("Couldn't save before download.");
+        // persist already toasted the error
         return;
       }
     }
