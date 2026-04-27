@@ -49,6 +49,13 @@ export default async function AppLayout({
             </form>
           </div>
         </div>
+        {/* Mobile-only secondary nav row — visible below sm breakpoint */}
+        <nav className="sm:hidden flex items-center gap-1 px-4 py-1 border-t overflow-x-auto">
+          <AppNavLink href="/dashboard">Dashboard</AppNavLink>
+          <AppNavLink href="/projects">Projects</AppNavLink>
+          <AppNavLink href="/clients">Clients</AppNavLink>
+          <AppNavLink href="/account">Account</AppNavLink>
+        </nav>
       </header>
       <main className="flex-1">{children}</main>
     </div>

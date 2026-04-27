@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
-import { RAMsSidebar } from "./_components/sidebar";
+import { RAMsSidebar, RAMsSidebarMobileTrigger } from "./_components/sidebar";
 import { ProjectsProvider } from "./_components/projects-context";
 import type { Database } from "@/types/supabase";
 
@@ -41,8 +41,6 @@ export default async function RAMsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Auth gate at the (app) layout already handled, but double-check here
-  // because we're about to fetch sensitive org data.
   const supabase = await createClient();
   const {
     data: { user },
@@ -55,7 +53,10 @@ export default async function RAMsLayout({
     <ProjectsProvider initialProjects={projects}>
       <div className="flex flex-1 min-h-[calc(100vh-3.5rem)]">
         <RAMsSidebar />
-        <div className="flex-1 min-w-0">{children}</div>
+        <div className="flex-1 min-w-0 flex flex-col">
+          <RAMsSidebarMobileTrigger />
+          <div className="flex-1">{children}</div>
+        </div>
       </div>
     </ProjectsProvider>
   );

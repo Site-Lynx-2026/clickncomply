@@ -10,7 +10,21 @@ import {
   type Builder,
   type BuilderSection,
 } from "@/lib/rams/builders";
-import { ArrowLeft, ChevronsLeft, ChevronsRight, FolderOpen } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronsLeft,
+  ChevronsRight,
+  FolderOpen,
+  Menu,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const SECTION_ORDER: BuilderSection[] = [
   "build",
@@ -23,16 +37,18 @@ const SECTION_ORDER: BuilderSection[] = [
   "library",
 ];
 
+/**
+ * Desktop sidebar — fixed-width aside, collapsible to icon-only at 68px.
+ * Hidden on mobile (md:flex). Mobile users get the Sheet drawer instead.
+ */
 export function RAMsSidebar() {
-  const pathname = usePathname();
-  const grouped = buildersBySection();
   const [collapsed, setCollapsed] = useState(false);
 
   return (
     <aside
       className={cn(
-        "shrink-0 border-r bg-sidebar text-sidebar-foreground",
-        "flex flex-col sticky top-14",
+        "hidden md:flex shrink-0 border-r bg-sidebar text-sidebar-foreground",
+        "flex-col sticky top-14",
         "h-[calc(100vh-3.5rem)]",
         collapsed ? "w-[68px]" : "w-[260px]",
         "transition-[width] duration-150 ease-out"
@@ -62,6 +78,73 @@ export function RAMsSidebar() {
         </button>
       </div>
 
+      <SidebarBody collapsed={collapsed} />
+    </aside>
+  );
+}
+
+/**
+ * Mobile sidebar — hamburger trigger + Sheet drawer. Only renders below
+ * the md: breakpoint (where the desktop sidebar is hidden).
+ */
+export function RAMsSidebarMobileTrigger() {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Close the sheet automatically when navigation completes.
+  // (Radix Sheet doesn't auto-close on link click — handled here via effect.)
+  const closeOnNav = () => setOpen(false);
+
+  return (
+    <div className="md:hidden border-b bg-background sticky top-14 z-20">
+      <Sheet open={open} onOpenChange={setOpen}>
+        <div className="flex items-center gap-2 px-4 py-2">
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="sm" className="-ml-2">
+              <Menu className="size-4 mr-1.5" />
+              Menu
+            </Button>
+          </SheetTrigger>
+          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            RAMs Builder
+          </span>
+        </div>
+        <SheetContent
+          side="left"
+          className="p-0 w-[280px] flex flex-col bg-sidebar text-sidebar-foreground"
+        >
+          <SheetHeader className="px-4 py-3.5 border-b">
+            <SheetTitle className="text-sm font-semibold tracking-tight inline-flex items-center gap-2">
+              <span className="size-1.5 rounded-full bg-brand" />
+              RAMs Builder
+            </SheetTitle>
+          </SheetHeader>
+          <div onClick={closeOnNav} className="flex-1 flex flex-col min-h-0">
+            <SidebarBody collapsed={false} pathname={pathname} />
+          </div>
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+}
+
+/**
+ * The shared sidebar body — back-link, Documents pin, sectioned builder list.
+ * Used by both desktop aside and mobile Sheet.
+ */
+function SidebarBody({
+  collapsed,
+  pathname: pathnameOverride,
+}: {
+  collapsed: boolean;
+  pathname?: string;
+}) {
+  const pathnameFromHook = usePathname();
+  const pathname = pathnameOverride ?? pathnameFromHook;
+  const grouped = buildersBySection();
+
+  return (
+    <>
       {/* Back to dashboard */}
       <Link
         href="/dashboard"
@@ -96,7 +179,7 @@ export function RAMsSidebar() {
       </Link>
 
       {/* Nav — sections + builders */}
-      <nav className="flex-1 overflow-y-auto py-2">
+      <nav className="flex-1 overflow-y-auto py-2 min-h-0">
         {SECTION_ORDER.map((sectionKey) => {
           const builders = grouped[sectionKey];
           if (!builders || builders.length === 0) return null;
@@ -125,7 +208,7 @@ export function RAMsSidebar() {
           );
         })}
       </nav>
-    </aside>
+    </>
   );
 }
 
