@@ -1,6 +1,27 @@
 # Status — 27 Apr 2026
 
-## Latest: Risk Assessment, COSHH, HAVs, Toolbox Talk all wired + Documents page
+## Latest: Every builder is now picker-first. The library IS the product.
+
+**Design rule locked:** every builder opens with a card-grid gallery of pickable items. Typing is reserved for company name, project title, and the rare item not in the library. A 10-year-old should be able to assemble a full RAM by clicking through the libraries — no keyboard.
+
+The gallery experience across all five builders:
+
+| Builder | Opens with | Click does |
+|---|---|---|
+| Method Statement | 38 trade cards (8 categories) | Loads 8-step pre-written method statement, sets trade + scope |
+| Risk Assessment | 38 trade cards OR 180+ hazards | Trade pick = full RA loaded with all relevant hazards. Hazard pick = added one-by-one. |
+| COSHH | 50 substance cards (12 categories) | Pre-fills exposure routes, controls, PPE, emergency procedure |
+| HAVs | 62 tool cards | Adds row with vibration magnitude pre-filled — operator just sets hours |
+| Toolbox Talk | 81 topic cards (8 categories) | AI auto-generates the briefing, no extra click |
+
+Library expansion this push:
+- `src/lib/rams/coshh-substances.ts` — **new**, 50 substances across cement, wood, metal welding, paint, adhesive, fuel, solvent, cleaning, insulation, stone/silica, biological, specialist
+- `src/lib/rams/toolbox-topics.ts` — **new**, 81 topics across WAH, plant, health, site hazards, behavioural, weather, specialist, incidents
+- `library.ts` HAVS_LIBRARY: 20 → 62 entries (pneumatic, finishing, concrete, outdoor, specialist tool families)
+
+Shared `<LibraryGallery>` component handles search + category filter + card grid for every builder. Adds the 6th builder = drop in another gallery.
+
+## Earlier same day: Risk Assessment, COSHH, HAVs, Toolbox Talk all wired + Documents page
 
 Five builders are now fully end-to-end. Each has:
 - Form UI with auto-save (1.5s after last edit, "Saved at HH:MM" indicator)
@@ -81,11 +102,26 @@ Sidebar gets a "Documents" entry just under "Dashboard" so it's always one click
 
 This is the pattern. Every other builder (Risk Assessment, COSHH, HAVs, Toolbox Talk, etc.) plugs into the same spine — each is ~200 lines of UI wiring, no infra to build.
 
+## Library targets (the user's "library is the product" call)
+
+The libraries need to keep growing. Current vs targets:
+
+| Library | Now | Target |
+|---|---|---|
+| Trade templates (with method statements) | 38 | 80+ — add specialist trades (asbestos, scaffolding, lift install, façade access, etc.) |
+| Risk assessment hazards | 180 | 300+ — add specialist categories |
+| HAVs tool magnitudes | 62 | 80+ — add manufacturer-specific entries |
+| COSHH substances | 50 | 80+ — add more trade-specific (resin floor, intumescent paint, etc.) |
+| Noise activities | 15 | 50+ |
+| Toolbox talk topics | 81 | 100+ |
+
+These can grow in waves — each addition is purely additive and shows up in the picker the next page load.
+
 ## What's NOT wired yet
 
 - Full RAMs 12-step bodies — the rail navigates but step components are stubbed for SL port
 - 31 stubbed builders show ComingSoon screen — vote-to-build email capture needs `/api/rams/vote-builder` route
-- RA Library "Use in builder" button on `/tools/rams/ra-library` — works inside the RA builder modal but not from the standalone library page
+- RA Library "Use in builder" button on `/tools/rams/ra-library` — works inside the RA builder gallery but not from the standalone library page
 - Send-to-client / email-pack flow (SL has it, CnC doesn't yet)
 - Stripe paywall on PDF download — tier check exists but no upgrade prompt yet
 - Real drag-to-reorder on Method Statement steps (UI handle is there but not functional)

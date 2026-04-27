@@ -5,17 +5,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Plus, Trash2, Download, FlaskConical } from "lucide-react";
+import { Plus, Trash2, Download, ChevronLeft } from "lucide-react";
 import { AIButton } from "@/components/ui/ai-button";
 import { toast } from "sonner";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
+import { LibraryGallery } from "../_components/library-gallery";
+import {
+  COSHH_SUBSTANCES,
+  COSHH_CATEGORIES,
+  type CoshhSubstanceLibraryItem,
+} from "@/lib/rams/coshh-substances";
 
 type RiskLevel = "low" | "medium" | "high";
 
@@ -29,6 +36,7 @@ interface Substance {
   controls: string;
   ppe: string;
   emergencyProcedure: string;
+  fromLibrary?: boolean;
 }
 
 interface CoshhBuilderForm {
@@ -45,11 +53,21 @@ const RISK_COLORS: Record<RiskLevel, string> = {
 };
 
 function emptyForm(): CoshhBuilderForm {
+  return { title: "", scope: "", preparedBy: "", substances: [] };
+}
+
+function fromLibrary(lib: CoshhSubstanceLibraryItem): Substance {
   return {
-    title: "",
-    scope: "",
-    preparedBy: "",
-    substances: [],
+    id: crypto.randomUUID(),
+    name: lib.name,
+    sdsRef: "",
+    exposureRoute: lib.exposureRoute,
+    welRef: lib.welRef ?? "",
+    riskLevel: lib.riskLevel,
+    controls: lib.controls,
+    ppe: lib.ppe,
+    emergencyProcedure: lib.emergencyProcedure,
+    fromLibrary: true,
   };
 }
 
@@ -62,9 +80,8 @@ function emptySubstance(): Substance {
     welRef: "",
     riskLevel: "medium",
     controls: "",
-    ppe: "Nitrile gloves, safety glasses, FFP3 mask",
-    emergencyProcedure:
-      "Eye contact: rinse with water for 15 min. Skin: wash with soap and water. Inhalation: move to fresh air. Seek medical advice if symptoms persist.",
+    ppe: "",
+    emergencyProcedure: "",
   };
 }
 
@@ -84,9 +101,18 @@ export function CoshhBuilder() {
   });
 
   const [aiBusyFor, setAiBusyFor] = useState<string | null>(null);
+  const [showGallery, setShowGallery] = useState(true);
 
-  function addSubstance() {
+  function pickSubstance(libId: string) {
+    const lib = COSHH_SUBSTANCES.find((s) => s.id === libId);
+    if (!lib) return;
+    update({ substances: [...form.substances, fromLibrary(lib)] });
+    toast.success(`${lib.name} added (${lib.riskLevel.toUpperCase()} risk).`);
+  }
+
+  function addCustomSubstance() {
     update({ substances: [...form.substances, emptySubstance()] });
+    setShowGallery(false);
   }
 
   function updateSubstance(id: string, patch: Partial<Substance>) {
@@ -136,25 +162,40 @@ export function CoshhBuilder() {
     }
   }
 
-  return (
-    <div className="space-y-6">
-      <SaveStatus saving={saving} lastSaved={lastSaved} />
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">COSHH Assessment</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="coshh-title">Title</Label>
-            <Input
-              id="coshh-title"
-              value={form.title}
-              onChange={(e) => update({ title: e.target.value })}
-              placeholder="e.g. M&E first fix — Plot 12"
-            />
+  // ── GALLERY VIEW ──
+  if (form.substances.length === 0 || showGallery) {
+    return (
+      <div className="space-y-6">
+        {form.substances.length > 0 && (
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => setShowGallery(false)}
+              className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+            >
+              <ChevronLeft className="size-3.5" />
+              Back to {form.substances.length} added substance
+              {form.substances.length === 1 ? "" : "s"}
+            </button>
+            <SaveStatus saving={saving} lastSaved={lastSaved} />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        )}
+        {form.substances.length === 0 && (
+          <SaveStatus saving={saving} lastSaved={lastSaved} />
+        )}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Project (optional)</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="coshh-title">Title</Label>
+              <Input
+                id="coshh-title"
+                value={form.title}
+                onChange={(e) => update({ title: e.target.value })}
+                placeholder="e.g. M&E first fix — Plot 12"
+              />
+            </div>
             <div className="space-y-1.5">
               <Label htmlFor="coshh-scope">Scope</Label>
               <Input
@@ -164,67 +205,104 @@ export function CoshhBuilder() {
                 placeholder="What this assessment covers..."
               />
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="coshh-prep">Prepared by</Label>
-              <Input
-                id="coshh-prep"
-                value={form.preparedBy}
-                onChange={(e) => update({ preparedBy: e.target.value })}
-                placeholder="Name"
-              />
-            </div>
+          </CardContent>
+        </Card>
+        <LibraryGallery
+          heading={
+            form.substances.length === 0
+              ? "Pick the substances you handle"
+              : "Add another substance"
+          }
+          subheading={`${COSHH_SUBSTANCES.length} pre-built substances with controls, PPE and emergency procedures pre-filled. Click to add — tweak only what's specific to you.`}
+          searchPlaceholder={`Search ${COSHH_SUBSTANCES.length} substances…`}
+          items={COSHH_SUBSTANCES.map((s) => ({
+            id: s.id,
+            title: s.name,
+            subtitle: s.summary,
+            category: s.category,
+            icon: s.icon,
+            meta: s.riskLevel.toUpperCase(),
+          }))}
+          categories={COSHH_CATEGORIES.map((c) => ({
+            id: c.id,
+            label: c.label,
+            icon: c.icon,
+          }))}
+          onPick={(item) => pickSubstance(item.id)}
+          customLabel="Add a custom substance"
+          onAddCustom={addCustomSubstance}
+          searchableFields={(item) => [item.title, item.subtitle ?? ""]}
+        />
+      </div>
+    );
+  }
+
+  // ── EDITOR VIEW ──
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => setShowGallery(true)}
+          className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+        >
+          <Plus className="size-3.5" />
+          Add another substance from library
+        </button>
+        <SaveStatus saving={saving} lastSaved={lastSaved} />
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Project</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="coshh-title">Title</Label>
+            <Input
+              id="coshh-title"
+              value={form.title}
+              onChange={(e) => update({ title: e.target.value })}
+              placeholder="e.g. M&E first fix — Plot 12"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="coshh-prep">Prepared by</Label>
+            <Input
+              id="coshh-prep"
+              value={form.preparedBy}
+              onChange={(e) => update({ preparedBy: e.target.value })}
+              placeholder="Name"
+            />
           </div>
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0">
-          <div>
-            <CardTitle className="text-base">
-              Substances
-              {form.substances.length > 0 && (
-                <span className="ml-2 text-muted-foreground font-normal text-sm">
-                  ({form.substances.length})
-                </span>
-              )}
-            </CardTitle>
-            <p className="text-xs text-muted-foreground mt-1">
-              Each substance assessed individually with control hierarchy and
-              emergency procedure. AI fills controls + PPE + emergency in one
-              click.
-            </p>
-          </div>
-          <Button size="sm" onClick={addSubstance}>
-            <Plus className="size-3.5 mr-1.5" />
-            Add substance
-          </Button>
+        <CardHeader>
+          <CardTitle className="text-base">
+            Substances
+            <span className="ml-2 text-muted-foreground font-normal text-sm">
+              ({form.substances.length})
+            </span>
+          </CardTitle>
+          <p className="text-xs text-muted-foreground mt-1">
+            Each substance pre-filled from the library. Tick or tweak as
+            needed. Use AI to refine for unusual substances.
+          </p>
         </CardHeader>
         <CardContent>
-          {form.substances.length === 0 ? (
-            <div className="border-2 border-dashed rounded-md p-10 text-center bg-muted/20">
-              <FlaskConical className="size-6 mx-auto mb-3 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground mb-3">
-                No substances added yet.
-              </p>
-              <Button variant="outline" size="sm" onClick={addSubstance}>
-                <Plus className="size-3.5 mr-1.5" />
-                Add first substance
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {form.substances.map((s) => (
-                <SubstanceRow
-                  key={s.id}
-                  substance={s}
-                  aiBusy={aiBusyFor === s.id}
-                  onUpdate={(patch) => updateSubstance(s.id, patch)}
-                  onRemove={() => removeSubstance(s.id)}
-                  onAiFill={() => aiFillControlsFor(s.id)}
-                />
-              ))}
-            </div>
-          )}
+          <div className="space-y-3">
+            {form.substances.map((s) => (
+              <SubstanceRow
+                key={s.id}
+                substance={s}
+                aiBusy={aiBusyFor === s.id}
+                onUpdate={(patch) => updateSubstance(s.id, patch)}
+                onRemove={() => removeSubstance(s.id)}
+                onAiFill={() => aiFillControlsFor(s.id)}
+              />
+            ))}
+          </div>
         </CardContent>
       </Card>
 
@@ -232,10 +310,7 @@ export function CoshhBuilder() {
         <Button variant="outline" onClick={manualSave} disabled={saving}>
           {saving ? "Saving…" : "Save draft"}
         </Button>
-        <Button
-          onClick={downloadPdf}
-          disabled={downloading || form.substances.length === 0}
-        >
+        <Button onClick={downloadPdf} disabled={downloading}>
           <Download className="size-3.5 mr-1.5" />
           {downloading ? "Generating…" : "Download COSHH PDF"}
         </Button>
@@ -284,6 +359,14 @@ function SubstanceRow({
             <option value="high">High</option>
           </select>
         </div>
+        {substance.fromLibrary && (
+          <Badge
+            variant="outline"
+            className="text-[9px] uppercase shrink-0 mt-6"
+          >
+            Library
+          </Badge>
+        )}
         <Button
           variant="ghost"
           size="icon"
@@ -294,11 +377,13 @@ function SubstanceRow({
         </Button>
       </div>
 
-      <div className="flex justify-end">
-        <AIButton size="sm" onClick={onAiFill} loading={aiBusy}>
-          AI fill controls + PPE + emergency
-        </AIButton>
-      </div>
+      {!substance.fromLibrary && (
+        <div className="flex justify-end">
+          <AIButton size="sm" onClick={onAiFill} loading={aiBusy}>
+            AI fill controls + PPE + emergency
+          </AIButton>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div className="space-y-1.5">
@@ -310,7 +395,7 @@ function SubstanceRow({
           />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-xs">WEL reference (if applicable)</Label>
+          <Label className="text-xs">WEL reference</Label>
           <Input
             value={substance.welRef}
             onChange={(e) => onUpdate({ welRef: e.target.value })}
@@ -324,7 +409,6 @@ function SubstanceRow({
         <Input
           value={substance.exposureRoute}
           onChange={(e) => onUpdate({ exposureRoute: e.target.value })}
-          placeholder="Inhalation, skin contact, ingestion, eye contact"
         />
       </div>
 
@@ -334,7 +418,6 @@ function SubstanceRow({
           value={substance.controls}
           onChange={(e) => onUpdate({ controls: e.target.value })}
           rows={2}
-          placeholder="Engineering controls, ventilation, substitution, exposure limits..."
         />
       </div>
 
@@ -343,7 +426,6 @@ function SubstanceRow({
         <Input
           value={substance.ppe}
           onChange={(e) => onUpdate({ ppe: e.target.value })}
-          placeholder="Glove grade, RPE, eye protection..."
         />
       </div>
 

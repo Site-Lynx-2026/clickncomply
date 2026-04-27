@@ -11,70 +11,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Download, Megaphone } from "lucide-react";
+import { Download, Megaphone, ChevronLeft } from "lucide-react";
 import { AIButton } from "@/components/ui/ai-button";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
-
-const TOPIC_GROUPS: { label: string; topics: string[] }[] = [
-  {
-    label: "Working at Height",
-    topics: [
-      "Safe use of MEWPs",
-      "Ladder safety — 1:4 rule",
-      "Mobile scaffold tower (PASMA)",
-      "Edge protection on flat roofs",
-      "Fragile roof surfaces",
-      "Harness inspection and rescue",
-    ],
-  },
-  {
-    label: "Plant & Equipment",
-    topics: [
-      "Banksman duties around moving plant",
-      "Disc cutter / angle grinder safety",
-      "Pre-use checks (PUWER)",
-      "LOLER lifting equipment register",
-      "Generator and CO awareness",
-      "Cartridge nail gun safety",
-    ],
-  },
-  {
-    label: "Health & Wellbeing",
-    topics: [
-      "HAVs — recognising symptoms",
-      "Noise and hearing protection",
-      "Manual handling — TILE",
-      "Mental health and Stress at Work",
-      "Heat stress in summer",
-      "Cold stress and dehydration",
-    ],
-  },
-  {
-    label: "Site Hazards",
-    topics: [
-      "Cable strikes — CAT and Genny",
-      "Confined space entry",
-      "Slips, trips and falls",
-      "Hot works permit and fire watch",
-      "Asbestos awareness",
-      "Silica dust and RPE",
-    ],
-  },
-  {
-    label: "Behavioural / Soft Skills",
-    topics: [
-      "Stop the job — your right and duty",
-      "Reporting near misses",
-      "PPE compliance",
-      "Site induction refresh",
-      "Looking out for new starters",
-      "End-of-day housekeeping",
-    ],
-  },
-];
+import { LibraryGallery } from "../_components/library-gallery";
+import {
+  TOOLBOX_TOPICS,
+  TOOLBOX_CATEGORIES,
+} from "@/lib/rams/toolbox-topics";
 
 interface ToolboxTalkForm {
   topic: string;
@@ -104,20 +50,30 @@ export function ToolboxTalkBuilder() {
 
   const [generating, setGenerating] = useState(false);
 
-  async function handleGenerate() {
-    if (!form.topic.trim()) {
-      toast.error("Pick a topic first.");
-      return;
-    }
+  /**
+   * Click-to-build: picking a topic auto-runs the AI generator. Zero typing
+   * to get a ready-to-deliver toolbox talk in front of the user.
+   */
+  async function pickTopic(topicTitle: string) {
+    update({ topic: topicTitle, generated: "" });
+    await runGenerator(topicTitle, form.audience, form.duration);
+  }
+
+  async function runGenerator(
+    topic: string,
+    audience: string,
+    duration: string
+  ) {
+    if (!topic.trim()) return;
     setGenerating(true);
     try {
       const res = await fetch(`/api/ai/toolbox-talk`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          topic: form.topic,
-          audience: form.audience || undefined,
-          duration: form.duration || undefined,
+          topic,
+          audience: audience || undefined,
+          duration: duration || undefined,
         }),
       });
       if (!res.ok) {
@@ -131,7 +87,7 @@ export function ToolboxTalkBuilder() {
         return;
       }
       update({ generated: text });
-      toast.success("Briefing ready. Edit, then download.");
+      toast.success("Briefing ready.");
     } catch {
       toast.error("AI generation failed.");
     } finally {
@@ -139,9 +95,62 @@ export function ToolboxTalkBuilder() {
     }
   }
 
+  function startBlank() {
+    update({ topic: "Custom topic", generated: "" });
+  }
+
+  function backToGallery() {
+    if (
+      form.generated &&
+      !confirm("Discard the current briefing and pick a different topic?")
+    )
+      return;
+    update({ topic: "", generated: "" });
+  }
+
+  // ── GALLERY VIEW ──
+  if (!form.topic) {
+    return (
+      <div className="space-y-6">
+        <SaveStatus saving={saving} lastSaved={lastSaved} />
+        <LibraryGallery
+          heading="Pick a topic"
+          subheading={`${TOOLBOX_TOPICS.length} pre-curated topics. Click any one — AI writes the talk in seconds.`}
+          searchPlaceholder={`Search ${TOOLBOX_TOPICS.length} topics…`}
+          items={TOOLBOX_TOPICS.map((t) => ({
+            id: t.id,
+            title: t.title,
+            subtitle: t.subtitle,
+            category: t.category,
+            icon: t.icon,
+          }))}
+          categories={TOOLBOX_CATEGORIES.map((c) => ({
+            id: c.id,
+            label: c.label,
+            icon: c.icon,
+          }))}
+          onPick={(item) => pickTopic(item.title)}
+          customLabel="Write your own topic"
+          onAddCustom={startBlank}
+          searchableFields={(item) => [item.title, item.subtitle ?? ""]}
+        />
+      </div>
+    );
+  }
+
+  // ── EDITOR VIEW ──
   return (
     <div className="space-y-6">
-      <SaveStatus saving={saving} lastSaved={lastSaved} />
+      <div className="flex items-center justify-between">
+        <button
+          onClick={backToGallery}
+          className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+        >
+          <ChevronLeft className="size-3.5" />
+          Pick a different topic
+        </button>
+        <SaveStatus saving={saving} lastSaved={lastSaved} />
+      </div>
 
       <Card>
         <CardHeader>
@@ -154,12 +163,11 @@ export function ToolboxTalkBuilder() {
               id="tt-topic"
               value={form.topic}
               onChange={(e) => update({ topic: e.target.value })}
-              placeholder="e.g. Safe use of disc cutters"
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label htmlFor="tt-audience">Audience</Label>
+              <Label htmlFor="tt-audience">Audience (optional)</Label>
               <Input
                 id="tt-audience"
                 value={form.audience}
@@ -181,76 +189,55 @@ export function ToolboxTalkBuilder() {
               </select>
             </div>
           </div>
-          <AIButton
-            onClick={handleGenerate}
-            disabled={!form.topic.trim()}
-            loading={generating}
-          >
-            AI write the talk
-          </AIButton>
+          {!form.generated && !generating && (
+            <AIButton
+              onClick={() =>
+                runGenerator(form.topic, form.audience, form.duration)
+              }
+              disabled={!form.topic.trim()}
+            >
+              AI write the talk
+            </AIButton>
+          )}
         </CardContent>
       </Card>
 
-      {!form.generated && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Or pick a topic</CardTitle>
-            <p className="text-xs text-muted-foreground mt-1">
-              {TOPIC_GROUPS.reduce((n, g) => n + g.topics.length, 0)} pre-written
-              topics. Click to load and generate.
-            </p>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            {TOPIC_GROUPS.map((group) => (
-              <div key={group.label}>
-                <div className="text-[10px] uppercase tracking-[0.08em] text-muted-foreground mb-2">
-                  {group.label}
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {group.topics.map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => update({ topic: t })}
-                      className={cn(
-                        "text-xs px-2.5 py-1 rounded-full border transition",
-                        "bg-background hover:bg-muted text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      {t}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
-
-      {form.generated && (
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Megaphone className="size-4" />
-              Briefing
-            </CardTitle>
-            <Button
-              variant="outline"
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Megaphone className="size-4" />
+            Briefing
+          </CardTitle>
+          {form.generated && (
+            <AIButton
               size="sm"
-              onClick={() => update({ generated: "" })}
+              onClick={() =>
+                runGenerator(form.topic, form.audience, form.duration)
+              }
+              loading={generating}
             >
-              Try again
-            </Button>
-          </CardHeader>
-          <CardContent>
+              Regenerate
+            </AIButton>
+          )}
+        </CardHeader>
+        <CardContent>
+          {generating && !form.generated ? (
+            <div className="border-2 border-dashed rounded-md p-12 text-center bg-muted/20">
+              <p className="text-sm text-muted-foreground animate-pulse">
+                AI is writing the briefing…
+              </p>
+            </div>
+          ) : (
             <Textarea
               value={form.generated}
               onChange={(e) => update({ generated: e.target.value })}
               rows={20}
               className="font-mono text-xs leading-relaxed"
+              placeholder="The AI-generated briefing will appear here..."
             />
-          </CardContent>
-        </Card>
-      )}
+          )}
+        </CardContent>
+      </Card>
 
       <div className="flex items-center justify-between border-t pt-4">
         <Button variant="outline" onClick={manualSave} disabled={saving}>

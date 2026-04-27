@@ -10,11 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Plus, Trash2, Download, Activity } from "lucide-react";
+import { Plus, Trash2, Download, Activity, ChevronLeft } from "lucide-react";
 import { calcHAVSPoints, HAVS_EAV, HAVS_ELV } from "@/lib/rams/config";
+import { HAVS_LIBRARY } from "@/lib/rams/library";
 import { cn } from "@/lib/utils";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
+import { LibraryGallery } from "../_components/library-gallery";
+import { toast } from "sonner";
 
 interface Tool {
   id: string;
@@ -45,7 +48,8 @@ export function HavsBuilder() {
   } = useBuilderDocument<HavsBuilderForm>({
     builderSlug: "havs",
     emptyForm,
-    titleFromForm: (f) => f.title || (f.workerName ? `HAVs — ${f.workerName}` : null),
+    titleFromForm: (f) =>
+      f.title || (f.workerName ? `HAVs — ${f.workerName}` : null),
   });
 
   const totalPoints = useMemo(
@@ -59,13 +63,40 @@ export function HavsBuilder() {
 
   const exposureLevel = useMemo(() => {
     if (totalPoints >= HAVS_ELV)
-      return { label: "Exposure Limit Value (ELV) exceeded", color: "#dc2626" };
+      return {
+        label: "Exposure Limit Value (ELV) exceeded — STOP work",
+        color: "#dc2626",
+      };
     if (totalPoints >= HAVS_EAV)
-      return { label: "Exposure Action Value (EAV) reached", color: "#d97706" };
+      return {
+        label: "Exposure Action Value (EAV) reached — controls required",
+        color: "#d97706",
+      };
     return { label: "Within exposure limits", color: "#16a34a" };
   }, [totalPoints]);
 
-  function addTool() {
+  /**
+   * Click a tool from the library — adds a row pre-filled with the typical
+   * vibration magnitude. Operator just sets hours.
+   */
+  function pickTool(libId: string) {
+    const lib = HAVS_LIBRARY.find((l) => l.id === libId);
+    if (!lib) return;
+    update({
+      tools: [
+        ...form.tools,
+        {
+          id: crypto.randomUUID(),
+          name: lib.tool,
+          magnitude: lib.vibrationMag,
+          hours: 1,
+        },
+      ],
+    });
+    toast.success(`${lib.tool} added (${lib.vibrationMag} m/s²).`);
+  }
+
+  function addCustomTool() {
     update({
       tools: [
         ...form.tools,
@@ -84,17 +115,85 @@ export function HavsBuilder() {
     update({ tools: form.tools.filter((t) => t.id !== id) });
   }
 
+  function backToGallery() {
+    if (
+      form.tools.length > 0 &&
+      !confirm("Discard current tools and start a fresh assessment?")
+    )
+      return;
+    update({ tools: [] });
+  }
+
+  // ── GALLERY VIEW ──
+  if (form.tools.length === 0) {
+    return (
+      <div className="space-y-6">
+        <SaveStatus saving={saving} lastSaved={lastSaved} />
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Worker</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="havs-title">Task / title (optional)</Label>
+              <Input
+                id="havs-title"
+                value={form.title}
+                onChange={(e) => update({ title: e.target.value })}
+                placeholder="e.g. Daily fixings install"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="havs-worker">Worker name (optional)</Label>
+              <Input
+                id="havs-worker"
+                value={form.workerName}
+                onChange={(e) => update({ workerName: e.target.value })}
+                placeholder="e.g. Scott Kennedy"
+              />
+            </div>
+          </CardContent>
+        </Card>
+        <LibraryGallery
+          heading="Pick the tools used today"
+          subheading={`${HAVS_LIBRARY.length} pre-loaded vibration magnitudes. Click a tool to add it; set hours; the calculator does the rest.`}
+          searchPlaceholder={`Search ${HAVS_LIBRARY.length} tools…`}
+          items={HAVS_LIBRARY.map((t) => ({
+            id: t.id,
+            title: t.tool,
+            subtitle: `Typical use ${t.typicalUse}`,
+            meta: `${t.vibrationMag.toFixed(1)} m/s²`,
+          }))}
+          onPick={(item) => pickTool(item.id)}
+          customLabel="Add a custom tool"
+          onAddCustom={addCustomTool}
+          searchableFields={(item) => [item.title]}
+        />
+      </div>
+    );
+  }
+
+  // ── EDITOR VIEW ──
   return (
     <div className="space-y-6">
-      <SaveStatus saving={saving} lastSaved={lastSaved} />
+      <div className="flex items-center justify-between">
+        <button
+          onClick={backToGallery}
+          className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+        >
+          <ChevronLeft className="size-3.5" />
+          Pick more tools
+        </button>
+        <SaveStatus saving={saving} lastSaved={lastSaved} />
+      </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">HAVs Assessment</CardTitle>
+          <CardTitle className="text-base">Worker</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <Label htmlFor="havs-title">Title</Label>
+            <Label htmlFor="havs-title">Title (optional)</Label>
             <Input
               id="havs-title"
               value={form.title}
@@ -139,52 +238,38 @@ export function HavsBuilder() {
           <div>
             <CardTitle className="text-base">
               Tools used today
-              {form.tools.length > 0 && (
-                <span className="ml-2 text-muted-foreground font-normal text-sm">
-                  ({form.tools.length})
-                </span>
-              )}
+              <span className="ml-2 text-muted-foreground font-normal text-sm">
+                ({form.tools.length})
+              </span>
             </CardTitle>
             <p className="text-xs text-muted-foreground mt-1">
-              Vibration magnitude in m/s², daily trigger time in hours.
+              Set the hours used for each tool. Vibration magnitudes pulled from
+              the library — adjust if your tool is different.
             </p>
           </div>
-          <Button size="sm" onClick={addTool}>
+          <Button size="sm" variant="outline" onClick={addCustomTool}>
             <Plus className="size-3.5 mr-1.5" />
-            Add tool
+            Add custom
           </Button>
         </CardHeader>
         <CardContent>
-          {form.tools.length === 0 ? (
-            <div className="border-2 border-dashed rounded-md p-10 text-center bg-muted/20">
-              <Activity className="size-6 mx-auto mb-3 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground mb-3">
-                No tools logged yet.
-              </p>
-              <Button variant="outline" size="sm" onClick={addTool}>
-                <Plus className="size-3.5 mr-1.5" />
-                Add first tool
-              </Button>
+          <div className="space-y-2">
+            <div className="grid grid-cols-[1fr_120px_120px_140px_40px] gap-2 text-[10px] uppercase tracking-wider text-muted-foreground px-2">
+              <div>Tool</div>
+              <div>Magnitude (m/s²)</div>
+              <div>Hours / day</div>
+              <div className="text-right">Points</div>
+              <div></div>
             </div>
-          ) : (
-            <div className="space-y-2">
-              <div className="grid grid-cols-[1fr_120px_120px_140px_40px] gap-2 text-[10px] uppercase tracking-wider text-muted-foreground px-2">
-                <div>Tool</div>
-                <div>Magnitude (m/s²)</div>
-                <div>Hours / day</div>
-                <div className="text-right">Points</div>
-                <div></div>
-              </div>
-              {form.tools.map((t) => (
-                <ToolRow
-                  key={t.id}
-                  tool={t}
-                  onUpdate={(patch) => updateTool(t.id, patch)}
-                  onRemove={() => removeTool(t.id)}
-                />
-              ))}
-            </div>
-          )}
+            {form.tools.map((t) => (
+              <ToolRow
+                key={t.id}
+                tool={t}
+                onUpdate={(patch) => updateTool(t.id, patch)}
+                onRemove={() => removeTool(t.id)}
+              />
+            ))}
+          </div>
         </CardContent>
       </Card>
 
@@ -192,10 +277,7 @@ export function HavsBuilder() {
         <Button variant="outline" onClick={manualSave} disabled={saving}>
           {saving ? "Saving…" : "Save draft"}
         </Button>
-        <Button
-          onClick={downloadPdf}
-          disabled={downloading || form.tools.length === 0}
-        >
+        <Button onClick={downloadPdf} disabled={downloading}>
           <Download className="size-3.5 mr-1.5" />
           {downloading ? "Generating…" : "Download HAVs PDF"}
         </Button>

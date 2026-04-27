@@ -236,6 +236,58 @@ export const HAVS_LIBRARY: HAVSLibraryItem[] = [
   { id: 'HAVS-018', tool: 'Jigsaw', vibrationMag: 8.0, typicalUse: '30 mins' },
   { id: 'HAVS-019', tool: 'Chop Saw / Mitre Saw', vibrationMag: 3.0, typicalUse: '30 mins' },
   { id: 'HAVS-020', tool: 'Scabbler / Needle Gun', vibrationMag: 14.0, typicalUse: '15 mins' },
+  // ═══ Drilling extras ═══
+  { id: 'HAVS-021', tool: 'Combi Drill / Driver (cordless)', vibrationMag: 4.0, typicalUse: '60 mins' },
+  { id: 'HAVS-022', tool: 'Percussion Drill (240V)', vibrationMag: 7.0, typicalUse: '45 mins' },
+  { id: 'HAVS-023', tool: 'Hammer Drill (cordless 18V)', vibrationMag: 6.0, typicalUse: '60 mins' },
+  { id: 'HAVS-024', tool: 'Diamond Core Drill (handheld)', vibrationMag: 6.0, typicalUse: '30 mins' },
+  // ═══ Saws extras ═══
+  { id: 'HAVS-025', tool: 'Table Saw', vibrationMag: 3.0, typicalUse: '60 mins' },
+  { id: 'HAVS-026', tool: 'Band Saw', vibrationMag: 3.0, typicalUse: '60 mins' },
+  { id: 'HAVS-027', tool: 'Tile Saw (wet)', vibrationMag: 4.0, typicalUse: '60 mins' },
+  { id: 'HAVS-028', tool: 'Floor Saw / Road Saw', vibrationMag: 9.0, typicalUse: '20 mins' },
+  // ═══ Grinding / cutting extras ═══
+  { id: 'HAVS-029', tool: 'Die Grinder (small)', vibrationMag: 5.0, typicalUse: '45 mins' },
+  { id: 'HAVS-030', tool: 'Wall Chaser', vibrationMag: 7.0, typicalUse: '30 mins' },
+  { id: 'HAVS-031', tool: 'Cut-off Saw (petrol)', vibrationMag: 8.0, typicalUse: '20 mins' },
+  // ═══ Compaction & demolition ═══
+  { id: 'HAVS-032', tool: 'Vibrating Roller (pedestrian)', vibrationMag: 11.0, typicalUse: '20 mins' },
+  { id: 'HAVS-033', tool: 'Demolition Hammer (small)', vibrationMag: 10.0, typicalUse: '30 mins' },
+  { id: 'HAVS-034', tool: 'Electric Pick', vibrationMag: 13.0, typicalUse: '20 mins' },
+  { id: 'HAVS-035', tool: 'Floor Scabbler', vibrationMag: 14.0, typicalUse: '15 mins' },
+  // ═══ Finishing / sanding ═══
+  { id: 'HAVS-036', tool: 'Orbital Sander', vibrationMag: 5.0, typicalUse: '60 mins' },
+  { id: 'HAVS-037', tool: 'Palm Sander', vibrationMag: 4.0, typicalUse: '60 mins' },
+  { id: 'HAVS-038', tool: 'Belt Sander', vibrationMag: 7.0, typicalUse: '30 mins' },
+  { id: 'HAVS-039', tool: 'Random Orbit Sander', vibrationMag: 4.0, typicalUse: '60 mins' },
+  { id: 'HAVS-040', tool: 'Floor Polisher (rotary)', vibrationMag: 3.0, typicalUse: '60 mins' },
+  // ═══ Pneumatic ═══
+  { id: 'HAVS-041', tool: 'Pneumatic Breaker (heavy)', vibrationMag: 18.0, typicalUse: '15 mins' },
+  { id: 'HAVS-042', tool: 'Pneumatic Chipping Hammer', vibrationMag: 15.0, typicalUse: '15 mins' },
+  { id: 'HAVS-043', tool: 'Pneumatic Sander', vibrationMag: 6.0, typicalUse: '45 mins' },
+  { id: 'HAVS-044', tool: 'Air Riveter', vibrationMag: 6.0, typicalUse: '45 mins' },
+  { id: 'HAVS-045', tool: 'Pneumatic Drill', vibrationMag: 8.0, typicalUse: '30 mins' },
+  // ═══ Concrete ═══
+  { id: 'HAVS-046', tool: 'Concrete Vibrator (poker)', vibrationMag: 4.0, typicalUse: '60 mins' },
+  { id: 'HAVS-047', tool: 'Concrete Power Float', vibrationMag: 6.0, typicalUse: '45 mins' },
+  { id: 'HAVS-048', tool: 'Tamping Beam (powered)', vibrationMag: 7.0, typicalUse: '30 mins' },
+  // ═══ Outdoor / landscaping ═══
+  { id: 'HAVS-049', tool: 'Hedge Trimmer (petrol)', vibrationMag: 6.0, typicalUse: '30 mins' },
+  { id: 'HAVS-050', tool: 'Leaf Blower (petrol)', vibrationMag: 5.0, typicalUse: '60 mins' },
+  { id: 'HAVS-051', tool: 'Lawnmower (pedestrian petrol)', vibrationMag: 4.0, typicalUse: '60 mins' },
+  { id: 'HAVS-052', tool: 'Stump Grinder', vibrationMag: 8.0, typicalUse: '30 mins' },
+  { id: 'HAVS-053', tool: 'Post Driver (powered)', vibrationMag: 16.0, typicalUse: '15 mins' },
+  // ═══ Roofing / cladding ═══
+  { id: 'HAVS-054', tool: 'Felt Stripper (powered)', vibrationMag: 9.0, typicalUse: '30 mins' },
+  { id: 'HAVS-055', tool: 'Cladding Crimper', vibrationMag: 5.0, typicalUse: '45 mins' },
+  // ═══ Specialist ═══
+  { id: 'HAVS-056', tool: 'Bush Hammer', vibrationMag: 12.0, typicalUse: '20 mins' },
+  { id: 'HAVS-057', tool: 'Tile Removal Tool (powered)', vibrationMag: 10.0, typicalUse: '20 mins' },
+  { id: 'HAVS-058', tool: 'Stone Polisher (handheld)', vibrationMag: 5.0, typicalUse: '45 mins' },
+  { id: 'HAVS-059', tool: 'Engraver / Etcher', vibrationMag: 7.0, typicalUse: '30 mins' },
+  { id: 'HAVS-060', tool: 'Pole Saw (chainsaw on pole)', vibrationMag: 5.0, typicalUse: '45 mins' },
+  { id: 'HAVS-061', tool: 'Earth Auger / Post Hole Borer', vibrationMag: 9.0, typicalUse: '20 mins' },
+  { id: 'HAVS-062', tool: 'Vibrating Plate (small)', vibrationMag: 8.0, typicalUse: '30 mins' },
 ]
 
 // ── NOISE LIBRARY ──

@@ -11,11 +11,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { GripVertical, Plus, Trash2, Download } from "lucide-react";
+import { GripVertical, Plus, Trash2, Download, ChevronLeft } from "lucide-react";
 import { AIButton } from "@/components/ui/ai-button";
 import { toast } from "sonner";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
+import { LibraryGallery } from "../_components/library-gallery";
+import { RAMS_TRADES, TRADE_CATEGORIES } from "@/lib/rams/library";
 
 interface MethodStep {
   id: string;
@@ -39,7 +41,7 @@ function emptyForm(): MethodStatementForm {
     trade: "",
     preparedBy: "",
     preparedByRole: "",
-    steps: [{ id: crypto.randomUUID(), description: "", responsible: "" }],
+    steps: [],
   };
 }
 
@@ -55,10 +57,46 @@ export function MethodStatementBuilder() {
   } = useBuilderDocument<MethodStatementForm>({
     builderSlug: "method-statement",
     emptyForm,
-    titleFromForm: (f) => f.title || null,
+    titleFromForm: (f) => f.title || (f.trade ? `Method Statement — ${f.trade}` : null),
   });
 
   const [aiBusy, setAiBusy] = useState(false);
+
+  /**
+   * Click-to-build: a trade pick auto-fills 8 method statement steps + sets
+   * the trade and a sensible default title. Zero typing path.
+   */
+  function pickTrade(tradeId: string) {
+    const t = RAMS_TRADES.find((x) => x.id === tradeId);
+    if (!t) return;
+    update({
+      trade: t.trade,
+      title: form.title || `Method Statement — ${t.trade}`,
+      scope: form.scope || t.description,
+      steps: t.msSteps.map((description) => ({
+        id: crypto.randomUUID(),
+        description,
+        responsible: "",
+      })),
+    });
+    toast.success(`Loaded ${t.msSteps.length}-step ${t.trade} method statement.`);
+  }
+
+  function startBlank() {
+    update({
+      steps: [{ id: crypto.randomUUID(), description: "", responsible: "" }],
+      trade: form.trade || "Custom",
+    });
+  }
+
+  function backToGallery() {
+    if (
+      form.steps.length > 0 &&
+      !confirm("Discard the current method statement and pick a different trade?")
+    )
+      return;
+    update({ steps: [], trade: "" });
+  }
 
   function updateStep(id: string, patch: Partial<MethodStep>) {
     update({
@@ -79,21 +117,23 @@ export function MethodStatementBuilder() {
     update({ steps: form.steps.filter((s) => s.id !== id) });
   }
 
-  async function aiFillFromTrade() {
-    if (!form.trade.trim()) {
-      toast.error("Add a trade first — e.g. 'Electrical first fix'.");
-      return;
-    }
+  async function aiTighten() {
+    if (form.steps.length === 0) return;
     setAiBusy(true);
     try {
-      const res = await fetch(`/api/ai/method-statement-fill`, {
+      const res = await fetch(`/api/ai/method-statement-tighten`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ trade: form.trade, scope: form.scope }),
+        body: JSON.stringify({
+          steps: form.steps.map((s) => ({
+            description: s.description,
+            responsible: s.responsible,
+          })),
+        }),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        toast.error(err.error || "AI generation failed.");
+        toast.error(err.error || "AI tighten failed.");
         return;
       }
       const { data } = await res.json();
@@ -101,26 +141,69 @@ export function MethodStatementBuilder() {
         toast.error("AI returned an unexpected shape.");
         return;
       }
-      const newSteps: MethodStep[] = data.map((s: unknown) => {
-        const obj = s as { description?: string; responsible?: string };
-        return {
-          id: crypto.randomUUID(),
-          description: obj.description || "",
-          responsible: obj.responsible || "",
-        };
+      update({
+        steps: data.map((d: unknown, i: number) => {
+          const obj = d as { description?: string; responsible?: string };
+          return {
+            id: form.steps[i]?.id ?? crypto.randomUUID(),
+            description: obj.description || form.steps[i]?.description || "",
+            responsible:
+              obj.responsible ?? form.steps[i]?.responsible ?? "",
+          };
+        }),
       });
-      update({ steps: newSteps });
-      toast.success(`AI generated ${newSteps.length} steps.`);
+      toast.success("Tightened.");
     } catch {
-      toast.error("AI generation failed.");
+      toast.error("AI tighten failed.");
     } finally {
       setAiBusy(false);
     }
   }
 
+  // ── GALLERY VIEW (no steps yet) ──
+  if (form.steps.length === 0) {
+    return (
+      <div className="space-y-6">
+        <SaveStatus saving={saving} lastSaved={lastSaved} />
+        <LibraryGallery
+          heading="Pick your trade"
+          subheading={`${RAMS_TRADES.length} pre-built method statements. Click any trade to load an 8-step draft you can customise.`}
+          searchPlaceholder={`Search ${RAMS_TRADES.length} trades…`}
+          items={RAMS_TRADES.map((t) => ({
+            id: t.id,
+            title: t.trade,
+            subtitle: t.description,
+            category: t.category,
+            icon: t.icon,
+            meta: `${t.msSteps.length} steps`,
+          }))}
+          categories={TRADE_CATEGORIES.map((c) => ({
+            id: c.id,
+            label: c.label,
+            icon: c.icon,
+          }))}
+          onPick={(item) => pickTrade(item.id)}
+          customLabel="Start blank"
+          onAddCustom={startBlank}
+          searchableFields={(item) => [item.title, item.subtitle ?? ""]}
+        />
+      </div>
+    );
+  }
+
+  // ── EDITOR VIEW (steps loaded) ──
   return (
     <div className="space-y-6">
-      <SaveStatus saving={saving} lastSaved={lastSaved} />
+      <div className="flex items-center justify-between">
+        <button
+          onClick={backToGallery}
+          className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+        >
+          <ChevronLeft className="size-3.5" />
+          Pick a different trade
+        </button>
+        <SaveStatus saving={saving} lastSaved={lastSaved} />
+      </div>
 
       <Card>
         <CardHeader>
@@ -128,7 +211,7 @@ export function MethodStatementBuilder() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="title">Method statement title</Label>
+            <Label htmlFor="title">Title (optional)</Label>
             <Input
               id="title"
               value={form.title}
@@ -143,7 +226,6 @@ export function MethodStatementBuilder() {
                 id="trade"
                 value={form.trade}
                 onChange={(e) => update({ trade: e.target.value })}
-                placeholder="e.g. Electrical first fix"
               />
             </div>
             <div className="space-y-1.5">
@@ -152,7 +234,6 @@ export function MethodStatementBuilder() {
                 id="scope"
                 value={form.scope}
                 onChange={(e) => update({ scope: e.target.value })}
-                placeholder="Brief description of the works..."
               />
             </div>
           </div>
@@ -164,17 +245,12 @@ export function MethodStatementBuilder() {
           <div>
             <CardTitle className="text-base">Sequence of work</CardTitle>
             <p className="text-xs text-muted-foreground mt-1">
-              List each step in order. Drag to reorder. AI fills the steps from
-              your trade in seconds.
+              {form.steps.length} steps loaded from the {form.trade} template.
+              Edit, reorder, or use AI to tighten the wording.
             </p>
           </div>
-          <AIButton
-            size="sm"
-            onClick={aiFillFromTrade}
-            loading={aiBusy}
-            disabled={!form.trade.trim()}
-          >
-            AI fill from trade
+          <AIButton size="sm" onClick={aiTighten} loading={aiBusy}>
+            AI tighten wording
           </AIButton>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -207,14 +283,13 @@ export function MethodStatementBuilder() {
                   onChange={(e) =>
                     updateStep(step.id, { responsible: e.target.value })
                   }
-                  placeholder="Responsible (e.g. Site supervisor)"
+                  placeholder="Responsible"
                 />
               </div>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => removeStep(step.id)}
-                disabled={form.steps.length === 1}
                 className="text-muted-foreground hover:text-destructive"
               >
                 <Trash2 className="size-3.5" />

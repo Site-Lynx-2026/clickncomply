@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,15 +15,17 @@ import {
 import {
   RA_CATEGORIES,
   RA_LIBRARY,
+  RAMS_TRADES,
+  TRADE_CATEGORIES,
   type RALibraryItem,
 } from "@/lib/rams/library";
 import { riskScore } from "@/lib/rams/config";
-import { BookOpen, Plus, Search, Trash2, Download, X } from "lucide-react";
+import { Plus, Trash2, Download, ChevronLeft } from "lucide-react";
 import { AIButton } from "@/components/ui/ai-button";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
+import { LibraryGallery } from "../_components/library-gallery";
 
 interface Hazard {
   id: string;
@@ -46,6 +48,8 @@ interface RiskAssessmentForm {
   hazards: Hazard[];
 }
 
+type Mode = "by-trade" | "by-hazard" | "editing";
+
 function emptyForm(): RiskAssessmentForm {
   return {
     title: "",
@@ -53,6 +57,35 @@ function emptyForm(): RiskAssessmentForm {
     preparedBy: "",
     preparedByRole: "",
     hazards: [],
+  };
+}
+
+function fromLibrary(item: RALibraryItem): Hazard {
+  return {
+    id: crypto.randomUUID(),
+    hazard: item.hazard,
+    whoAtRisk: item.whoAtRisk,
+    consequences: item.consequences,
+    initialL: item.initialL,
+    initialS: item.initialS,
+    controls: item.controls,
+    residualL: item.residualL,
+    residualS: item.residualS,
+    fromLibrary: true,
+  };
+}
+
+function blankHazard(): Hazard {
+  return {
+    id: crypto.randomUUID(),
+    hazard: "",
+    whoAtRisk: "",
+    consequences: "",
+    initialL: 3,
+    initialS: 3,
+    controls: "",
+    residualL: 1,
+    residualS: 3,
   };
 }
 
@@ -71,46 +104,40 @@ export function RiskAssessmentBuilder() {
     titleFromForm: (f) => f.title || null,
   });
 
-  const [showLibrary, setShowLibrary] = useState(false);
+  const [mode, setMode] = useState<Mode>("by-trade");
   const [aiBusyFor, setAiBusyFor] = useState<string | null>(null);
 
-  function addLibraryItem(item: RALibraryItem) {
+  /**
+   * Pick a trade — instantly loads every relevant hazard from its raItems
+   * list. One click and you have a full RA draft.
+   */
+  function pickTrade(tradeId: string) {
+    const trade = RAMS_TRADES.find((t) => t.id === tradeId);
+    if (!trade) return;
+    const items = trade.raItems
+      .map((id) => RA_LIBRARY.find((h) => h.id === id))
+      .filter((x): x is RALibraryItem => Boolean(x));
     update({
-      hazards: [
-        ...form.hazards,
-        {
-          id: crypto.randomUUID(),
-          hazard: item.hazard,
-          whoAtRisk: item.whoAtRisk,
-          consequences: item.consequences,
-          initialL: item.initialL,
-          initialS: item.initialS,
-          controls: item.controls,
-          residualL: item.residualL,
-          residualS: item.residualS,
-          fromLibrary: true,
-        },
-      ],
+      title: form.title || `Risk Assessment — ${trade.trade}`,
+      scope: form.scope || trade.description,
+      hazards: items.map(fromLibrary),
     });
+    toast.success(
+      `Loaded ${items.length} hazards for ${trade.trade}. Add or remove as needed.`
+    );
+    setMode("editing");
+  }
+
+  function pickHazard(libId: string) {
+    const item = RA_LIBRARY.find((x) => x.id === libId);
+    if (!item) return;
+    update({ hazards: [...form.hazards, fromLibrary(item)] });
+    toast.success("Hazard added.");
   }
 
   function addBlank() {
-    update({
-      hazards: [
-        ...form.hazards,
-        {
-          id: crypto.randomUUID(),
-          hazard: "",
-          whoAtRisk: "",
-          consequences: "",
-          initialL: 3,
-          initialS: 3,
-          controls: "",
-          residualL: 1,
-          residualS: 3,
-        },
-      ],
-    });
+    update({ hazards: [...form.hazards, blankHazard()] });
+    setMode("editing");
   }
 
   function updateHazard(id: string, patch: Partial<Hazard>) {
@@ -144,10 +171,7 @@ export function RiskAssessmentBuilder() {
         return;
       }
       const { text } = await res.json();
-      if (!text) {
-        toast.error("AI returned no usable content.");
-        return;
-      }
+      if (!text) return;
       updateHazard(hazardId, { controls: text });
       toast.success("Controls suggested.");
     } catch {
@@ -157,13 +181,102 @@ export function RiskAssessmentBuilder() {
     }
   }
 
+  // ── INITIAL VIEW: BY TRADE (default — fastest path) ──
+  if (mode === "by-trade" && form.hazards.length === 0) {
+    return (
+      <div className="space-y-6">
+        <SaveStatus saving={saving} lastSaved={lastSaved} />
+        <ModeSwitch mode={mode} onChange={setMode} />
+        <LibraryGallery
+          heading="Pick your trade — full RA loads instantly"
+          subheading={`${RAMS_TRADES.length} trades, each pre-mapped to ${RA_LIBRARY.length}+ hazards. One click and you're 90% done.`}
+          searchPlaceholder={`Search ${RAMS_TRADES.length} trades…`}
+          items={RAMS_TRADES.map((t) => ({
+            id: t.id,
+            title: t.trade,
+            subtitle: t.description,
+            category: t.category,
+            icon: t.icon,
+            meta: `${t.raItems.length} hazards`,
+          }))}
+          categories={TRADE_CATEGORIES.map((c) => ({
+            id: c.id,
+            label: c.label,
+            icon: c.icon,
+          }))}
+          onPick={(item) => pickTrade(item.id)}
+          customLabel="Build hazard-by-hazard instead"
+          onAddCustom={() => setMode("by-hazard")}
+        />
+      </div>
+    );
+  }
+
+  // ── HAZARD-BY-HAZARD GALLERY ──
+  if (mode === "by-hazard") {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          {form.hazards.length > 0 ? (
+            <button
+              onClick={() => setMode("editing")}
+              className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+            >
+              <ChevronLeft className="size-3.5" />
+              Back to {form.hazards.length} added hazard
+              {form.hazards.length === 1 ? "" : "s"}
+            </button>
+          ) : (
+            <span />
+          )}
+          <SaveStatus saving={saving} lastSaved={lastSaved} />
+        </div>
+        <ModeSwitch mode={mode} onChange={setMode} />
+        <LibraryGallery
+          heading="Browse hazards by category"
+          subheading={`${RA_LIBRARY.length} pre-built hazards across ${RA_CATEGORIES.length} categories. Click to add to your assessment.`}
+          searchPlaceholder={`Search ${RA_LIBRARY.length} hazards…`}
+          items={RA_LIBRARY.map((h) => {
+            const score = riskScore(h.initialL, h.initialS);
+            return {
+              id: h.id,
+              title: h.hazard,
+              subtitle: h.controls,
+              category: h.category,
+              meta: score.level,
+            };
+          })}
+          categories={RA_CATEGORIES.map((c) => ({
+            id: c.id,
+            label: c.label,
+            icon: c.icon,
+          }))}
+          onPick={(item) => pickHazard(item.id)}
+          customLabel="Add a custom hazard"
+          onAddCustom={addBlank}
+          searchableFields={(item) => [item.title, item.subtitle ?? ""]}
+        />
+      </div>
+    );
+  }
+
+  // ── EDITOR ──
   return (
     <div className="space-y-6">
-      <SaveStatus saving={saving} lastSaved={lastSaved} />
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => setMode("by-hazard")}
+          className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+        >
+          <Plus className="size-3.5" />
+          Add more hazards from library
+        </button>
+        <SaveStatus saving={saving} lastSaved={lastSaved} />
+      </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Risk Assessment</CardTitle>
+          <CardTitle className="text-base">Project</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-1.5">
@@ -182,7 +295,6 @@ export function RiskAssessmentBuilder() {
                 id="ra-scope"
                 value={form.scope}
                 onChange={(e) => update({ scope: e.target.value })}
-                placeholder="What this assessment covers..."
               />
             </div>
             <div className="space-y-1.5">
@@ -191,7 +303,6 @@ export function RiskAssessmentBuilder() {
                 id="ra-prep"
                 value={form.preparedBy}
                 onChange={(e) => update({ preparedBy: e.target.value })}
-                placeholder="Name"
               />
             </div>
           </div>
@@ -199,65 +310,25 @@ export function RiskAssessmentBuilder() {
       </Card>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0">
-          <div>
-            <CardTitle className="text-base">
-              Hazards
-              {form.hazards.length > 0 && (
-                <span className="ml-2 text-muted-foreground font-normal text-sm">
-                  ({form.hazards.length})
-                </span>
-              )}
-            </CardTitle>
-            <p className="text-xs text-muted-foreground mt-1">
-              5×5 matrix. Pick from {RA_LIBRARY.length}+ pre-built hazards or
-              add custom. AI suggests controls per hazard.
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowLibrary(true)}
-            >
-              <BookOpen className="size-3.5 mr-1.5" />
-              From library
-            </Button>
-            <Button size="sm" onClick={addBlank}>
-              <Plus className="size-3.5 mr-1.5" />
-              Custom hazard
-            </Button>
-          </div>
+        <CardHeader>
+          <CardTitle className="text-base">
+            Hazards
+            <span className="ml-2 text-muted-foreground font-normal text-sm">
+              ({form.hazards.length})
+            </span>
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          {form.hazards.length === 0 ? (
-            <div className="border-2 border-dashed rounded-md p-10 text-center bg-muted/20">
-              <p className="text-sm text-muted-foreground mb-3">
-                No hazards added yet.
-              </p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowLibrary(true)}
-              >
-                <BookOpen className="size-3.5 mr-1.5" />
-                Browse library
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {form.hazards.map((h) => (
-                <HazardRow
-                  key={h.id}
-                  hazard={h}
-                  aiBusy={aiBusyFor === h.id}
-                  onUpdate={(patch) => updateHazard(h.id, patch)}
-                  onRemove={() => removeHazard(h.id)}
-                  onAiSuggest={() => aiSuggestControls(h.id)}
-                />
-              ))}
-            </div>
-          )}
+        <CardContent className="space-y-3">
+          {form.hazards.map((h) => (
+            <HazardRow
+              key={h.id}
+              hazard={h}
+              aiBusy={aiBusyFor === h.id}
+              onUpdate={(patch) => updateHazard(h.id, patch)}
+              onRemove={() => removeHazard(h.id)}
+              onAiSuggest={() => aiSuggestControls(h.id)}
+            />
+          ))}
         </CardContent>
       </Card>
 
@@ -265,24 +336,44 @@ export function RiskAssessmentBuilder() {
         <Button variant="outline" onClick={manualSave} disabled={saving}>
           {saving ? "Saving…" : "Save draft"}
         </Button>
-        <Button
-          onClick={downloadPdf}
-          disabled={downloading || form.hazards.length === 0}
-        >
+        <Button onClick={downloadPdf} disabled={downloading}>
           <Download className="size-3.5 mr-1.5" />
           {downloading ? "Generating…" : "Download Risk Assessment PDF"}
         </Button>
       </div>
+    </div>
+  );
+}
 
-      {showLibrary && (
-        <LibraryPicker
-          onPick={(item) => {
-            addLibraryItem(item);
-            setShowLibrary(false);
-          }}
-          onClose={() => setShowLibrary(false)}
-        />
-      )}
+function ModeSwitch({
+  mode,
+  onChange,
+}: {
+  mode: Mode;
+  onChange: (m: Mode) => void;
+}) {
+  return (
+    <div className="inline-flex items-center gap-0.5 border rounded-lg p-0.5 bg-muted/30">
+      <button
+        onClick={() => onChange("by-trade")}
+        className={`text-xs px-3 py-1.5 rounded font-medium transition ${
+          mode === "by-trade"
+            ? "bg-background shadow-sm"
+            : "text-muted-foreground hover:text-foreground"
+        }`}
+      >
+        By trade (fastest)
+      </button>
+      <button
+        onClick={() => onChange("by-hazard")}
+        className={`text-xs px-3 py-1.5 rounded font-medium transition ${
+          mode === "by-hazard"
+            ? "bg-background shadow-sm"
+            : "text-muted-foreground hover:text-foreground"
+        }`}
+      >
+        By hazard (custom)
+      </button>
     </div>
   );
 }
@@ -335,7 +426,6 @@ function HazardRow({
           <Input
             value={hazard.whoAtRisk}
             onChange={(e) => onUpdate({ whoAtRisk: e.target.value })}
-            placeholder="e.g. Operatives, public"
           />
         </div>
         <div className="space-y-1.5">
@@ -343,7 +433,6 @@ function HazardRow({
           <Input
             value={hazard.consequences}
             onChange={(e) => onUpdate({ consequences: e.target.value })}
-            placeholder="What could happen if uncontrolled"
           />
         </div>
       </div>
@@ -367,15 +456,16 @@ function HazardRow({
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs">Control measures</Label>
-          <AIButton size="sm" onClick={onAiSuggest} loading={aiBusy}>
-            AI suggest
-          </AIButton>
+          {!hazard.fromLibrary && (
+            <AIButton size="sm" onClick={onAiSuggest} loading={aiBusy}>
+              AI suggest
+            </AIButton>
+          )}
         </div>
         <Textarea
           value={hazard.controls}
           onChange={(e) => onUpdate({ controls: e.target.value })}
           rows={3}
-          placeholder="What you do to reduce the risk..."
         />
       </div>
 
@@ -443,130 +533,5 @@ function ScoreBadge({
         <span className="opacity-90">{score.level}</span>
       </div>
     </div>
-  );
-}
-
-function LibraryPicker({
-  onPick,
-  onClose,
-}: {
-  onPick: (item: RALibraryItem) => void;
-  onClose: () => void;
-}) {
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<string>("all");
-
-  const filtered = useMemo(() => {
-    const q = query.toLowerCase().trim();
-    return RA_LIBRARY.filter((item) => {
-      if (category !== "all" && item.category !== category) return false;
-      if (!q) return true;
-      return (
-        item.hazard.toLowerCase().includes(q) ||
-        item.whoAtRisk.toLowerCase().includes(q) ||
-        item.controls.toLowerCase().includes(q)
-      );
-    });
-  }, [query, category]);
-
-  return (
-    <div
-      className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      <div
-        className="bg-background rounded-lg border shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <header className="flex items-center justify-between p-4 border-b">
-          <div>
-            <h2 className="font-semibold">Risk Assessment Library</h2>
-            <p className="text-xs text-muted-foreground">
-              {RA_LIBRARY.length} pre-built hazards
-            </p>
-          </div>
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="size-4" />
-          </Button>
-        </header>
-
-        <div className="p-4 border-b space-y-3">
-          <div className="relative">
-            <Search className="size-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search hazards, controls..."
-              className="pl-9"
-            />
-          </div>
-          <div className="flex gap-1.5 flex-wrap">
-            <CategoryChip
-              label="All"
-              active={category === "all"}
-              onClick={() => setCategory("all")}
-            />
-            {RA_CATEGORIES.map((c) => (
-              <CategoryChip
-                key={c.id}
-                label={`${c.icon} ${c.label}`}
-                active={category === c.id}
-                onClick={() => setCategory(c.id)}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-2">
-          {filtered.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">
-              No hazards match.
-            </p>
-          ) : (
-            <ul className="space-y-1.5">
-              {filtered.map((item) => (
-                <li key={item.id}>
-                  <button
-                    onClick={() => onPick(item)}
-                    className="w-full text-left p-3 border rounded-md hover:border-foreground hover:bg-muted/50 transition"
-                  >
-                    <div className="text-sm font-medium mb-0.5">
-                      {item.hazard}
-                    </div>
-                    <div className="text-xs text-muted-foreground line-clamp-2">
-                      {item.controls}
-                    </div>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function CategoryChip({
-  label,
-  active,
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "text-xs px-2.5 py-1 rounded-full border transition",
-        active
-          ? "bg-foreground text-background border-foreground"
-          : "bg-background hover:bg-muted text-muted-foreground hover:text-foreground"
-      )}
-    >
-      {label}
-    </button>
   );
 }
