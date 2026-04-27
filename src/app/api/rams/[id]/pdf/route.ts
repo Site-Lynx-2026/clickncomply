@@ -13,14 +13,17 @@ import { renderFullRams } from "@/lib/pdf/templates/full-rams";
 /**
  * GET /api/rams/[id]/pdf
  *
- * Renders the document to PDF on demand.
+ * Renders the document to PDF on demand. Hydrates the linked project
+ * + client (if any) so the template can fill the info table with real
+ * site address, dates, and client name — no more "—" placeholders
+ * when a project is picked.
  *
  * Tier gate (single source of truth — `hasProAccess()` in src/lib/billing.ts):
- *   - Pro (paid OR within 5-day trial) → clean PDF + universal AI-draft footer
- *   - Free / expired trial            → watermarked PDF + universal AI-draft footer
+ *   - Pro (paid OR within 5-day trial) → clean PDF, no marks at all
+ *   - Free / expired trial            → "POWERED BY CLICKNCOMPLY" diagonal
  *
- * The reference number is the document UUID's first 8 chars, so it's stable
- * + searchable.
+ * The reference number is the document UUID's first 8 chars — stable +
+ * searchable across the system.
  */
 export async function GET(
   _req: NextRequest,
@@ -34,7 +37,9 @@ export async function GET(
 
   const { data: docRow, error } = await admin
     .from("rams_documents")
-    .select("id, builder_slug, title, form_data, organisation_id")
+    .select(
+      "id, builder_slug, title, form_data, organisation_id, project_id"
+    )
     .eq("id", id)
     .eq("organisation_id", ctx.organisationId)
     .maybeSingle();
@@ -58,6 +63,38 @@ export async function GET(
       .maybeSingle(),
   ]);
 
+  // Project + client lookup (if doc is linked to a project)
+  let projectMeta: ProjectMeta = {};
+  if (docRow.project_id) {
+    const { data: project } = await admin
+      .from("projects")
+      .select(
+        "name, code, site_address, site_postcode, start_date, end_date, client_id"
+      )
+      .eq("id", docRow.project_id)
+      .eq("organisation_id", ctx.organisationId)
+      .maybeSingle();
+
+    if (project) {
+      projectMeta.projectName = project.name;
+      projectMeta.projectCode = project.code;
+      projectMeta.siteAddress = project.site_address;
+      projectMeta.sitePostcode = project.site_postcode;
+      projectMeta.dateOfWorks = project.start_date;
+      projectMeta.endDate = project.end_date;
+
+      if (project.client_id) {
+        const { data: client } = await admin
+          .from("clients")
+          .select("name")
+          .eq("id", project.client_id)
+          .eq("organisation_id", ctx.organisationId)
+          .maybeSingle();
+        if (client) projectMeta.clientName = client.name;
+      }
+    }
+  }
+
   const isPro = hasProAccess(sub);
   const branding = {
     name: org?.name || "Your Company",
@@ -79,7 +116,8 @@ export async function GET(
       bytes = await renderMethodStatement(
         formData as Parameters<typeof renderMethodStatement>[0],
         branding,
-        ref
+        ref,
+        projectMeta
       );
       break;
     case "risk-assessment":
@@ -119,12 +157,11 @@ export async function GET(
       );
   }
 
-  // Pro tier: clean + draft footer. Free / expired trial: full watermark.
+  // Pro tier: clean. Free / expired trial: diagonal brand watermark.
   const finalBytes = isPro
     ? await applyDraftFooter(bytes)
     : await applyWatermark(bytes);
 
-  // Mark generation timestamp + watermark flag (best-effort, non-blocking).
   await admin
     .from("rams_documents")
     .update({
@@ -133,11 +170,10 @@ export async function GET(
     })
     .eq("id", id);
 
-  // Build the body as a Uint8Array view of an ArrayBuffer so it satisfies
-  // the WHATWG BodyInit type (which excludes SharedArrayBuffer-backed views).
   const buffer = new ArrayBuffer(finalBytes.byteLength);
   new Uint8Array(buffer).set(finalBytes);
 
+  // Naming: prefer doc title, fall back to ref. Strip non-safe chars.
   const filename = `${(docRow.title || ref).replace(/[^a-z0-9-]+/gi, "_")}.pdf`;
 
   return new NextResponse(buffer, {
@@ -148,4 +184,14 @@ export async function GET(
       "Cache-Control": "private, no-store",
     },
   });
+}
+
+interface ProjectMeta {
+  clientName?: string | null;
+  projectName?: string | null;
+  projectCode?: string | null;
+  siteAddress?: string | null;
+  sitePostcode?: string | null;
+  dateOfWorks?: string | null;
+  endDate?: string | null;
 }
