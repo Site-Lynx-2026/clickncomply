@@ -1,102 +1,125 @@
-# Status — 26 Apr 2026 (15:30)
+# Status — 27 Apr 2026
 
-## What's done while you were away
+## Last session: RAMs Builder spine + Method Statement end-to-end
 
-### Project scaffold ✓
-- Next.js 16 + TypeScript + Tailwind v4 + Turbopack
-- shadcn/ui (Radix flavour, Nova preset) initialised
-- 17 shadcn components added: button, input, label, card, dialog, form/select/textarea, badge, separator, tabs, alert, dropdown-menu, sheet, table, sonner, skeleton, checkbox
-- TypeScript compiles clean (0 errors)
-- Local dev server ready: `cd clickncomply && npm run dev` → http://localhost:3000
+### What's wired now
 
-### Library code ✓
-- `src/lib/supabase/{client,server,middleware}.ts` — three clients (browser, server, admin, middleware session refresh)
-- `src/lib/anthropic/client.ts` — Anthropic SDK with default Haiku 4.5 + Sonnet 4.6 for advisor
-- `src/lib/stripe/client.ts` — Stripe SDK + price ID exports
-- `src/lib/pdf/watermark.ts` — pdf-lib watermark engine ("Powered by ClickNComply" diagonal + footer for free tier)
+**RAMs Builder app** — `/tools/rams`
+- Sidebar with 8 sections, 37 standalone builders, mirroring SL's visual grammar in CnC's light theme
+- Lime active stripe, "soon" / "building" status pips, collapsible to 68px
+- Landing page with hero tile (One-Click Full RAMs) + 7 grouped builder sections
+- All 37 routes are clickable; planned ones render the `ComingSoon` vote-to-build screen
 
-### Framework registry ✓
-- `src/frameworks/index.ts` — 11 frameworks defined with metadata (ISO 9001 wip, others planned)
-- Architecture is framework-agnostic: adding new ones = adding content, not refactoring core
+**Library port from SiteLynx-v2** — `src/lib/rams/`
+- `library.ts` — 180 RAs across 18 categories, 20+ COSHH, 15+ HAVs, 15+ noise, 40+ trade templates
+- `tools.ts` — power tool / plant catalogue with HAVs/Noise/COSHH tagging
+- `config.ts` — 12-step RAMS shape, risk matrix, HAVS calc, noise LEQ
+- `builders.ts` (new) — 37-builder registry driving the sidebar
 
-### Landing placeholder ✓
-- `src/app/page.tsx` — clean placeholder with the "consultant in your laptop" hero
-- Layout updated: title + description + Toaster baked in
-- v0.1 mark on the placeholder so it's clearly scaffold
+**Six builders with UI scaffolded**
+- Full RAMs (12-step rail, navigation, save/library/AI buttons; step bodies still stubbed for SL port)
+- Method Statement — **fully wired end-to-end** (see below)
+- Risk Assessment — 5×5 matrix, library picker (search + 18-category filter)
+- COSHH — substance-by-substance, SDS / WEL / PPE / emergency
+- HAVs — auto-calc per tool, EAV/ELV thresholds, exposure bar
+- Toolbox Talk — 30+ pre-written topics, AI write button
+- RA Library browser — searchable, filterable, expandable detail (free-tier SEO play)
 
-### Env template ✓
-- `.env.local.example` lists every key needed (Supabase, Anthropic, Stripe, Resend)
-- `.gitignore` updated so `.env.local.example` commits but real `.env.local` stays out
+**AIButton component** — `src/components/ui/ai-button.tsx`
+- Lime gradient bg, Sparkles icon, hover ring, "Thinking…" loading state
+- Used in Full RAMs, Method Statement, Risk Assessment, COSHH, Toolbox Talk
 
-### Git ✓
-- Initialised, remote at https://github.com/Site-Lynx-2026/clickncomply
-- Pushed initial commit + Stripe API version fix
-- 50 files committed, 0 secrets
+### Infrastructure spine — every future builder plugs into this
 
-### Research ✓ (4 agents completed in parallel)
-All saved to `research/`:
+**DB** — `supabase/migrations/0003_rams_documents.sql` ✅ applied 2026-04-27
+- One `rams_documents` table, polymorphic via `builder_slug` + JSONB `form_data`
+- Status: draft / complete / archived
+- `rams-pdfs` storage bucket, org-scoped RLS on table + bucket
+- Indexes for org-listing, builder-listing, status-listing
 
-| File | Words | What |
-|---|---|---|
-| `COMPETITORS.md` | 5,065 | 20 competitor profiles + £9 gap analysis + 3 positioning angles |
-| `LANDING_RESEARCH.md` | 5,306 | 12 best-in-class landings reviewed + build brief + hero variants |
-| `FRAMEWORKS.md` | 9,223 | 11 frameworks deep-dive: clauses, templates, schema, audit cycles |
-| `LEGAL.md` | 5,392 | Trademark, ARL/DMCC cancel, GDPR, AI Act, VAT — 6 critical gotchas |
+**API**
+- `GET / POST /api/rams` — list, create
+- `GET / PUT / DELETE /api/rams/[id]` — fetch, update, archive
+- `GET /api/rams/[id]/pdf` — render PDF (free tier watermarked, paid clean)
+- `POST /api/ai/[task]` — Anthropic Haiku 4.5 dispatcher with prompt-cached system prompts
 
-## Critical findings you should read first
+**AI tasks** — `src/lib/anthropic/tasks.ts`
+- `method-statement-fill` — trade → JSON array of method steps
+- `method-statement-tighten` — sloppy steps → tightened JSON
+- `toolbox-talk` — topic + audience + duration → free-form briefing
+- `ra-controls` — hazard → control measures (text)
+- `coshh-controls` — substance → JSON {exposure, controls, ppe, emergency}
+- All system prompts cached, ~5min TTL
 
-**From COMPETITORS.md:** The £9/mo gap is real, not papered over. Cheapest competitor self-serve floor is $199/mo (Comp AI). Watermark mechanic = greenfield in this category. **No vendor on Earth has CHAS / ConstructionLine inside their software** — that's defensible UK construction wedge.
+**PDF pipeline** — `src/lib/pdf/`
+- `render.ts` — shared primitives (cover banner, sections, numbered steps, footer)
+- `templates/method-statement.ts` — first template, light-lime cover with 1px dark rule
+- Watermark applied for free tier outputs (hooks into existing `applyWatermark()`)
 
-**From LANDING_RESEARCH.md:** Lead with *"The compliance consultant lives in your laptop now."* Hold *"Save £2,000 on a compliance consultant. Pay £9 instead."* for paid traffic. Linear-clean chassis + claymation accents + lime/acid-yellow signature.
+### Method Statement — fully working flow
 
-**From FRAMEWORKS.md:** **70%+ of templates overlap across frameworks** — schema should reflect this with shared core tables. EN 1090-2 needs its own specialised data model (most differentiating from competitors). Cyber Essentials v3.3 went live 27 April 2026 — important: any pre-2026 evidence pack will fail.
+`/tools/rams/method-statement`:
+1. Type a title + trade (e.g. "Electrical first fix")
+2. Click **AI fill from trade** → Haiku generates 8–14 method steps with responsibles in ~2s
+3. Auto-saves 1.5s after every edit; "Saved at HH:MM" indicator at top
+4. URL becomes `?doc=<id>` so refresh resumes the draft
+5. Click **Download PDF** → branded cover, lime stripe, watermarked footer (or clean if `subscription_tier='pro'`)
 
-**From LEGAL.md (read this first if anything):**
-1. **Never** display ISO logo, never say "ISO certified". Use "templates aligned with ISO 9001:2015".
-2. Build subscription architecture for **California ARL + UK DMCC** — one-click cancel, separate auto-renew tickbox, pre-renewal reminders, 14-day cooling-off.
-3. **DPA + sub-processor list** must be live before paid launch.
-4. **Liability cap** £100 / 12 months' fees. Never present as consultancy.
-5. **AI disclosure** — "AI-generated draft" label everywhere.
-6. **EU OSS VAT** — register from first EU B2C sale, no threshold.
+This is the pattern. Every other builder (Risk Assessment, COSHH, HAVs, Toolbox Talk, etc.) plugs into the same spine — each is ~200 lines of UI wiring, no infra to build.
 
-## What I did NOT do (intentional)
+## What's NOT wired yet
 
-- **Database schema design** — needs your Supabase project URL first. Will design once you give me the project + run the migrations.
-- **Auth flows** — same reason. Needs Supabase project.
-- **Stripe products** — you'll create those in Stripe Dashboard. Price IDs go in `.env.local`.
-- **ISO 9001 questionnaire content** — that's V1 work. The framework registry has the slot, content goes in `src/frameworks/iso-9001/` once we move from scaffold to V1 build.
-- **Watermark engine integration into a working PDF generation flow** — the `applyWatermark()` function exists, but there's no PDF generation pipeline yet. That's V1.
-- **`npm run dev` test** — didn't run it (long-running, would block other work). Try it when you're back.
+- Risk Assessment, COSHH, HAVs, Toolbox Talk save/load/PDF — they have UI but no API hookup yet
+- Full RAMs 12-step bodies — the rail navigates but step components are stubbed for SL port
+- 31 stubbed builders show ComingSoon screen — vote-to-build email capture needs `/api/rams/vote-builder` route
+- PDF templates for Risk Assessment / COSHH / HAVs / Toolbox Talk — only Method Statement template built
+- RA Library "Use in builder" button — currently just a copy-text fallback
+- Stripe paywall on PDF download — tier check exists but no upgrade prompt yet
 
-## Next moves when you're back
+## Critical reminders (still apply)
 
-In order:
+From earlier session:
+- **Never** display ISO logo. Use "templates aligned with ISO 9001:2015"
+- One-click cancel + separate auto-renew tickbox before paid launch (ARL/DMCC)
+- DPA + sub-processor list before paid launch
+- Liability cap at greater of £100 / 12 months' fees
+- "AI-generated draft" label everywhere (already in PDF footer + ComingSoon copy)
+- EU OSS VAT — register from first EU B2C sale
 
-1. **Read the 4 research docs** — at least skim. Especially LEGAL.md (gotchas) and FRAMEWORKS.md (schema implications).
-2. **Create Supabase project** — give me the URL + keys, I write the schema + auth flows + RLS policies.
-3. **Create Stripe products** — Pro Monthly £9 + Pro Annual £86 (use coupon ANNUAL20 for the discount). Paste price IDs into `.env.local`.
-4. **`npm run dev`** — verify the placeholder loads at http://localhost:3000.
-5. **Pick the V1 build path:** I'd start with the auth flow + onboarding wizard + ISO 9001 questionnaire skeleton. Database schema first, then the wizard, then the AI generation, then the PDF output. We can break this into 4-6 hour blocks.
-
-## Files added to repo
+## Files changed this session
 
 ```
-.env.local.example          ← all env keys with placeholder values
-.gitignore                  ← updated to allow .env.local.example through
-README.md                   ← updated with project + stack + legal reminders
-STATUS.md                   ← THIS FILE (read this first when back)
-components.json             ← shadcn config
-src/app/layout.tsx          ← branded layout + Toaster
-src/app/page.tsx            ← landing placeholder
-src/components/ui/          ← 17 shadcn components
-src/frameworks/index.ts     ← 11-framework registry
-src/lib/supabase/           ← 3 Supabase clients
-src/lib/anthropic/client.ts ← Anthropic SDK + Haiku 4.5 default
-src/lib/stripe/client.ts    ← Stripe SDK + price ID exports
-src/lib/pdf/watermark.ts    ← watermark engine
-research/                   ← 25,000+ words of research
+NEW:
+  src/app/(app)/tools/rams/layout.tsx
+  src/app/(app)/tools/rams/page.tsx
+  src/app/(app)/tools/rams/[builder]/page.tsx
+  src/app/(app)/tools/rams/_components/{sidebar,builder-shell,coming-soon}.tsx
+  src/app/(app)/tools/rams/_builders/{full,method-statement,risk-assessment,coshh,havs,toolbox-talk,ra-library}.tsx
+  src/lib/rams/{config,library,tools,builders}.ts
+  src/lib/anthropic/tasks.ts
+  src/lib/pdf/render.ts
+  src/lib/pdf/templates/method-statement.ts
+  src/components/ui/ai-button.tsx
+  src/app/api/rams/route.ts
+  src/app/api/rams/_helpers.ts
+  src/app/api/rams/[id]/route.ts
+  src/app/api/rams/[id]/pdf/route.ts
+  src/app/api/ai/[task]/route.ts
+  supabase/migrations/0003_rams_documents.sql
+
+UPDATED:
+  src/types/supabase.ts                    (added rams_documents row/insert/update types)
+  supabase/MIGRATIONS_APPLIED.md           (marked 0003 as applied)
+  STATUS.md                                (this file)
 ```
 
-## TL;DR
+## Next session
 
-Project's scaffolded, pushed to GitHub, type-checks clean. 25,000 words of research banked. Ready to start V1 build when you say go — just need Supabase project URL + Stripe price IDs to wire up the real backend.
+In order of impact, my recommended build path:
+
+1. **Wire Risk Assessment end-to-end** — copy the Method Statement save/load/PDF pattern, add a `risk-assessment.ts` PDF template. The RA library picker is already done so this is mostly the spine wiring. ~3 hours.
+2. **Wire Toolbox Talk** — simplest of the four because output is free-form text. ~2 hours.
+3. **Wire COSHH + HAVs** — same pattern. ~3 hours each.
+4. **Port the SL 12-step bodies into Full RAMs** — heavier (~6 hours) but mostly mechanical from `sitelynx-v2/src/components/rams/steps/*`.
+5. **`/api/rams/vote-builder`** — captures email + builder slug for the 31 ComingSoon routes. Demand signal before building. ~30 min.
+6. **Stripe paywall** — when free user hits Download PDF, watermark works; for clean PDFs, show upgrade modal. Needs Stripe products created first.

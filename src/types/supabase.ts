@@ -218,6 +218,50 @@ export interface Database {
         };
         Relationships: [];
       };
+      rams_documents: {
+        Row: {
+          id: string;
+          organisation_id: string;
+          builder_slug: string;
+          title: string | null;
+          status: "draft" | "complete" | "archived";
+          form_data: Json;
+          pdf_storage_path: string | null;
+          is_watermarked: boolean;
+          generated_at: string | null;
+          created_by: string | null;
+          updated_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organisation_id: string;
+          builder_slug: string;
+          title?: string | null;
+          status?: "draft" | "complete" | "archived";
+          form_data?: Json;
+          pdf_storage_path?: string | null;
+          is_watermarked?: boolean;
+          generated_at?: string | null;
+          created_by?: string | null;
+          updated_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          organisation_id?: string;
+          builder_slug?: string;
+          title?: string | null;
+          status?: "draft" | "complete" | "archived";
+          form_data?: Json;
+          pdf_storage_path?: string | null;
+          is_watermarked?: boolean;
+          generated_at?: string | null;
+          created_by?: string | null;
+          updated_by?: string | null;
+        };
+        Relationships: [];
+      };
       generated_documents: {
         Row: {
           id: string;
