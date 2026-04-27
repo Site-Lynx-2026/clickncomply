@@ -457,10 +457,21 @@ function DocRowItem({ doc }: { doc: DocRow }) {
             </Badge>
           )}
         </div>
-        <div className="text-xs text-muted-foreground">
-          Updated {updated}
-          {doc.generated_at && " · PDF generated"}
-          {doc.is_watermarked && doc.generated_at && " · watermarked"}
+        <div className="text-xs text-muted-foreground flex items-center gap-1.5">
+          <span>Updated</span>
+          <span className="font-mono-num text-foreground/70">{updated}</span>
+          {doc.generated_at && (
+            <>
+              <span className="text-muted-foreground/50">·</span>
+              <span>PDF generated</span>
+            </>
+          )}
+          {doc.is_watermarked && doc.generated_at && (
+            <>
+              <span className="text-muted-foreground/50">·</span>
+              <span>watermarked</span>
+            </>
+          )}
         </div>
       </div>
       <div className="flex items-center gap-1 shrink-0">
@@ -484,29 +495,51 @@ function DocRowItem({ doc }: { doc: DocRow }) {
 function EmptyState({ filterActive }: { filterActive: boolean }) {
   if (filterActive) {
     return (
-      <div className="border-2 border-dashed rounded-lg p-12 text-center bg-muted/20">
-        <FileText className="size-6 mx-auto mb-3 text-muted-foreground" />
-        <h2 className="font-semibold mb-1">No matching documents</h2>
-        <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-4">
+      <div className="border border-dashed border-soft rounded-2xl px-8 py-14 text-center surface-raised shadow-sm-cool">
+        <div className="inline-flex size-14 rounded-2xl items-center justify-center mb-5 surface-pebble border border-soft">
+          <FileText className="size-6" strokeWidth={1.6} />
+        </div>
+        <h3 className="font-display font-bold uppercase text-lg tracking-tight mb-2">
+          No matching documents
+        </h3>
+        <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6 leading-relaxed">
           Try removing a filter, or pick a different project / client.
         </p>
-        <Button asChild variant="outline">
-          <Link href="/tools/rams/documents">Clear filters</Link>
-        </Button>
+        <Link
+          href="/tools/rams/documents"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-foreground text-background text-sm font-semibold hover:opacity-90 transition"
+        >
+          Clear filters
+        </Link>
       </div>
     );
   }
   return (
-    <div className="border-2 border-dashed rounded-lg p-12 text-center bg-muted/20">
-      <FileText className="size-6 mx-auto mb-3 text-muted-foreground" />
-      <h2 className="font-semibold mb-1">No documents yet</h2>
-      <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-4">
-        Pick a builder from the sidebar — Method Statement, Risk Assessment,
-        COSHH, HAVs, or Toolbox Talk — and save your first draft.
+    <div className="border border-dashed border-soft rounded-2xl px-8 py-14 text-center surface-raised shadow-sm-cool">
+      <div className="inline-flex size-14 rounded-2xl items-center justify-center mb-5 status-info">
+        <FileText className="size-6" strokeWidth={1.6} />
+      </div>
+      <h3 className="font-display font-bold uppercase text-lg tracking-tight mb-2">
+        No documents yet
+      </h3>
+      <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6 leading-relaxed">
+        Generate your first compliance document in under five minutes. Pick a
+        trade and the AI drafts a full RAMS, ready to brand and download.
       </p>
-      <Button asChild variant="outline">
-        <Link href="/tools/rams">Browse builders</Link>
-      </Button>
+      <div className="flex items-center justify-center gap-4 flex-wrap">
+        <Link
+          href="/tools/rams/full"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-foreground text-background text-sm font-semibold hover:opacity-90 transition"
+        >
+          Build with AI
+        </Link>
+        <Link
+          href="/tools/rams"
+          className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-2 transition"
+        >
+          Browse all builders
+        </Link>
+      </div>
     </div>
   );
 }

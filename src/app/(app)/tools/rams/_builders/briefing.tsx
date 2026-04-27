@@ -13,6 +13,7 @@ import {
 import { Download, Plus, Trash2 } from "lucide-react";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
+import { AIFillButton } from "@/components/ai-fill-button";
 
 export interface BriefingPoint {
   id: string;
@@ -154,10 +155,32 @@ export function BriefingBuilder(props: BriefingBuilderProps) {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-base">Key points</CardTitle>
-          <Button variant="outline" size="sm" onClick={addPoint}>
-            <Plus className="size-3.5 mr-1.5" />
-            Add point
-          </Button>
+          <div className="flex items-center gap-2">
+            <AIFillButton
+              kind="briefing-point"
+              context={{
+                topic: form.title || props.defaultTitle,
+                audience: form.audience,
+                previousPoints: form.keyPoints
+                  .map((p, i) => `${i + 1}. ${p.text}`)
+                  .join("\n"),
+              }}
+              onFill={(text) =>
+                update({
+                  keyPoints: [
+                    ...form.keyPoints,
+                    { id: crypto.randomUUID(), text },
+                  ],
+                })
+              }
+              hint="AI suggest next"
+              variant="button"
+            />
+            <Button variant="outline" size="sm" onClick={addPoint}>
+              <Plus className="size-3.5 mr-1.5" />
+              Add point
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="space-y-2">
           {form.keyPoints.length === 0 ? (

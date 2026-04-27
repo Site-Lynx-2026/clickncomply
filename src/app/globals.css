@@ -123,11 +123,14 @@
      Layered surfaces, semantic colours, and a 3-tier shadow scale.
      Goal: lift the UI off the page without going dark. */
 
-  /* Surface tiers — page → canvas → card → raised */
-  --surface-canvas: oklch(0.985 0 0);            /* faint cool grey under cards */
-  --surface-raised: oklch(1 0 0);                /* card body */
-  --surface-pebble: oklch(0.965 0 0);            /* table headers, info bars */
+  /* Surface tiers — page → canvas → card → raised → modal
+     Cool off-white for canvas (Stripe-style #F6F9FC equivalent).
+     Cards stay pure white so they read as floating above the canvas. */
+  --surface-canvas: oklch(0.985 0.005 240);      /* cool off-white — never pure */
+  --surface-raised: oklch(1 0 0);                /* card body, pure white */
+  --surface-pebble: oklch(0.965 0.003 240);      /* table headers, info bars */
   --surface-tinted: oklch(0.975 0.01 119);       /* faintest brand wash */
+  --surface-modal: oklch(1 0 0);                 /* modals (with stronger shadow) */
 
   /* Two-weight border system */
   --border-soft: oklch(0.94 0 0);                /* default rules */
@@ -143,11 +146,14 @@
   --status-info: oklch(0.55 0.14 245);           /* blue */
   --status-info-bg: oklch(0.96 0.03 245);
 
-  /* Shadow scale — cool tone, layered */
-  --shadow-sm: 0 1px 2px rgba(15,23,42,0.04), 0 1px 1px rgba(15,23,42,0.03);
-  --shadow-md: 0 4px 12px rgba(15,23,42,0.06), 0 2px 4px rgba(15,23,42,0.04);
-  --shadow-lg: 0 12px 32px rgba(15,23,42,0.10), 0 4px 8px rgba(15,23,42,0.05);
-  --shadow-glow-brand: 0 8px 32px oklch(0.95 0.27 119 / 0.20);
+  /* Shadow scale — Stripe-grade cool-navy tint #122A42.
+     Stacked two-layer for natural depth. NEVER black-tinted. */
+  --shadow-sm: 0 1px 1px rgba(18,42,66,0.03), 0 1px 3px rgba(18,42,66,0.04);
+  --shadow-md: 0 1px 2px rgba(18,42,66,0.04), 0 4px 12px rgba(18,42,66,0.06);
+  --shadow-lg: 0 2px 4px rgba(18,42,66,0.04), 0 12px 32px rgba(18,42,66,0.10);
+  --shadow-xl: 0 4px 8px rgba(18,42,66,0.05), 0 20px 48px rgba(18,42,66,0.14);
+  --shadow-glow-brand: 0 8px 32px oklch(0.95 0.27 119 / 0.22);
+  --shadow-focus-ring: 0 0 0 3px oklch(0.95 0.27 119 / 0.25);
 }
 
 /*
@@ -256,7 +262,42 @@
 @utility shadow-sm-cool { box-shadow: var(--shadow-sm); }
 @utility shadow-md-cool { box-shadow: var(--shadow-md); }
 @utility shadow-lg-cool { box-shadow: var(--shadow-lg); }
+@utility shadow-xl-cool { box-shadow: var(--shadow-xl); }
 @utility shadow-glow-brand { box-shadow: var(--shadow-glow-brand); }
+
+/* Mono utility — sweeps onto stat numbers, IDs, timestamps, refs.
+   The Vercel/Resend signature: monospace tells the user "this is data". */
+@utility font-mono-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Shimmer skeleton — replaces spinners. Stripe / Linear pattern. */
+@keyframes shimmer-x {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@utility shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface-pebble) 0%,
+    var(--surface-canvas) 50%,
+    var(--surface-pebble) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-x 1.4s linear infinite;
+  border-radius: 4px;
+}
+
+/* Soft pulse for live AI fields — subtle border breathing. */
+@keyframes ai-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.95 0.27 119 / 0.45); }
+  50%      { box-shadow: 0 0 0 6px oklch(0.95 0.27 119 / 0); }
+}
+@utility ai-pulse {
+  animation: ai-pulse 1.6s ease-in-out infinite;
+}
 
 /* Status pill backgrounds + text */
 @utility status-success { background-color: var(--status-success-bg); color: var(--status-success); }

@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { logoutAction } from "./actions";
 import { AppNavLink } from "./_components/app-nav-link";
+import { GlobalCommandBar } from "@/components/global-command-bar";
+import { CommandKHint } from "./_components/command-k-hint";
 
 export default async function AppLayout({
   children,
@@ -40,6 +42,7 @@ export default async function AppLayout({
             </nav>
           </div>
           <div className="flex items-center gap-3 shrink-0">
+            <CommandKHint />
             <span className="text-xs text-muted-foreground hidden md:inline">
               {user.email}
             </span>
@@ -59,6 +62,7 @@ export default async function AppLayout({
         </nav>
       </header>
       <main className="flex-1 surface-canvas">{children}</main>
+      <GlobalCommandBar />
     </div>
   );
 }

@@ -229,6 +229,34 @@ export function useBuilderDocument<TForm extends object>({
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank");
       setTimeout(() => URL.revokeObjectURL(url), 30_000);
+
+      // First-PDF celebration — fired once per device using localStorage.
+      // Stripe / Cal.com pattern: the moment of value gets celebrated +
+      // gets a tiny viral CTA.
+      try {
+        if (!localStorage.getItem("cnc-first-pdf")) {
+          localStorage.setItem("cnc-first-pdf", new Date().toISOString());
+          toast.success("Your first compliance PDF is on its way 🎉", {
+            description:
+              "That used to take an hour. Want to share ClickNComply and get a free month?",
+            action: {
+              label: "Share",
+              onClick: () => {
+                const text = encodeURIComponent(
+                  "Just wrote a full RAMS in five minutes with @clickncomply — £2/mo, no consultant. clickncomply.co.uk"
+                );
+                window.open(
+                  `https://twitter.com/intent/tweet?text=${text}`,
+                  "_blank"
+                );
+              },
+            },
+            duration: 8000,
+          });
+        }
+      } catch {
+        // localStorage blocked — fail silent, the PDF still opened
+      }
     } catch {
       toast.error("PDF generation failed.");
     } finally {

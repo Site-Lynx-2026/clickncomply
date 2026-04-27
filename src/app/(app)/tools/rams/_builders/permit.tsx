@@ -13,6 +13,7 @@ import {
 import { Download } from "lucide-react";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
+import { AIFillButton } from "@/components/ai-fill-button";
 
 export interface PermitForm {
   title: string;
@@ -151,13 +152,26 @@ export function PermitBuilder(props: PermitBuilderProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label htmlFor="precautions">Precautions required</Label>
+            <div className="flex items-center justify-between mb-1.5">
+              <Label htmlFor="precautions">Precautions required</Label>
+              <AIFillButton
+                kind="permit-precaution"
+                context={{
+                  documentType: props.defaultTitle,
+                  work: form.workDescription,
+                }}
+                onFill={(text) => set("precautions", text)}
+                hint="Draft precautions"
+                variant="button"
+                disabled={!form.workDescription.trim()}
+              />
+            </div>
             <Textarea
               id="precautions"
               value={form.precautions}
               onChange={(e) => set("precautions", e.target.value)}
               rows={4}
-              placeholder="What must be in place before work starts"
+              placeholder="What must be in place before work starts. Tap the sparkle to draft from the work description."
             />
           </div>
           <div>

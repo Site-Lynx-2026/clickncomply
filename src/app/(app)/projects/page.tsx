@@ -192,22 +192,33 @@ export default async function ProjectsPage({
 
 function EmptyState({ hasClients }: { hasClients: boolean }) {
   return (
-    <div className="border-2 border-dashed rounded-lg p-12 text-center bg-muted/10">
-      <h2 className="font-semibold mb-1">No projects yet.</h2>
-      <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
+    <div className="border border-dashed border-soft rounded-2xl px-8 py-14 text-center surface-raised shadow-sm-cool">
+      <div className="inline-flex size-14 rounded-2xl items-center justify-center mb-5 status-success">
+        <Plus className="size-6" strokeWidth={1.6} />
+      </div>
+      <h3 className="font-display font-bold uppercase text-lg tracking-tight mb-2">
+        No projects yet
+      </h3>
+      <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6 leading-relaxed">
         A project is a discrete job — site address, dates, optional client.
-        Once it&apos;s set up, every RAMs you build for it auto-fills the
-        site fields.
+        Once set up, every RAMs you build auto-fills the site fields. No
+        retyping addresses on doc 50.
       </p>
       {!hasClients && (
-        <p className="text-xs text-muted-foreground mb-4">
-          Tip: <Link href="/clients?add=1" className="underline underline-offset-2">add a client first</Link>{" "}
+        <p className="text-xs text-muted-foreground mb-5">
+          Tip: {" "}
+          <Link
+            href="/clients?add=1"
+            className="text-foreground underline underline-offset-2 hover:opacity-70"
+          >
+            add a client first
+          </Link>{" "}
           if you want to link this project to one.
         </p>
       )}
       <ProjectFormDialog mode="create" clients={[]}>
         <Button>
-          <Plus className="size-4 mr-1" />
+          <Plus className="size-4 mr-1.5" />
           Create your first project
         </Button>
       </ProjectFormDialog>

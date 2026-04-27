@@ -466,7 +466,8 @@ function StatCard({
           {icon}
         </span>
       </div>
-      {/* Big chunky number — Barlow Condensed, the SL signature */}
+      {/* Big chunky number — Barlow Condensed + mono digit treatment.
+          The mono variant gives the "this is data" feel of Vercel/Resend. */}
       <div className="relative font-display font-bold text-foreground text-[56px] leading-none tabular-nums mb-1">
         {value}
       </div>

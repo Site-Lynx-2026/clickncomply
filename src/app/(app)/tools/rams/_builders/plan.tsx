@@ -13,6 +13,7 @@ import {
 import { Download } from "lucide-react";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
+import { AIFillButton } from "@/components/ai-fill-button";
 
 export interface PlanSection {
   id: string;
@@ -120,20 +121,31 @@ export function PlanBuilder(props: PlanBuilderProps) {
 
       {form.sections.map((sec, i) => (
         <Card key={sec.id}>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base flex items-center gap-3">
               <span className="size-6 rounded-md bg-foreground text-background text-xs font-bold inline-flex items-center justify-center tabular-nums">
                 {i + 1}
               </span>
               {sec.label}
             </CardTitle>
+            <AIFillButton
+              kind="plan-section"
+              context={{
+                documentType: props.defaultTitle,
+                sectionLabel: sec.label,
+                scope: form.scope,
+              }}
+              onFill={(text) => setSection(sec.id, text)}
+              hint={sec.body.trim() ? "Re-draft" : "Draft this section"}
+              variant="button"
+            />
           </CardHeader>
           <CardContent>
             <Textarea
               value={sec.body}
               onChange={(e) => setSection(sec.id, e.target.value)}
               rows={5}
-              placeholder={`Detail for ${sec.label.toLowerCase()}`}
+              placeholder={`Detail for ${sec.label.toLowerCase()} — or tap the sparkle for an AI draft.`}
             />
           </CardContent>
         </Card>

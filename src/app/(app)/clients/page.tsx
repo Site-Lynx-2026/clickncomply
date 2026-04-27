@@ -166,16 +166,20 @@ export default async function ClientsPage({
 
 function EmptyState() {
   return (
-    <div className="border-2 border-dashed rounded-lg p-12 text-center bg-muted/10">
-      <h2 className="font-semibold mb-1">No clients yet.</h2>
-      <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
-        Add the companies you deliver work for. Then you can attach projects to
-        each one — and every RAMs / QA you generate auto-fills with the right
-        details.
+    <div className="border border-dashed border-soft rounded-2xl px-8 py-14 text-center surface-raised shadow-sm-cool">
+      <div className="inline-flex size-14 rounded-2xl items-center justify-center mb-5 status-warning">
+        <Plus className="size-6" strokeWidth={1.6} />
+      </div>
+      <h3 className="font-display font-bold uppercase text-lg tracking-tight mb-2">
+        No clients yet
+      </h3>
+      <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6 leading-relaxed">
+        Add the companies you deliver work for. Then attach projects to each
+        one — and every RAMs / QA you generate auto-fills with the right details.
       </p>
       <ClientFormDialog mode="create">
         <Button>
-          <Plus className="size-4 mr-1" />
+          <Plus className="size-4 mr-1.5" />
           Add your first client
         </Button>
       </ClientFormDialog>
