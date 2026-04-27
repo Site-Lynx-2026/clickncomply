@@ -83,9 +83,15 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="border-t mt-auto">
-        <div className="container mx-auto max-w-5xl px-6 py-6 flex items-center justify-between text-xs text-muted-foreground">
+        <div className="container mx-auto max-w-5xl px-6 py-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
           <p className="font-mono">ClickNComply</p>
-          <p>v0.1 · build in progress</p>
+          <Link href="/privacy" className="hover:text-foreground">
+            Privacy
+          </Link>
+          <Link href="/terms" className="hover:text-foreground">
+            Terms
+          </Link>
+          <span className="ml-auto">© {new Date().getFullYear()} Site Lynx Group Ltd</span>
         </div>
       </footer>
     </main>

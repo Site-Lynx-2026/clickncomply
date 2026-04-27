@@ -170,6 +170,32 @@
   }
 }
 
+/*
+ * Prose styling for legal pages (privacy, terms).
+ * Manual implementation — avoids the @tailwindcss/typography dep for now.
+ * Headings and paragraphs sized for comfortable reading at 720-800px width.
+ */
+@utility prose-cnc {
+  & h1 {
+    @apply text-3xl font-semibold tracking-tight mb-2;
+  }
+  & h2 {
+    @apply text-lg font-semibold tracking-tight mt-10 mb-3 scroll-mt-16;
+  }
+  & p {
+    @apply text-sm leading-relaxed text-foreground/85 mb-4;
+  }
+  & ul {
+    @apply list-disc pl-6 space-y-1.5 text-sm leading-relaxed text-foreground/85 mb-4;
+  }
+  & a {
+    @apply text-foreground underline underline-offset-2 hover:text-foreground/70;
+  }
+  & strong {
+    @apply font-semibold text-foreground;
+  }
+}
+
 /* Brand utility — for lime flourishes (badges, headers, accents) */
 @utility bg-brand {
   background-color: var(--brand);

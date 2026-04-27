@@ -16,6 +16,15 @@ export default function AuthLayout({
           ClickNComply
         </Link>
         <div className="bg-background border rounded-lg p-6">{children}</div>
+        <div className="mt-6 flex items-center justify-center gap-4 text-xs text-muted-foreground">
+          <Link href="/privacy" className="hover:text-foreground">
+            Privacy
+          </Link>
+          <span>·</span>
+          <Link href="/terms" className="hover:text-foreground">
+            Terms
+          </Link>
+        </div>
       </div>
     </main>
   );
