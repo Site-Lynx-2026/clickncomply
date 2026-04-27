@@ -75,6 +75,8 @@ import {
   ClipboardCheck,
   MoveVertical,
   Users,
+  Folder,
+  FolderOpen,
 
   // UI actions
   Sparkles,
@@ -139,6 +141,8 @@ export {
   MoveVertical,
   Users,
   ShieldCheck,
+  Folder,
+  FolderOpen,
   Award,
   HardHat,
   Building2,

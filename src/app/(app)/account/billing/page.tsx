@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient as createSupabaseClient, createAdminClient } from "@/lib/supabase/server";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { trialState, trialDaysRemaining } from "@/lib/billing";
 import { ArrowLeft, Sparkles } from "@/lib/icons";
