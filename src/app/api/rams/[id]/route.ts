@@ -39,6 +39,7 @@ const UpdateSchema = z.object({
   title: z.string().max(200).nullable().optional(),
   status: z.enum(["draft", "complete", "archived"]).optional(),
   form_data: z.record(z.string(), z.unknown()).optional(),
+  project_id: z.string().uuid().nullable().optional(),
 });
 
 export async function PUT(
@@ -72,6 +73,8 @@ export async function PUT(
   if (parsed.data.status !== undefined) update.status = parsed.data.status;
   if (parsed.data.form_data !== undefined)
     update.form_data = parsed.data.form_data as never;
+  if (parsed.data.project_id !== undefined)
+    update.project_id = parsed.data.project_id;
 
   const { data, error } = await admin
     .from("rams_documents")

@@ -46,6 +46,7 @@ const CreateSchema = z.object({
   builder_slug: z.string().min(1).max(64),
   title: z.string().max(200).optional(),
   form_data: z.record(z.string(), z.unknown()).optional(),
+  project_id: z.string().uuid().nullable().optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -76,6 +77,7 @@ export async function POST(req: NextRequest) {
       title: parsed.data.title ?? null,
       form_data: (parsed.data.form_data ?? {}) as never,
       status: "draft",
+      project_id: parsed.data.project_id ?? null,
       created_by: ctx.userId,
       updated_by: ctx.userId,
     })

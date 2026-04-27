@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { type Builder } from "@/lib/rams/builders";
+import { ProjectPicker } from "./project-picker";
 
 export function BuilderShell({
   builder,
@@ -9,9 +10,12 @@ export function BuilderShell({
   children: React.ReactNode;
 }) {
   const Icon = builder.icon;
+  const isLiveBuilder =
+    builder.status === "live" || builder.status === "wip";
+
   return (
     <div className="px-8 py-8 max-w-5xl mx-auto">
-      <header className="mb-8">
+      <header className="mb-6">
         <div className="flex items-start gap-4">
           <div className="size-12 rounded-md bg-muted flex items-center justify-center shrink-0">
             <Icon className="size-5" strokeWidth={1.6} />
@@ -41,6 +45,14 @@ export function BuilderShell({
           </div>
         </div>
       </header>
+
+      {/* Project picker — only on builders that store actual documents */}
+      {isLiveBuilder && (
+        <div className="mb-6">
+          <ProjectPicker />
+        </div>
+      )}
+
       {children}
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { useProjects } from "./projects-context";
 
 /**
  * Generic builder-document hook. Handles:
@@ -9,6 +10,9 @@ import { toast } from "sonner";
  *   - Auto-saving 1.5s after the last edit
  *   - Save status indicator
  *   - PDF download
+ *   - Project linkage via the ProjectsProvider context (every save persists
+ *     the currently-selected project_id; loading a doc with project_id
+ *     pre-selects that project in the picker).
  *
  * Each builder calls this with its own builder_slug + initial form factory,
  * and gets back { form, update, docId, saveStatus, downloadPdf, manualSave }.
@@ -55,9 +59,16 @@ export function useBuilderDocument<TForm extends object>({
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dirty = useRef(false);
   // Authoritative copy of docId for callbacks — refreshed inside persist().
-  // Avoids the stale-closure race where downloadPdf reads docId BEFORE the
-  // setDocId() from a freshly-created doc has flushed to React state.
   const docIdRef = useRef<string | null>(null);
+
+  // Project linkage via context.
+  const { selectedProjectId, setSelectedProjectId } = useProjects();
+  // Keep an authoritative ref so persist() always sees the latest value
+  // even if it's mid-await when the user picks a different project.
+  const selectedProjectIdRef = useRef<string | null>(selectedProjectId);
+  useEffect(() => {
+    selectedProjectIdRef.current = selectedProjectId;
+  }, [selectedProjectId]);
 
   /**
    * Persist a form snapshot.
@@ -73,9 +84,11 @@ export function useBuilderDocument<TForm extends object>({
       try {
         const title =
           (titleFromForm ? titleFromForm(next) : null) || null;
+        const projectId = selectedProjectIdRef.current;
         const payload = {
           title,
           form_data: next as unknown as Record<string, unknown>,
+          project_id: projectId,
         };
         let res: Response;
         let resolvedId: string | null = currentId;
@@ -122,6 +135,22 @@ export function useBuilderDocument<TForm extends object>({
     [builderSlug, titleFromForm]
   );
 
+  // Trigger auto-save when the project picker changes (after first save).
+  // Until first save, project changes just queue up — they get persisted
+  // alongside the next field edit or manual save.
+  useEffect(() => {
+    if (!docIdRef.current) return;
+    // Mark dirty + reset timer so project change persists alongside any
+    // pending field edits without a separate network call.
+    dirty.current = true;
+    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+    autoSaveTimer.current = setTimeout(() => {
+      if (dirty.current) persist(form, docIdRef.current);
+    }, 800);
+    // form intentionally left out — we only re-arm on project change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedProjectId]);
+
   function update(patch: Partial<TForm>) {
     setForm((f) => {
       const next = { ...f, ...patch } as TForm;
@@ -148,6 +177,10 @@ export function useBuilderDocument<TForm extends object>({
           docIdRef.current = id;
           setDocId(id);
           setForm({ ...emptyForm(), ...doc.form_data });
+          // Pre-select the doc's project in the picker, if it had one.
+          if (doc.project_id) {
+            setSelectedProjectId(doc.project_id);
+          }
         }
       })
       .catch(() => {});
