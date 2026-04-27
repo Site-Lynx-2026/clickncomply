@@ -205,8 +205,8 @@ export default function TermsPage() {
       <h2>15. Contact</h2>
       <p>
         Questions or issues:{" "}
-        <a href="mailto:hello@clickncomply.co.uk">
-          hello@clickncomply.co.uk
+        <a href="mailto:info@clickncomply.co.uk">
+          info@clickncomply.co.uk
         </a>
       </p>
     </article>

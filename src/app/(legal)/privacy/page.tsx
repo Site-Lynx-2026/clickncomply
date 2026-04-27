@@ -21,7 +21,7 @@ export default function PrivacyPage() {
         ClickNComply is operated by <strong>Site Lynx Group Ltd</strong>, a
         company registered in England and Wales. We are the data controller for
         the personal data we hold about you. You can contact us at{" "}
-        <a href="mailto:hello@clickncomply.co.uk">hello@clickncomply.co.uk</a>.
+        <a href="mailto:info@clickncomply.co.uk">info@clickncomply.co.uk</a>.
       </p>
 
       <h2>2. What we collect</h2>
@@ -125,8 +125,8 @@ export default function PrivacyPage() {
           <strong>Document content</strong> — documents you authored may
           remain with the organisation you created them for if you leave that
           organisation. Email{" "}
-          <a href="mailto:hello@clickncomply.co.uk">
-            hello@clickncomply.co.uk
+          <a href="mailto:info@clickncomply.co.uk">
+            info@clickncomply.co.uk
           </a>{" "}
           for full erasure.
         </li>
@@ -158,8 +158,8 @@ export default function PrivacyPage() {
       <p>
         Most rights can be exercised directly from the{" "}
         <a href="/account">Account</a> page. For anything not available
-        in-app, email <a href="mailto:hello@clickncomply.co.uk">
-          hello@clickncomply.co.uk
+        in-app, email <a href="mailto:info@clickncomply.co.uk">
+          info@clickncomply.co.uk
         </a>{" "}
         and we will respond within one calendar month.
       </p>
@@ -198,8 +198,8 @@ export default function PrivacyPage() {
       <h2>13. Contact</h2>
       <p>
         Questions, requests or complaints:{" "}
-        <a href="mailto:hello@clickncomply.co.uk">
-          hello@clickncomply.co.uk
+        <a href="mailto:info@clickncomply.co.uk">
+          info@clickncomply.co.uk
         </a>
       </p>
     </article>

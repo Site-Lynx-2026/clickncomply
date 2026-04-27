@@ -48,10 +48,10 @@ export function DeleteAccountDialog({ email }: { email: string }) {
             <li>Documents you authored remain with the organisation but are no longer attributable to you.</li>
             <li>If you&apos;re the sole owner of an organisation, the organisation persists for now — email{" "}
               <a
-                href="mailto:hello@clickncomply.co.uk"
+                href="mailto:info@clickncomply.co.uk"
                 className="underline underline-offset-2 hover:text-foreground"
               >
-                hello@clickncomply.co.uk
+                info@clickncomply.co.uk
               </a>{" "}
               if you want full org deletion.
             </li>

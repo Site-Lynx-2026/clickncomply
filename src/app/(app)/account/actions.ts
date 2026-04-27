@@ -144,7 +144,7 @@ export async function deleteAccountAction() {
     await supabase.auth.signOut();
     redirect(
       `/?error=${encodeURIComponent(
-        "Account scrubbed but couldn't fully delete — email hello@clickncomply.co.uk to confirm removal."
+        "Account scrubbed but couldn't fully delete — email info@clickncomply.co.uk to confirm removal."
       )}`
     );
   }
