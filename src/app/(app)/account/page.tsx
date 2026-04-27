@@ -256,12 +256,12 @@ export default async function AccountPage({
           )}
           <div className="pt-1">
             {billingTier === "paid" ? (
-              <Button asChild size="sm" variant="outline" disabled>
-                <Link href="#">Manage subscription (coming soon)</Link>
+              <Button asChild size="sm" variant="outline">
+                <Link href="/account/billing">Manage subscription</Link>
               </Button>
             ) : (
-              <Button asChild size="sm" disabled>
-                <Link href="#">Upgrade to Pro · £2/month (coming soon)</Link>
+              <Button asChild size="sm">
+                <Link href="/account/billing">Upgrade to Pro · £2/month</Link>
               </Button>
             )}
           </div>
