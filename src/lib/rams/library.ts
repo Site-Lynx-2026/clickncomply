@@ -43,6 +43,10 @@ export const RA_CATEGORIES: TradeCategory[] = [
   { id: 'traffic', label: 'Traffic & Vehicles', icon: '🚛' },
   { id: 'environment', label: 'Environmental', icon: '🌿' },
   { id: 'general', label: 'General Site', icon: '🔨' },
+  { id: 'asbestos', label: 'Asbestos', icon: '☣️' },
+  { id: 'health', label: 'Health & Wellbeing', icon: '❤️' },
+  { id: 'occupied', label: 'Occupied Premises', icon: '🏢' },
+  { id: 'weather', label: 'Weather & Seasonal', icon: '🌦️' },
 ]
 
 // ── RISK ASSESSMENT LIBRARY ──
@@ -193,6 +197,97 @@ export const RA_LIBRARY: RALibraryItem[] = [
   { id: 'RA-GS-007', category: 'general', hazard: 'Sharps / needle stick injury', whoAtRisk: 'Operatives', consequences: 'Blood-borne virus exposure (HIV, Hepatitis B and C); serious long-term illness; significant psychological distress; RIDDOR reportable.', initialL: 2, initialS: 4, controls: 'Pre-start survey of area. Gloves worn during clearance. Sharps bin available. No hand-picking of sharps — use grabbers. Hepatitis B vaccination offered. Incident procedure for needle stick.', residualL: 1, residualS: 3 },
   { id: 'RA-GS-008', category: 'general', hazard: 'Heat stress / sunburn', whoAtRisk: 'Operatives', consequences: 'Heat exhaustion and heat stroke requiring immediate medical treatment; fatality in extreme cases; cognitive impairment increasing accident risk.', initialL: 3, initialS: 3, controls: 'Regular water breaks (every 20 mins in hot conditions). Shade provided where possible. Sunscreen available. Lightweight clothing. Schedule heavy work for cooler periods. First aiders briefed on heat illness symptoms.', residualL: 2, residualS: 2 },
   { id: 'RA-GS-009', category: 'general', hazard: 'Weil\'s disease (leptospirosis)', whoAtRisk: 'Operatives', consequences: 'Leptospirosis infection — flu-like illness progressing to organ failure; potential fatality; prolonged recovery; RIDDOR reportable.', initialL: 2, initialS: 4, controls: 'Avoid contact with stagnant water. Cuts and abrasions covered with waterproof dressings. Wash hands before eating. Awareness briefing. Report flu-like symptoms to site manager and GP. Mention occupational exposure.', residualL: 1, residualS: 3 },
+  { id: 'RA-GS-010', category: 'general', hazard: 'Inadequate site security out-of-hours', whoAtRisk: 'Public, Trespassers', consequences: 'Vandalism, theft, child injury from playing on plant or unsecured excavations. Civil and criminal liability for site team.', initialL: 3, initialS: 4, controls: 'Hoarding 2.4m minimum, locked gates after-hours, plant immobilised and locked, materials stored away from boundary. CCTV or security guard on high-risk sites. Out-of-hours emergency contact displayed.', residualL: 1, residualS: 3 },
+  { id: 'RA-GS-011', category: 'general', hazard: 'Untrained / uninducted personnel on site', whoAtRisk: 'All site personnel', consequences: 'Accident from operatives unfamiliar with site rules, hazards, emergency procedures. CDM 2015 enforcement risk.', initialL: 3, initialS: 3, controls: 'No site access without induction. Visitor register at gate. CSCS check on entry. Daily briefings before work commences. Buddy assignment for new starters.', residualL: 1, residualS: 2 },
+  { id: 'RA-GS-012', category: 'general', hazard: 'Mobile phone use during work', whoAtRisk: 'Operatives', consequences: 'Distraction leading to falls, plant strikes, missed warnings. Hand-arm interference with PPE.', initialL: 3, initialS: 3, controls: 'No mobile phones during plant operation. Designated phone use areas. Hands-free in vehicles. Brief on photography permissions on site.', residualL: 2, residualS: 2 },
+
+  // ═══ ASBESTOS ═══
+  { id: 'RA-AS-001', category: 'asbestos', hazard: 'Disturbing suspected ACMs (asbestos-containing materials)', whoAtRisk: 'Operatives, occupants', consequences: 'Long-latency lung disease (mesothelioma, asbestosis, lung cancer). Exposure liability extends decades. Legal action under CAR 2012.', initialL: 3, initialS: 5, controls: 'STOP work if asbestos suspected. R&D survey reviewed before any disturbance. Licensed contractor for licensable work. UKAS-accredited analyst for non-licensed. Site briefing on ACM register.', residualL: 1, residualS: 5 },
+  { id: 'RA-AS-002', category: 'asbestos', hazard: 'Inadequate enclosure during licensed removal', whoAtRisk: 'Operatives, neighbouring premises', consequences: 'Fibre release contaminating wider site. Costly decontamination. HSE prohibition notice. Licence revocation.', initialL: 2, initialS: 5, controls: 'Negative pressure enclosure with HEPA filtration. Smoke test before start. Daily inspection by analyst. 3-stage decontamination. Reassurance air clearance before reoccupation.', residualL: 1, residualS: 5 },
+  { id: 'RA-AS-003', category: 'asbestos', hazard: 'Asbestos waste disposal failure', whoAtRisk: 'Operatives, public, environment', consequences: 'Environmental contamination. Environmental Agency prosecution. Costly site remediation.', initialL: 2, initialS: 4, controls: 'Double-bagged in red asbestos sacks. Locked skip with EA permit. Licensed waste carrier only. Consignment notes retained 3 years.', residualL: 1, residualS: 3 },
+  { id: 'RA-AS-004', category: 'asbestos', hazard: 'Cross-contamination from PPE', whoAtRisk: 'Operatives, families', consequences: 'Domestic exposure to asbestos fibres. Para-occupational mesothelioma cases.', initialL: 2, initialS: 5, controls: 'Disposable Type 5/6 coveralls — never worn off-site. Boots cleaned in decon. Powered air respirator stored on-site. Daily decontamination shower.', residualL: 1, residualS: 4 },
+  { id: 'RA-AS-005', category: 'asbestos', hazard: 'Untrained operative undertaking NNLW work', whoAtRisk: 'Operatives', consequences: 'Inadvertent exposure. CAR 2012 enforcement — minimum HSE Cat A training required for all NNLW.', initialL: 3, initialS: 4, controls: 'UKATA Category A awareness for all operatives in proximity. Cat B training for those carrying out NNLW. Health surveillance and personal exposure monitoring.', residualL: 1, residualS: 3 },
+  { id: 'RA-AS-006', category: 'asbestos', hazard: 'Asbestos cement product breakage', whoAtRisk: 'Operatives', consequences: 'Fibre release from broken cement sheet/pipe. Lower fibre release than friable but still hazardous.', initialL: 3, initialS: 4, controls: 'Hand-held methods only — no power tools. Pre-wet to suppress fibre. Bag fragments. Type 5/6 coverall and FFP3.', residualL: 1, residualS: 3 },
+
+  // ═══ HEALTH & WELLBEING ═══
+  { id: 'RA-HW-001', category: 'health', hazard: 'Mental health crisis on site', whoAtRisk: 'Operatives', consequences: 'Self-harm, suicide. Construction industry has highest male suicide rate. Loss of life and lasting impact on team.', initialL: 3, initialS: 5, controls: 'Mates in Mind / Lighthouse Club briefing. Mental Health First Aiders trained. Confidential 24/7 helpline displayed. No-stigma culture. Manager training on spotting signs.', residualL: 2, residualS: 4 },
+  { id: 'RA-HW-002', category: 'health', hazard: 'Chronic stress / burnout', whoAtRisk: 'Operatives, supervisors', consequences: 'Long-term sickness absence. Reduced concentration leading to accidents. Family/relationship breakdown.', initialL: 3, initialS: 3, controls: 'Reasonable working hours. Mandatory rest breaks. Workload management by supervisor. Annual wellbeing surveys. EAP available.', residualL: 2, residualS: 2 },
+  { id: 'RA-HW-003', category: 'health', hazard: 'Drug or alcohol misuse', whoAtRisk: 'All site personnel', consequences: 'Impaired operative causing accident — fatality risk. Disciplinary and criminal consequences.', initialL: 2, initialS: 5, controls: 'Drug/alcohol policy displayed. Random testing programme. Pre-employment screening. Confidential support through EAP. Manager intervention training.', residualL: 1, residualS: 4 },
+  { id: 'RA-HW-004', category: 'health', hazard: 'Fatigue from extended shifts', whoAtRisk: 'Operatives, road users', consequences: 'Cognitive impairment leading to accidents. Driving home after long shift = collision risk.', initialL: 3, initialS: 4, controls: 'Working hours limit (max 12h shift, 60h/week). Mandatory breaks. Fatigue management policy. Naps if shift overruns. Hotel for distant operatives.', residualL: 2, residualS: 3 },
+  { id: 'RA-HW-005', category: 'health', hazard: 'Pregnancy at work', whoAtRisk: 'Pregnant operative, foetus', consequences: 'Miscarriage from chemical exposure or trauma. Manual handling injury. Heat stress.', initialL: 2, initialS: 4, controls: 'New & expectant mother risk assessment. Chemical exposure restrictions. Reduced manual handling. Rest breaks. Avoid working at height after week 28. Reassign duties as needed.', residualL: 1, residualS: 3 },
+  { id: 'RA-HW-006', category: 'health', hazard: 'Young worker (under 18)', whoAtRisk: 'Young operative', consequences: 'Inexperience leading to higher accident rate. Legal restrictions on hours and tasks.', initialL: 3, initialS: 3, controls: 'Specific risk assessment for under-18s. Direct supervision. Restricted from high-risk plant. Limited hours per Working Time Regulations. Apprenticeship framework where applicable.', residualL: 2, residualS: 2 },
+  { id: 'RA-HW-007', category: 'health', hazard: 'Skin sensitisation / dermatitis', whoAtRisk: 'Operatives', consequences: 'Chronic skin condition leading to permanent inability to work with the substance. Career-ending.', initialL: 3, initialS: 3, controls: 'Avoid skin contact — proper PPE selection. Health surveillance at COSHH-required frequency. Skin checks. Barrier creams. Removal from exposure on first sign.', residualL: 1, residualS: 2 },
+  { id: 'RA-HW-008', category: 'health', hazard: 'Hand-arm vibration syndrome (HAVS)', whoAtRisk: 'Operatives using vibrating tools', consequences: 'Permanent nerve damage, vascular damage (white finger). Career impact — operative may need redeployment.', initialL: 4, initialS: 3, controls: 'Daily exposure calculator (EAV 100 pts, ELV 400 pts). Tool selection — low-vibration where available. Tool rotation. Health surveillance Tier 1-3. Symptom reporting.', residualL: 2, residualS: 2 },
+  { id: 'RA-HW-009', category: 'health', hazard: 'Eye fatigue / vision strain', whoAtRisk: 'Operatives, supervisors', consequences: 'Headaches, blurred vision, reduced concentration leading to accidents.', initialL: 2, initialS: 2, controls: 'Adequate lighting (200-500 lux). Anti-glare task lighting. DSE assessment for office workers. Regular breaks. Annual eye tests if required.', residualL: 1, residualS: 1 },
+  { id: 'RA-HW-010', category: 'health', hazard: 'Respiratory sensitisation', whoAtRisk: 'Operatives', consequences: 'Occupational asthma — irreversible. Operative must avoid further exposure for life.', initialL: 3, initialS: 4, controls: 'Substitution where possible (water-based paint, lead-free solder, etc.). Effective LEV. RPE class matched to substance. Health surveillance with spirometry. Remove on first symptoms.', residualL: 1, residualS: 3 },
+
+  // ═══ OCCUPIED PREMISES ═══
+  { id: 'RA-OC-001', category: 'occupied', hazard: 'Public access to working area', whoAtRisk: 'Public', consequences: 'Injury to staff, customers, or pupils. Civil claim. Reputational damage.', initialL: 3, initialS: 4, controls: 'Hoarding/Heras separation. Out-of-hours working. Access controlled by FM. Daily walk-through with FM. Signage and floor markings.', residualL: 1, residualS: 3 },
+  { id: 'RA-OC-002', category: 'occupied', hazard: 'Disruption to building occupants', whoAtRisk: 'Occupants, operatives', consequences: 'Complaints, business disruption, schedule overruns. Acoustic and dust complaints leading to enforcement.', initialL: 3, initialS: 2, controls: 'Communicated schedule with FM and tenants. Noisy works restricted hours. Dust suppression. Daily updates board. Liaison with FM.', residualL: 2, residualS: 2 },
+  { id: 'RA-OC-003', category: 'occupied', hazard: 'Live MEP services interfering with works', whoAtRisk: 'Operatives, occupants', consequences: 'Electric shock, gas leak, water damage to occupied areas. Disruption to building services.', initialL: 3, initialS: 4, controls: 'As-built drawings reviewed. Permit to work for live works. Isolations confirmed before disturbance. FM-controlled key cabinet. Out-of-hours for major MEP works.', residualL: 1, residualS: 3 },
+  { id: 'RA-OC-004', category: 'occupied', hazard: 'Smoke detection / sprinkler interference', whoAtRisk: 'Building occupants', consequences: 'False alarm causing evacuation and business disruption. Worse — smoke detector covered and not reinstated, meaning real fire goes undetected.', initialL: 3, initialS: 4, controls: 'FM-controlled detector isolation. Daily sign-on/sign-off log. Smoke-shroud protection over individual heads. Reinstatement check end-of-shift.', residualL: 1, residualS: 3 },
+  { id: 'RA-OC-005', category: 'occupied', hazard: 'Infection control breach in healthcare', whoAtRisk: 'Patients, staff', consequences: 'Hospital-acquired infection. Aspergillus from disturbance of dust during hospital works. Patient deaths in extreme cases.', initialL: 3, initialS: 5, controls: 'HBN/HTM compliance. ICRA assessment. Negative pressure enclosure. HEPA filtration. Daily wet clean. Air monitoring.', residualL: 1, residualS: 4 },
+  { id: 'RA-OC-006', category: 'occupied', hazard: 'Safeguarding incident in school', whoAtRisk: 'Pupils, operatives', consequences: 'Allegation against operative. Criminal investigation. Reputational damage to school and contractor.', initialL: 2, initialS: 4, controls: 'DBS checks for all site team. Safeguarding induction. No contact with pupils. Visible ID. Designated routes through occupied parts.', residualL: 1, residualS: 3 },
+
+  // ═══ WEATHER & SEASONAL ═══
+  { id: 'RA-WE-001', category: 'weather', hazard: 'High wind operations at height', whoAtRisk: 'Operatives, public', consequences: 'Operative blown off platform. Loose materials/sheets becoming projectiles. Crane collapse from wind load.', initialL: 3, initialS: 5, controls: 'Anemometer on site. Stand-down at 17 mph for normal work, 11 mph for crane lifts, 28 mph for plant generally. Lashing of loose materials. Daily Met Office check.', residualL: 1, residualS: 5 },
+  { id: 'RA-WE-002', category: 'weather', hazard: 'Lightning strike on site', whoAtRisk: 'All site personnel', consequences: 'Fatality from direct or near-strike. Damage to electronic equipment. Site evacuation.', initialL: 1, initialS: 5, controls: 'Lightning monitoring app. Stand-down on first thunder heard. Operatives leave high points (cranes, scaffolds, roofs). Site office or substantial building shelter.', residualL: 1, residualS: 4 },
+  { id: 'RA-WE-003', category: 'weather', hazard: 'Ice and snow on access routes', whoAtRisk: 'All site personnel', consequences: 'Slips and falls leading to fractures. Vehicle skids on icy roads. RIDDOR reportable.', initialL: 4, initialS: 3, controls: 'Daily gritting / salting of routes. Remove snow before start of shift. Footwear with grip. Reduced site speed limit. Walkway lighting.', residualL: 2, residualS: 2 },
+  { id: 'RA-WE-004', category: 'weather', hazard: 'Heatwave / extreme heat', whoAtRisk: 'Operatives', consequences: 'Heat exhaustion, heat stroke, dehydration. Cognitive impairment leading to accidents. Sunburn / skin cancer over career.', initialL: 3, initialS: 3, controls: 'Acclimatisation period for new starters. Cool drinking water available. Shaded breaks every 30 mins above 28°C. Cooling cloths/vests. Sunscreen. Shift earlier in day.', residualL: 2, residualS: 2 },
+  { id: 'RA-WE-005', category: 'weather', hazard: 'Cold weather / hypothermia risk', whoAtRisk: 'Operatives', consequences: 'Hypothermia, frostbite, reduced dexterity leading to accidents. Worst for outdoor static work.', initialL: 3, initialS: 3, controls: 'Layered insulated clothing. Warm welfare facilities. Hot drinks. Stop-work threshold for extreme cold. Move task indoors where possible. Buddy check.', residualL: 1, residualS: 2 },
+  { id: 'RA-WE-006', category: 'weather', hazard: 'Heavy rain / flooding', whoAtRisk: 'Operatives, environment', consequences: 'Slips, electrical hazards from wet equipment. Excavations collapsing. Pollution of watercourses from site runoff.', initialL: 3, initialS: 3, controls: 'Drainage of working areas. Pump out excavations. Cover materials. Stop work in extreme conditions. Silt management to protect waterways.', residualL: 2, residualS: 2 },
+
+  // ═══ EXPANSIONS WITHIN EXISTING CATEGORIES ═══
+  { id: 'RA-WAH-012', category: 'wah', hazard: 'Falls from boom-type MEWP basket', whoAtRisk: 'MEWP operator', consequences: 'Catapult effect — operator launched out of basket. Fatal injury. Most common when basket strikes obstacle.', initialL: 2, initialS: 5, controls: 'IPAF 1b/3b operator. Harness with short restraint lanyard tied to designated anchor. Pre-use inspection. Banksman where required. Wind speed monitor.', residualL: 1, residualS: 5 },
+  { id: 'RA-WAH-013', category: 'wah', hazard: 'Falls during scaffold dismantle', whoAtRisk: 'Scaffolders', consequences: 'Falls from height during strike phase when guard rails removed. Most scaffolder fatalities occur at this point.', initialL: 4, initialS: 5, controls: 'CISRS L2 minimum for dismantle. SG4 fall arrest. Top-down dismantle sequence. Drop zones below clear. No removal of last guard rail until clipped on.', residualL: 1, residualS: 4 },
+  { id: 'RA-WAH-014', category: 'wah', hazard: 'Fall through fragile cement-fibre sheets', whoAtRisk: 'Operatives', consequences: 'Fatal fall through cement-fibre sheet roofing — common older industrial buildings. Sheet not load-bearing.', initialL: 3, initialS: 5, controls: 'No walking on cement-fibre sheet. Crawling boards or staging. Edge-protected access. Permit to work on fragile roofs. Briefing on identification.', residualL: 1, residualS: 5 },
+
+  { id: 'RA-PM-011', category: 'plant', hazard: 'Telehandler tip-over on slope', whoAtRisk: 'Operator, ground crew', consequences: 'Operator crushed. Load deposited unpredictably. Mechanical damage.', initialL: 2, initialS: 5, controls: 'CPCS/NPORS operator. Load chart adherence. Stabilisers deployed. Routes assessed for cross-fall. Tyre pressures correct.', residualL: 1, residualS: 4 },
+  { id: 'RA-PM-012', category: 'plant', hazard: 'Excavator quick-hitch failure', whoAtRisk: 'Ground crew', consequences: 'Bucket falls during operation. Multiple fatalities possible. Industry-wide problem.', initialL: 2, initialS: 5, controls: 'Auto-lock quick-hitch only — no semi-automatic. Daily pre-use check. Operator visual confirmation of pin engagement. No personnel within slew arc.', residualL: 1, residualS: 5 },
+  { id: 'RA-PM-013', category: 'plant', hazard: 'Skid-steer loader rollover', whoAtRisk: 'Operator', consequences: 'Operator crushed by rollover. Common in confined or sloped sites.', initialL: 2, initialS: 5, controls: 'Trained operator. Seatbelt always worn. ROPS in place. Routes pre-surveyed. Avoid steep cross-falls.', residualL: 1, residualS: 4 },
+  { id: 'RA-PM-014', category: 'plant', hazard: 'Wheel loader struck-by pedestrian', whoAtRisk: 'Pedestrians on site', consequences: 'Fatality from operator blind-spot. RIDDOR reportable. Common cause of fatal accidents on site.', initialL: 3, initialS: 5, controls: 'Pedestrian-vehicle segregation. Banksman in mixed zones. 360° camera/proximity alarm. Hi-vis enforced. Eye contact rule before pedestrian crosses.', residualL: 1, residualS: 5 },
+
+  { id: 'RA-EL-008', category: 'electrical', hazard: 'Inadvertent disturbance of live cables behind ceiling/wall', whoAtRisk: 'Operatives', consequences: 'Electric shock, fire from short-circuit, building damage.', initialL: 3, initialS: 4, controls: 'CAT scan and Genny before any drilling/cutting. Live cable detector. Permit to penetrate. Photographs of services pre-cover.', residualL: 1, residualS: 3 },
+  { id: 'RA-EL-009', category: 'electrical', hazard: 'PV system DC live during install', whoAtRisk: 'Operatives, electricians', consequences: 'PV strings remain live in daylight even when AC isolated. Electric shock from DC.', initialL: 3, initialS: 4, controls: 'Cover panels during install. Use lockable DC isolators. Voltage-rated insulated tools. Two-person rule for DC live work.', residualL: 1, residualS: 3 },
+  { id: 'RA-EL-010', category: 'electrical', hazard: 'Inadequate earth bonding', whoAtRisk: 'Operatives, future occupants', consequences: 'Electric shock from extraneous conductive parts. Failed inspection.', initialL: 2, initialS: 4, controls: 'Bonding to BS 7671. Earth electrode test. Continuity test on every circuit. Periodic inspection certificate.', residualL: 1, residualS: 3 },
+
+  { id: 'RA-FW-007', category: 'fire', hazard: 'Hot works inadvertently igniting concealed combustibles', whoAtRisk: 'All site personnel', consequences: 'Site fire spreading inside cavity walls. Hours after operatives have left. Major property damage and operative fatality if night work.', initialL: 2, initialS: 5, controls: 'Hot work permit. Fire watcher 60 minutes after work ends. Thermal imaging camera check of cavities. Suppression in cavity if depth allows.', residualL: 1, residualS: 4 },
+  { id: 'RA-FW-008', category: 'fire', hazard: 'Lithium battery thermal runaway', whoAtRisk: 'Operatives, fire wardens', consequences: 'Battery fire — extreme heat, toxic smoke. Difficult to extinguish (water-only). Spreads rapidly.', initialL: 2, initialS: 4, controls: 'Battery storage area separated 5m from combustibles. Charging on metal table only. No damaged batteries on site. Lithium battery extinguisher (F500/AVD).', residualL: 1, residualS: 3 },
+
+  { id: 'RA-CS-006', category: 'confined', hazard: 'Sudden flooding of confined space', whoAtRisk: 'Entrant', consequences: 'Drowning. Unable to escape. Examples: drainage works during heavy rain, basement during burst pipe.', initialL: 2, initialS: 5, controls: 'Weather forecast checked pre-entry. Pump capacity standby. Top-man can pump out / call rescue. Escape harness on entrant.', residualL: 1, residualS: 4 },
+  { id: 'RA-CS-007', category: 'confined', hazard: 'Toxic atmosphere from disturbance', whoAtRisk: 'Entrant', consequences: 'Loss of consciousness from H2S, methane, CO. Rapid incapacitation possible.', initialL: 3, initialS: 5, controls: 'Continuous gas monitor (4-gas). Forced ventilation. Pre-entry test. Escape SCBA standby. Ventilation hose in entry.', residualL: 1, residualS: 4 },
+
+  { id: 'RA-EX-009', category: 'excavation', hazard: 'Buried services strike during dig', whoAtRisk: 'Operatives, public', consequences: 'Electrocution from cable strike. Gas leak/explosion. Water main flooding. Costly utility damage claim.', initialL: 3, initialS: 5, controls: 'CAT and Genny before any dig. Statutory utility records. Hand-dig within 500mm of services. Spotter for machine dig near services. Permit to dig.', residualL: 1, residualS: 4 },
+  { id: 'RA-EX-010', category: 'excavation', hazard: 'Ground contamination encountered', whoAtRisk: 'Operatives, environment', consequences: 'Chemical exposure, skin contact with contaminated soil. Off-site contamination if mishandled.', initialL: 3, initialS: 3, controls: 'Phase 1/2 site investigation reviewed. Stop work if unexpected contamination encountered. Specialist disposal. Decon for operatives.', residualL: 1, residualS: 2 },
+  { id: 'RA-EX-011', category: 'excavation', hazard: 'Excavation undermining adjacent structures', whoAtRisk: 'Operatives, building occupants', consequences: 'Building collapse onto excavation. Multiple fatalities possible.', initialL: 2, initialS: 5, controls: 'Structural engineer\'s temporary works design. Sequential excavation. Underpinning where required. Crack monitoring. Stop on first sign of movement.', residualL: 1, residualS: 5 },
+
+  { id: 'RA-LO-009', category: 'lifting', hazard: 'Lifting accessory failure during lift', whoAtRisk: 'Lift team, slingers', consequences: 'Load drops onto operatives. Multiple fatalities possible. Major mechanical damage.', initialL: 2, initialS: 5, controls: 'LOLER thorough exam in date. Accessories inspected pre-use. SWL never exceeded. Designated lift area cleared. CPCS slinger/signaller.', residualL: 1, residualS: 5 },
+  { id: 'RA-LO-010', category: 'lifting', hazard: 'Tandem lift co-ordination failure', whoAtRisk: 'Lift teams, ground crew', consequences: 'Load swings or drops. Crane overload. Multiple cranes involved means coordination critical.', initialL: 2, initialS: 5, controls: 'Appointed Person plan. Pre-lift briefing. Single lift director. Radio comms. Practice dry-run for complex tandems.', residualL: 1, residualS: 4 },
+
+  { id: 'RA-DM-007', category: 'demolition', hazard: 'Premature collapse during structural strip-out', whoAtRisk: 'Demolition operatives', consequences: 'Operative crushed by falling structure. Most common cause of demolition fatalities.', initialL: 2, initialS: 5, controls: 'Demolition plan signed by demolition engineer. Sequence respected — top-down. Temporary works for any retained elements. CCDO trained operatives.', residualL: 1, residualS: 5 },
+  { id: 'RA-DM-008', category: 'demolition', hazard: 'Hidden voids / basements during demo', whoAtRisk: 'Operatives', consequences: 'Plant or operative falls into unmarked void. Crush injury or fall.', initialL: 2, initialS: 4, controls: 'Pre-demo R&D survey identifies voids. Probing of suspect areas. Cover or barrier all voids. Drone survey for inaccessible areas.', residualL: 1, residualS: 3 },
+
+  { id: 'RA-DU-007', category: 'dust', hazard: 'Wood dust during sanding (HW)', whoAtRisk: 'Joiners, finishers', consequences: 'Long-term respiratory disease — softwood asthma; hardwood nasal cancer (carcinogenic).', initialL: 4, initialS: 4, controls: 'M-class on-tool extraction. Wet sanding where possible. Health surveillance — annual lung function. FFP3 minimum.', residualL: 2, residualS: 3 },
+  { id: 'RA-DU-008', category: 'dust', hazard: 'Cement dust during mixing', whoAtRisk: 'Operatives', consequences: 'Respiratory irritation, dermatitis, eye damage.', initialL: 3, initialS: 3, controls: 'Pre-mixed mortar/concrete preferred. LEV at mixer. Wet methods. FFP3 mask. Goggles.', residualL: 2, residualS: 2 },
+
+  { id: 'RA-CH-007', category: 'coshh', hazard: 'Solvent inhalation in confined area', whoAtRisk: 'Operatives', consequences: 'CNS depression, dizziness, unconsciousness. Long-term liver/kidney damage.', initialL: 3, initialS: 4, controls: 'Substitute water-based products where possible. Mechanical ventilation. A2 RPE. Time-limited exposure. No naked flame.', residualL: 1, residualS: 3 },
+  { id: 'RA-CH-008', category: 'coshh', hazard: 'Acid burns from cleaners', whoAtRisk: 'Operatives', consequences: 'Severe chemical burns to skin and eyes. Lung damage from vapour inhalation.', initialL: 2, initialS: 4, controls: 'Acid-resistant gloves and goggles. Eye-wash on hand. Ventilation. Acid-to-water mixing only. Spill kit.', residualL: 1, residualS: 3 },
+
+  { id: 'RA-TV-007', category: 'traffic', hazard: 'Reversing plant strikes pedestrian', whoAtRisk: 'Site personnel', consequences: 'Fatal crush injury from reversing plant — leading cause of construction fatalities.', initialL: 3, initialS: 5, controls: 'Banksman for all reversing. 360° cameras. Reversing alarms. Hi-vis. Segregated pedestrian routes. Eye-contact protocol.', residualL: 1, residualS: 5 },
+  { id: 'RA-TV-008', category: 'traffic', hazard: 'Public road interface — temporary traffic management', whoAtRisk: 'Public, site team', consequences: 'Vehicle/pedestrian struck. RTC at site exit. Public claim.', initialL: 3, initialS: 4, controls: 'Chapter 8 compliant TM. Approved diversion routes. Banksman during peak times. Wheel-wash to prevent road contamination.', residualL: 1, residualS: 3 },
+
+  { id: 'RA-EN-006', category: 'environment', hazard: 'Pollution incident — hydraulic oil spill', whoAtRisk: 'Environment', consequences: 'Watercourse pollution. EA prosecution. Significant remediation cost.', initialL: 2, initialS: 4, controls: 'Drip trays under static plant. Spill kit at plant compound. Hose inspection daily. Pollution incident plan.', residualL: 1, residualS: 3 },
+  { id: 'RA-EN-007', category: 'environment', hazard: 'Noise complaint from neighbours', whoAtRisk: 'Public, project programme', consequences: 'Council enforcement notice. Stop work. Schedule overrun. Reputation impact.', initialL: 3, initialS: 2, controls: 'Section 61 consent. Noise barriers. Restricted hours. Quietest plant available. Liaison officer for community.', residualL: 2, residualS: 2 },
+
+  { id: 'RA-WC-005', category: 'welding', hazard: 'Welder eye flash (arc-eye)', whoAtRisk: 'Welder, bystanders', consequences: 'Painful corneal flash burn 6-12h after exposure. Temporary blindness.', initialL: 4, initialS: 2, controls: 'Welding shield mandatory. Welding screens around welder to protect bystanders. Auto-darkening lens. No looking directly at arc.', residualL: 2, residualS: 1 },
+  { id: 'RA-WC-006', category: 'welding', hazard: 'Welding fume in confined space', whoAtRisk: 'Welder', consequences: 'Acute exposure to high fume concentration. CO poisoning. Asphyxiation.', initialL: 3, initialS: 5, controls: 'Confined space permit. LEV mandatory. Powered air respirator. Continuous gas monitor. Top-man. Restricted duration.', residualL: 1, residualS: 4 },
+
+  { id: 'RA-NV-005', category: 'noise', hazard: 'Whole-body vibration from plant operation', whoAtRisk: 'Plant operators', consequences: 'Lower back disorders, sciatica from prolonged vibration exposure. Chronic disability.', initialL: 3, initialS: 3, controls: 'Daily exposure A(8) calculation. EAV 0.5 m/s², ELV 1.15 m/s². Seat condition maintained. Routes smoothed. Speed limits. Operator rotation.', residualL: 2, residualS: 2 },
+  { id: 'RA-NV-006', category: 'noise', hazard: 'Hearing damage from intermittent peak noise', whoAtRisk: 'Operatives in noisy zones', consequences: 'Permanent noise-induced hearing loss. Tinnitus. RIDDOR reportable.', initialL: 4, initialS: 3, controls: 'Hearing protection in noise zones (>85dB(A)). Zoning signed. Audiometry pre-employment and annually. Quietest plant available.', residualL: 2, residualS: 2 },
+
+  { id: 'RA-SC-006', category: 'scaffold', hazard: 'Scaffold tie failure', whoAtRisk: 'Operatives, public', consequences: 'Scaffold collapse. Multiple fatalities. Major incident.', initialL: 1, initialS: 5, controls: 'Designed scaffold by competent designer. Tie pattern per design. Drilled tie tests. Weekly inspection. Wind speed stand-down.', residualL: 1, residualS: 5 },
+
+  { id: 'RA-ST-008', category: 'structural', hazard: 'Premature loading of fresh concrete', whoAtRisk: 'Operatives, occupants', consequences: 'Structural failure. Operative crush injury. Construction defect.', initialL: 2, initialS: 5, controls: 'Cube test results before strike. Engineer\'s clearance to load. No early strike of formwork. Curing protected.', residualL: 1, residualS: 4 },
 ]
 
 // ── COSHH LIBRARY ──
@@ -288,6 +383,31 @@ export const HAVS_LIBRARY: HAVSLibraryItem[] = [
   { id: 'HAVS-060', tool: 'Pole Saw (chainsaw on pole)', vibrationMag: 5.0, typicalUse: '45 mins' },
   { id: 'HAVS-061', tool: 'Earth Auger / Post Hole Borer', vibrationMag: 9.0, typicalUse: '20 mins' },
   { id: 'HAVS-062', tool: 'Vibrating Plate (small)', vibrationMag: 8.0, typicalUse: '30 mins' },
+  // ═══ More cordless tools ═══
+  { id: 'HAVS-063', tool: 'Cordless Combi Drill (12V)', vibrationMag: 3.0, typicalUse: '60 mins' },
+  { id: 'HAVS-064', tool: 'Cordless Impact Driver (compact)', vibrationMag: 4.0, typicalUse: '60 mins' },
+  { id: 'HAVS-065', tool: 'Cordless Mini Grinder (76mm)', vibrationMag: 5.0, typicalUse: '45 mins' },
+  { id: 'HAVS-066', tool: 'Cordless Multi-tool / Oscillating', vibrationMag: 6.0, typicalUse: '30 mins' },
+  // ═══ Tile / stone work ═══
+  { id: 'HAVS-067', tool: 'Tile Removal Hammer', vibrationMag: 11.0, typicalUse: '20 mins' },
+  { id: 'HAVS-068', tool: 'Stone Pneumatic Carving Tool', vibrationMag: 8.0, typicalUse: '30 mins' },
+  // ═══ Roofing ═══
+  { id: 'HAVS-069', tool: 'Slate Cutter (handheld)', vibrationMag: 4.0, typicalUse: '60 mins' },
+  { id: 'HAVS-070', tool: 'Felt Stripper (manual rotating)', vibrationMag: 7.0, typicalUse: '30 mins' },
+  // ═══ MEP specialist ═══
+  { id: 'HAVS-071', tool: 'Pipe Threader (handheld)', vibrationMag: 3.0, typicalUse: '60 mins' },
+  { id: 'HAVS-072', tool: 'Cable Pulling Drum (motorised)', vibrationMag: 2.0, typicalUse: '60 mins' },
+  { id: 'HAVS-073', tool: 'Pipe Press Tool (electric)', vibrationMag: 4.0, typicalUse: '60 mins' },
+  // ═══ Demolition / cutting ═══
+  { id: 'HAVS-074', tool: 'Wall / Block Saw (track-mounted)', vibrationMag: 5.0, typicalUse: '60 mins' },
+  { id: 'HAVS-075', tool: 'Concrete Cutter (handheld petrol)', vibrationMag: 9.0, typicalUse: '20 mins' },
+  // ═══ Specialist heritage ═══
+  { id: 'HAVS-076', tool: 'Mortar Rake (electric)', vibrationMag: 6.0, typicalUse: '45 mins' },
+  { id: 'HAVS-077', tool: 'Stone Etching Tool', vibrationMag: 6.0, typicalUse: '30 mins' },
+  // ═══ Plant operator interface ═══
+  { id: 'HAVS-078', tool: 'Whole-body Vibration: Dumper Operator', vibrationMag: 0.6, typicalUse: 'Whole shift' },
+  { id: 'HAVS-079', tool: 'Whole-body Vibration: Excavator Operator', vibrationMag: 0.5, typicalUse: 'Whole shift' },
+  { id: 'HAVS-080', tool: 'Whole-body Vibration: Roller Operator', vibrationMag: 0.7, typicalUse: 'Whole shift' },
 ]
 
 // ── NOISE LIBRARY ──
@@ -307,6 +427,56 @@ export const NOISE_LIBRARY: NoiseLibraryItem[] = [
   { id: 'NOISE-013', activity: 'General Construction Activities', typicalDb: 78, hearingProtection: 'None required (below lower EAV)', controls: 'Below action level. Monitor if combined with intermittent noisy tasks.' },
   { id: 'NOISE-014', activity: 'Scaffold Erection / Striking', typicalDb: 88, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Hearing protection zone. Rubber fittings to reduce impact noise. Communication by radio not shouting.' },
   { id: 'NOISE-015', activity: 'Steel Erection / Bolting', typicalDb: 90, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Impact driver lower noise than ratchet in many cases. Hearing protection mandatory during bolting-up. Rubber pads on landing areas.' },
+  // ═══ Drilling / cutting ═══
+  { id: 'NOISE-016', activity: 'Hand Drill (cordless)', typicalDb: 85, hearingProtection: 'Ear plugs', controls: 'At upper EAV. Hearing protection if used continuously >15 mins.' },
+  { id: 'NOISE-017', activity: 'Diamond Core Drilling (wet)', typicalDb: 90, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Wet method. Hearing protection within 5m. Continuous extraction reduces fume but not noise.' },
+  { id: 'NOISE-018', activity: 'Wall Chasing', typicalDb: 100, hearingProtection: 'Ear defenders (SNR 30+)', controls: '15m hearing protection zone. Wet methods lower dust not noise. Communicate by radio.' },
+  { id: 'NOISE-019', activity: 'Tile Cutter / Stone Saw', typicalDb: 95, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Wet cutting reduces dust. Hearing protection in 5m zone. Diamond blade for cleaner cut.' },
+  { id: 'NOISE-020', activity: 'Reciprocating Saw', typicalDb: 92, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Hearing protection within 3m. Cordless preferred over corded. Sharp blade reduces force needed.' },
+  { id: 'NOISE-021', activity: 'Jigsaw', typicalDb: 90, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Hearing protection in proximity. Sharp blade. Stable workpiece.' },
+  { id: 'NOISE-022', activity: 'Circular Saw (handheld)', typicalDb: 100, hearingProtection: 'Ear defenders (SNR 30+)', controls: 'Hearing protection 5m zone. Sharp blade reduces noise. Blade guard maintained.' },
+  { id: 'NOISE-023', activity: 'Wall Chaser', typicalDb: 98, hearingProtection: 'Ear defenders (SNR 30+)', controls: 'Hearing protection mandatory. M-class extraction for dust. Sharp blade reduces both dust and noise.' },
+
+  // ═══ Plant / heavy ═══
+  { id: 'NOISE-024', activity: 'Excavator (Wheeled/Tracked)', typicalDb: 88, hearingProtection: 'Ear defenders (SNR 25+) for operator', controls: 'Cab insulation maintained. Door closed during operation. Operator audiometry program.' },
+  { id: 'NOISE-025', activity: 'Telehandler', typicalDb: 85, hearingProtection: 'Ear plugs in cab', controls: 'At upper EAV. Cab insulation. Maintain engine and exhaust.' },
+  { id: 'NOISE-026', activity: 'Dumper Operation', typicalDb: 90, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Cab insulation. Operator within cab. Outside the cab — hearing protection within 5m.' },
+  { id: 'NOISE-027', activity: 'Generator Running', typicalDb: 95, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Acoustic enclosure where available. Locate away from work areas. Hearing protection within 5m.' },
+  { id: 'NOISE-028', activity: 'Compressor Operation', typicalDb: 92, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Acoustic enclosure. Hearing protection within 5m. Maintain unit (worn parts get noisier).' },
+  { id: 'NOISE-029', activity: 'Tower Crane Slewing', typicalDb: 80, hearingProtection: 'Not normally required', controls: 'Below action level for ground crew. Operator inside cab insulated.' },
+  { id: 'NOISE-030', activity: 'Mobile Crane Operation', typicalDb: 85, hearingProtection: 'Ear plugs for slingers/banksmen', controls: 'At upper EAV for ground crew. Distance from engine where possible.' },
+  { id: 'NOISE-031', activity: 'Concrete Pump', typicalDb: 95, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Hearing protection 5m zone. Pump screen / barrier. Limit duration of operation.' },
+
+  // ═══ Demolition / breaking ═══
+  { id: 'NOISE-032', activity: 'Pneumatic Breaker (paving)', typicalDb: 105, hearingProtection: 'Ear defenders (SNR 35+)', controls: 'Hearing protection 25m zone. Time limits. Hydraulic breaker on excavator lower noise.' },
+  { id: 'NOISE-033', activity: 'Hydraulic Breaker (excavator-mounted)', typicalDb: 110, hearingProtection: 'Ear defenders (SNR 35+)', controls: '50m hearing protection zone. Section 61 consent for noise. Notify neighbours.' },
+  { id: 'NOISE-034', activity: 'Demolition (mechanical)', typicalDb: 98, hearingProtection: 'Ear defenders (SNR 30+)', controls: 'Hearing protection 15m zone. Dust suppression also reduces airborne noise transmission.' },
+  { id: 'NOISE-035', activity: 'Crusher / Mobile Screen', typicalDb: 100, hearingProtection: 'Ear defenders (SNR 30+)', controls: 'Acoustic barriers. Hearing protection 15m zone. Maintain dust suppression to prevent dry running.' },
+  { id: 'NOISE-036', activity: 'Concrete Saw (wet)', typicalDb: 100, hearingProtection: 'Ear defenders (SNR 30+)', controls: 'Wet cutting. Hearing protection 15m. Diamond blade reduces effort and noise.' },
+
+  // ═══ Specialist trades ═══
+  { id: 'NOISE-037', activity: 'Floor Polisher / Burnisher', typicalDb: 80, hearingProtection: 'Not normally required', controls: 'Below action level. Monitor cumulative exposure if multiple tasks.' },
+  { id: 'NOISE-038', activity: 'Power Float (concrete)', typicalDb: 85, hearingProtection: 'Ear plugs', controls: 'At upper EAV. Time limits per operative. Engine maintained.' },
+  { id: 'NOISE-039', activity: 'Vibrating Plate / Wacker', typicalDb: 95, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Hearing protection mandatory. Time limits. Rotate operators.' },
+  { id: 'NOISE-040', activity: 'Tarmac Paver Operation', typicalDb: 90, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Hearing protection in 5m zone. Reverse alarm calibrated. Operator cab insulation.' },
+  { id: 'NOISE-041', activity: 'Roller Operation', typicalDb: 88, hearingProtection: 'Ear plugs for operator', controls: 'Cab insulation. Limit duration of vibratory mode.' },
+  { id: 'NOISE-042', activity: 'Bitumen Boiler', typicalDb: 75, hearingProtection: 'Not required', controls: 'Below action level. Fume hazard primary concern not noise.' },
+
+  // ═══ Outdoor / landscaping ═══
+  { id: 'NOISE-043', activity: 'Leaf Blower (petrol)', typicalDb: 105, hearingProtection: 'Ear defenders (SNR 35+)', controls: 'Hearing protection mandatory. Battery-powered alternative available. Time-of-day restrictions in residential.' },
+  { id: 'NOISE-044', activity: 'Lawnmower (petrol)', typicalDb: 95, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Hearing protection mandatory. Battery alternative. Sharpened blade reduces effort.' },
+  { id: 'NOISE-045', activity: 'Hedge Trimmer (petrol)', typicalDb: 100, hearingProtection: 'Ear defenders (SNR 30+)', controls: 'Hearing protection mandatory. Time limit per session.' },
+  { id: 'NOISE-046', activity: 'Stump Grinder', typicalDb: 105, hearingProtection: 'Ear defenders (SNR 35+)', controls: 'Hearing protection 15m zone. Time limits. Notify neighbours.' },
+  { id: 'NOISE-047', activity: 'Wood Chipper', typicalDb: 110, hearingProtection: 'Ear defenders (SNR 35+)', controls: '25m hearing protection zone. Section 61 in residential. Limit operating hours.' },
+
+  // ═══ Construction by region ═══
+  { id: 'NOISE-048', activity: 'Pile Driving (impact)', typicalDb: 115, hearingProtection: 'Ear defenders (SNR 35+) + plugs', controls: '50m hearing protection zone. Section 61 mandatory. Impact piling avoided where possible — use CFA or driven sheet alternatives.' },
+  { id: 'NOISE-049', activity: 'Sheet Pile Driving', typicalDb: 110, hearingProtection: 'Ear defenders (SNR 35+)', controls: '50m hearing protection zone. Vibratory hammer lower noise than impact. Notify neighbours.' },
+  { id: 'NOISE-050', activity: 'Abrasive Blasting (Vacu-blast)', typicalDb: 100, hearingProtection: 'Ear defenders (SNR 30+)', controls: 'Hearing protection in zone. Vacu-blast lower than open. Containment shelter.' },
+  { id: 'NOISE-051', activity: 'Hot Work — Lance Cutting', typicalDb: 95, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Hearing protection. Combined with hot work and fume hazards — full PPE.' },
+  { id: 'NOISE-052', activity: 'Site Vehicle Reversing Alarm', typicalDb: 90, hearingProtection: 'Not for short bursts', controls: 'Smart reversing alarm (matches ambient). Calibration annual. Test daily.' },
+  { id: 'NOISE-053', activity: 'Multi-tool / Oscillating Saw', typicalDb: 88, hearingProtection: 'Ear plugs', controls: 'At upper EAV with extended use. Hearing protection if used >15 mins continuous.' },
+  { id: 'NOISE-054', activity: 'Belt Sander', typicalDb: 92, hearingProtection: 'Ear defenders (SNR 25+)', controls: 'Hearing protection within 3m. M-class extraction for dust.' },
 ]
 
 // ── TRADE CATEGORIES ──
@@ -319,6 +489,11 @@ export const TRADE_CATEGORIES: TradeCategory[] = [
   { id: 'demolition', label: 'Demolition & Enabling', icon: '💥' },
   { id: 'specialist', label: 'Specialist', icon: '🔬' },
   { id: 'civil', label: 'Civil & Highways', icon: '🛣️' },
+  { id: 'heritage', label: 'Heritage & Listed Buildings', icon: '🏛️' },
+  { id: 'occupied', label: 'Occupied / Live Premises', icon: '🏢' },
+  { id: 'renewables', label: 'Renewables & Low Carbon', icon: '☀️' },
+  { id: 'access', label: 'Working at Height & Access', icon: '🪜' },
+  { id: 'infrastructure', label: 'Rail, Marine & Aviation', icon: '🛤️' },
 ]
 
 // ── TRADE TEMPLATES ──
@@ -679,5 +854,383 @@ export const RAMS_TRADES: RAMSTrade[] = [
     ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-ear'],
     defaultDocs: ['method-statement', 'risk-assessment'],
     msSteps: ['Obtain utility records and permits. Coordinate with statutory bodies.', 'Set out trench routes. CAT scan for existing services.', 'Excavate trench. Hand dig near existing services.', 'Install ducts/pipes per utility company specification.', 'Backfill and compact in layers. Warning tape above services.', 'Connection by utility company or accredited contractor.', 'Reinstate surface. Test and commission.', 'As-built survey and handover records.'],
+  },
+  {
+    id: 'kerbing', trade: 'Kerbing & Edging', category: 'civil', icon: '🛣️',
+    description: 'Kerb laying, channel, edge restraint',
+    raItems: ['RA-MH-001', 'RA-MH-002', 'RA-PM-001', 'RA-TV-001', 'RA-GS-001'],
+    coshhItems: ['COSHH-001'], havsItems: ['HAVS-004', 'HAVS-001'], noiseItems: ['NOISE-001'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['Set out kerb line from drawings. Check levels.', 'Excavate kerb foundation to required depth.', 'Pour concrete bedding. Strike off level.', 'Lift kerbs into position using mechanical aid.', 'Set kerbs to line and level. Joint and haunch.', 'Backfill behind kerb. Compact in layers.', 'Pointing where required.', 'Snag and handover.'],
+  },
+  {
+    id: 'street-furniture', trade: 'Street Furniture & Signage', category: 'civil', icon: '🚧',
+    description: 'Bollards, benches, lighting columns, signage',
+    raItems: ['RA-MH-001', 'RA-EX-001', 'RA-PM-001', 'RA-TV-001', 'RA-EL-006'],
+    coshhItems: ['COSHH-001'], havsItems: ['HAVS-002', 'HAVS-004'], noiseItems: ['NOISE-002'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['Confirm locations from drawings. Mark out positions.', 'CAT scan and excavate foundations.', 'Pour concrete foundations to required depth.', 'Install items per manufacturer instructions.', 'Plumb and align. Backfill and compact.', 'Connect electrical where required by qualified electrician.', 'Test and commission lighting.', 'Snag and handover.'],
+  },
+
+  // ═══ HERITAGE & LISTED BUILDINGS ═══
+  {
+    id: 'lime-pointing', trade: 'Lime Pointing & Mortar Repair', category: 'heritage', icon: '🏛️',
+    description: 'Traditional lime mortar repointing, repairs to listed structures',
+    raItems: ['RA-WAH-001', 'RA-WAH-002', 'RA-MH-001', 'RA-CH-001', 'RA-FW-005'],
+    coshhItems: ['COSHH-001', 'COSHH-013'], havsItems: ['HAVS-001', 'HAVS-029'], noiseItems: ['NOISE-001'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-rpe', 'ppe-eyewear'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['Pre-start condition survey. Photograph existing fabric.', 'Heritage Officer/Conservation Officer briefing if required.', 'Set up scaffold or access platform. Edge protection.', 'Rake out defective mortar by hand or with low-impact tools — avoid damage to historic stonework.', 'Mix lime mortar to specified ratio (e.g. NHL 3.5). Hot lime training where used.', 'Pack mortar in courses. Tooling to match historic profile.', 'Protect from rapid drying — damp hessian/sheeting per heritage spec.', 'Curing period 28+ days. Final photographic record. Handover with material certificates.'],
+  },
+  {
+    id: 'stone-restoration', trade: 'Stone Masonry & Restoration', category: 'heritage', icon: '🏛️',
+    description: 'Stone repair, indenting, dutchman repairs, replacement',
+    raItems: ['RA-WAH-001', 'RA-MH-008', 'RA-LO-001', 'RA-CH-002', 'RA-DU-001'],
+    coshhItems: ['COSHH-001', 'COSHH-013'], havsItems: ['HAVS-001', 'HAVS-024', 'HAVS-029'], noiseItems: ['NOISE-001', 'NOISE-003'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-rpe', 'ppe-eyewear'],
+    defaultDocs: ['method-statement', 'risk-assessment', 'coshh'],
+    msSteps: ['Heritage assessment. Method approved by Conservation Officer.', 'Set up scaffold with full edge protection.', 'Cut out defective stone using diamond-tipped hand tools — avoid percussive impact.', 'Cut new stone (matched to original). Lift with mechanical aid.', 'Set stone in lime mortar. Match coursing.', 'Pin where required (stainless steel pins).', 'Tool finish to match adjacent stone.', 'Final inspection by Conservation Officer. Photographic handover.'],
+  },
+  {
+    id: 'slate-roofing', trade: 'Slate Roofing (Heritage)', category: 'heritage', icon: '🏛️',
+    description: 'Welsh slate, traditional slating, lead detailing',
+    raItems: ['RA-WAH-001', 'RA-WAH-007', 'RA-WAH-011', 'RA-MH-006', 'RA-FW-006'],
+    coshhItems: ['COSHH-006', 'COSHH-001'], havsItems: ['HAVS-001'], noiseItems: ['NOISE-001'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-harness'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['Pre-start condition survey. Identify existing slates for re-use.', 'Erect scaffold with edge protection. Roof ladders and crawl boards.', 'Strip existing slates carefully. Stack for re-use.', 'Inspect and repair battens, felt, sarking as required.', 'Set out slate courses. Hole/peg as required.', 'Lay slates from eaves up. Match historic detailing.', 'Lead flashing/valleys per heritage detail.', 'Final inspection. Handover with slate provenance records.'],
+  },
+  {
+    id: 'lead-work', trade: 'Lead Work & Flashings', category: 'heritage', icon: '🏛️',
+    description: 'Lead roofing, flashings, decorative lead work',
+    raItems: ['RA-WAH-001', 'RA-WAH-007', 'RA-FW-001', 'RA-FW-003', 'RA-MH-006'],
+    coshhItems: ['COSHH-014'], havsItems: ['HAVS-001'], noiseItems: ['NOISE-001'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-welding', 'ppe-harness'],
+    defaultDocs: ['method-statement', 'risk-assessment', 'coshh'],
+    msSteps: ['Hot work permit. Fire watch arrangements.', 'Set up access. Edge protection.', 'Cut lead to size from rolls. Use shears or knives — no powered cutting.', 'Form lead using bossing tools. Avoid dry hammering (lead poisoning).', 'Lead burn welding (fully PPE\'d operatives only).', 'Fix lead with copper or stainless clips per heritage detail.', 'Patination oil applied to slow oxidation.', 'Final inspection. Hand and face washing essential post-work.'],
+  },
+  {
+    id: 'sash-window', trade: 'Sash Window Restoration', category: 'heritage', icon: '🪟',
+    description: 'Box sash window repair, draught-proofing, glass restoration',
+    raItems: ['RA-WAH-001', 'RA-WAH-002', 'RA-MH-006', 'RA-CH-001'],
+    coshhItems: ['COSHH-002', 'COSHH-007'], havsItems: ['HAVS-013'], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-rpe', 'ppe-eyewear'],
+    defaultDocs: ['method-statement', 'risk-assessment', 'coshh'],
+    msSteps: ['Pre-start survey. Lead paint test (pre-1980 buildings).', 'Set up internal/external scaffolding or platform.', 'Carefully remove sashes and stops. Label for tracking.', 'Strip old paint by wet methods only — no sanding without LEV.', 'Repair timber rot — splice or epoxy fill per heritage approval.', 'Re-cord, re-weight, re-glaze as needed.', 'Refinish with matched paint system. Avoid VOC paints in occupied areas.', 'Re-fit. Smoothness check. Handover.'],
+  },
+
+  // ═══ OCCUPIED / LIVE PREMISES ═══
+  {
+    id: 'office-fit-out', trade: 'Office Fit-Out (Occupied)', category: 'occupied', icon: '🏢',
+    description: 'Cat A/B fit-out in occupied or partially-occupied premises',
+    raItems: ['RA-WAH-002', 'RA-MH-001', 'RA-EL-003', 'RA-FW-001', 'RA-DU-002', 'RA-NV-001', 'RA-GS-002'],
+    coshhItems: ['COSHH-007', 'COSHH-018'], havsItems: ['HAVS-006', 'HAVS-013'], noiseItems: ['NOISE-001'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-rpe'],
+    defaultDocs: ['method-statement', 'risk-assessment', 'noise'],
+    msSteps: ['Liaise with FM/tenant. Out-of-hours working agreed.', 'Erect dust screens/hoarding. Floor protection.', 'Daily clean-down regime. Limit dust generation.', 'Carry out works per floor plan and finishes schedule.', 'Coordinate with live MEP services. Permit to work for live areas.', 'Snag end-of-shift. Re-instate clean state for next-day occupants.', 'Practical completion walkthrough with FM.', 'Handover with O&M manuals and asset register.'],
+  },
+  {
+    id: 'retail-fit-out', trade: 'Retail Fit-Out', category: 'occupied', icon: '🏪',
+    description: 'Shop fit-out, often in occupied shopping centres',
+    raItems: ['RA-MH-001', 'RA-EL-003', 'RA-FW-001', 'RA-WAH-002', 'RA-TV-002'],
+    coshhItems: ['COSHH-007', 'COSHH-018'], havsItems: ['HAVS-006'], noiseItems: ['NOISE-001'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['Centre management briefing. Out-of-hours working window.', 'Hoarding and dust screens. Public separation.', 'Strip-out per agreed sequence.', 'Install shop floor finishes, joinery, services.', 'Connect signage and shopfront per landlord spec.', 'Final clean. Snag.', 'Tenant fit-out completion certificate.', 'Hand over to retailer.'],
+  },
+  {
+    id: 'healthcare-works', trade: 'Healthcare / Hospital Works', category: 'occupied', icon: '🏥',
+    description: 'Works in operational healthcare environments — infection control critical',
+    raItems: ['RA-WAH-002', 'RA-DU-002', 'RA-EL-003', 'RA-NV-001', 'RA-GS-002', 'RA-FW-001'],
+    coshhItems: ['COSHH-018', 'COSHH-007'], havsItems: ['HAVS-006'], noiseItems: ['NOISE-001'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-rpe', 'ppe-coverall'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['HBN/HTM compliance check. Infection control briefing.', 'IPC permit raised. Daily HEPA inspection.', 'Negative pressure enclosure where required.', 'Operatives via separate route. Clean PPE in clinical area.', 'Daily wet-clean of works area. No dry sweeping.', 'Smoke detection isolation by FM only — never directly.', 'Air monitoring (particulate count) where specified.', 'Handover with terminal clean certificate.'],
+  },
+  {
+    id: 'school-works', trade: 'School Works (Occupied)', category: 'occupied', icon: '🎓',
+    description: 'Construction in occupied school or academy environments',
+    raItems: ['RA-WAH-002', 'RA-MH-001', 'RA-FW-001', 'RA-PM-001', 'RA-EL-003', 'RA-GS-002'],
+    coshhItems: [], havsItems: [], noiseItems: ['NOISE-001'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['Safeguarding briefing. DBS checks for site team.', 'Heras fencing — no public/pupil access.', 'Out-of-hours / holiday working preferred for noisy works.', 'Daily site inductions for any visitor.', 'Cleardown end-of-shift — no tools/materials accessible.', 'Coordination with school management for fire drills.', 'Final commissioning to suit term-time start.', 'Handover with safeguarding sign-off.'],
+  },
+
+  // ═══ ACCESS & WORKING AT HEIGHT (specialist) ═══
+  {
+    id: 'scaffold-system', trade: 'System Scaffolding (Layher/Cuplok)', category: 'access', icon: '🪜',
+    description: 'Modular system scaffold erection',
+    raItems: ['RA-WAH-001', 'RA-WAH-008', 'RA-WAH-010', 'RA-MH-001', 'RA-MH-002', 'RA-LO-001', 'RA-PM-001'],
+    coshhItems: [], havsItems: [], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-harness'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['CISRS-trained operatives only. PASMA where mobile.', 'Pre-start scaffold design check. Loading specification.', 'Erect base lifts. Sole boards on soft ground.', 'Build lifts to design. Bracing and ties as drawing.', 'Edge protection at all platforms — guard rail, mid-rail, toe board.', 'Ladders or stair towers for access.', 'Scaffold tagged GREEN before handover. Daily inspection.', 'Strike in reverse sequence. Stack for re-use.'],
+  },
+  {
+    id: 'scaffold-tube', trade: 'Tube & Fitting Scaffolding', category: 'access', icon: '🪜',
+    description: 'Traditional tube and clip scaffolding',
+    raItems: ['RA-WAH-001', 'RA-WAH-008', 'RA-WAH-010', 'RA-MH-001', 'RA-MH-002'],
+    coshhItems: [], havsItems: [], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-harness'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['CISRS-trained operatives. SG4 fall arrest where applicable.', 'Confirm scaffold design from drawings.', 'Erect base lift. Sole boards. Adjustable bases.', 'Build standards, ledgers, transoms.', 'Brace per design. Tie to structure as required.', 'Boards, guard rails, toe boards.', 'Tag GREEN. Hand over with inspection certificate.', 'Periodic inspection at 7-day intervals.'],
+  },
+  {
+    id: 'mast-climber', trade: 'Mast Climbing Work Platforms (MCWP)', category: 'access', icon: '🪜',
+    description: 'Twin mast climbers for façade access',
+    raItems: ['RA-WAH-001', 'RA-WAH-003', 'RA-WAH-010', 'RA-LO-001', 'RA-NV-002'],
+    coshhItems: [], havsItems: [], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-harness'],
+    defaultDocs: ['method-statement', 'risk-assessment', 'lift-plan'],
+    msSteps: ['IPAF MCWP trained operators only. Lift plan approved.', 'Erect masts to base structure. Securing pins.', 'Erect platform. Wind speed monitoring.', 'Tie to structure at design intervals.', 'Test platform travel up/down. Emergency descent test.', 'Edge protection on platform.', 'Operatives at height tied off where SG4 applies.', 'Strike on completion in reverse sequence.'],
+  },
+  {
+    id: 'rope-access', trade: 'Rope Access (IRATA)', category: 'access', icon: '🪢',
+    description: 'IRATA rope access for inspection, maintenance, façade work',
+    raItems: ['RA-WAH-001', 'RA-WAH-002', 'RA-WAH-006'],
+    coshhItems: [], havsItems: [], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-harness'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['IRATA Level 1/2/3 ratio per IRATA TACS. L3 supervisor on site.', 'Rope rigging plan. Anchor inspection (15 kN minimum).', 'Two independent ropes per operative. Back-up device.', 'Pre-start checks of all PPE and equipment.', 'Operatives descend in twin-rope system. Tools tethered.', 'Bottom-up rescue plan rehearsed. Top-team awareness.', 'Daily logging of equipment and rope hours.', 'Safe egress. Equipment de-rigged and inspected.'],
+  },
+  {
+    id: 'bmu', trade: 'BMU / Façade Access Equipment', category: 'access', icon: '🏢',
+    description: 'Building maintenance unit operation, suspended cradle works',
+    raItems: ['RA-WAH-001', 'RA-WAH-003', 'RA-LO-001', 'RA-NV-002'],
+    coshhItems: [], havsItems: [], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-harness'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['BMU competent operator only. LOLER thorough exam in date.', 'Pre-start checks per manufacturer manual. Wind speed check.', 'Cradle inspection. Twin-rope for fall arrest.', 'Operatives don harness, attach to designated anchor.', 'Travel cradle to working position. Communicate with BMU operator.', 'Carry out works. Tools tethered. No leaning over.', 'Return to docking station. Secure cradle.', 'Sign off shift on BMU log.'],
+  },
+
+  // ═══ RENEWABLES & LOW CARBON ═══
+  {
+    id: 'solar-pv', trade: 'Solar PV Installation', category: 'renewables', icon: '☀️',
+    description: 'Roof and ground-mount photovoltaic systems',
+    raItems: ['RA-WAH-001', 'RA-WAH-007', 'RA-WAH-011', 'RA-EL-001', 'RA-EL-005', 'RA-MH-006'],
+    coshhItems: [], havsItems: ['HAVS-006'], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-harness', 'ppe-glasses'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['MCS-certified installer. Roof structural check.', 'Erect roof access. Edge protection or harness.', 'Install rails to roof per manufacturer spec.', 'Lift panels (manual handling — 2-person carry).', 'Mount panels. DC cabling — kept off roof until ready.', 'Inverter installation by qualified electrician.', 'Commissioning per MCS protocol. G98/G99 connection.', 'Handover with as-built and yield projection.'],
+  },
+  {
+    id: 'ev-charge-point', trade: 'EV Charge Point Installation', category: 'renewables', icon: '⚡',
+    description: 'EV charging point install — domestic and commercial',
+    raItems: ['RA-EL-001', 'RA-EL-003', 'RA-EX-001', 'RA-MH-001', 'RA-TV-002'],
+    coshhItems: [], havsItems: ['HAVS-006', 'HAVS-022'], noiseItems: ['NOISE-003'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['OZEV-approved installer. Pre-install survey complete.', 'Isolate supply. Lock-out tag-out.', 'Run cabling per BS 7671. RCD type B.', 'Install charge point. Earth as required.', 'OZEV/DNO notification (G98/G99 where required).', 'Commission. Test under load.', 'Customer demonstration. Hand over with certificates.', 'Register with vehicle/grant body as required.'],
+  },
+  {
+    id: 'heat-pump', trade: 'Air-Source Heat Pump Install', category: 'renewables', icon: '🌡️',
+    description: 'ASHP / GSHP install with associated MEP',
+    raItems: ['RA-MH-001', 'RA-EL-001', 'RA-EX-001', 'RA-PM-001', 'RA-WC-001'],
+    coshhItems: ['COSHH-016'], havsItems: ['HAVS-006'], noiseItems: ['NOISE-001'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves'],
+    defaultDocs: ['method-statement', 'risk-assessment', 'coshh'],
+    msSteps: ['MCS-certified installer. F-Gas registered for refrigerant work.', 'Pre-install survey. EPC and heat-loss calc reviewed.', 'Strip existing system if applicable. Drain down safely.', 'Pour external pad for unit. Install brackets.', 'Lift unit into position. Mechanical aid for heavy units.', 'Pipework, refrigerant lines, electrical to BS 7671.', 'Refrigerant charge by F-Gas qualified engineer.', 'Commission per MCS. Customer demo + handover.'],
+  },
+  {
+    id: 'underfloor-heating', trade: 'Underfloor Heating Install', category: 'renewables', icon: '🌡️',
+    description: 'Wet UFH manifold, pipework, screed',
+    raItems: ['RA-MH-001', 'RA-MH-003', 'RA-EL-003', 'RA-CH-001'],
+    coshhItems: ['COSHH-001', 'COSHH-016'], havsItems: [], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-knee'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['Insulation board fixed to deck.', 'Manifold position confirmed. Mark out.', 'Lay UFH pipe per design. Clip to insulation.', 'Pressure test pipework before screed.', 'Install electrical thermostats by qualified electrician.', 'Screed pour by specialist team.', 'Commissioning curve over multiple days post-screed cure.', 'Customer demo. Handover with controls programming.'],
+  },
+
+  // ═══ SPECIALIST EXPANSIONS ═══
+  {
+    id: 'asbestos-licensed', trade: 'Licensed Asbestos Removal', category: 'specialist', icon: '☣️',
+    description: 'Licensed removal of asbestos-containing materials',
+    raItems: ['RA-WAH-002', 'RA-MH-001', 'RA-DU-002', 'RA-CH-002'],
+    coshhItems: ['COSHH-018'], havsItems: [], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-coverall', 'ppe-rpe'],
+    defaultDocs: ['method-statement', 'risk-assessment', 'coshh'],
+    msSteps: ['HSE-licensed contractor. ASB5 notification 14 days before start.', 'Pre-start meeting with analyst.', 'Erect enclosure. Negative pressure unit. 3-stage decon.', 'Operatives with current medical and FFP3/powered RPE.', 'Wet stripping. Bag waste in red/asbestos-marked sacks.', 'Smoke test enclosure. Visual inspection by analyst.', 'Reassurance air clearance. Certificate of Reoccupation.', 'Waste disposal via licensed carrier to permitted site.'],
+  },
+  {
+    id: 'asbestos-survey', trade: 'Asbestos Surveys (R&D)', category: 'specialist', icon: '☣️',
+    description: 'Asbestos refurbishment & demolition surveys',
+    raItems: ['RA-WAH-002', 'RA-CS-001'],
+    coshhItems: ['COSHH-018'], havsItems: [], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-coverall', 'ppe-rpe'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['BOHS P402 surveyor. PASMA/IPAF as required.', 'Pre-survey desk study. Site induction.', 'Walk-through inspection — all areas.', 'Take samples per HSG264. Bag and label.', 'Photograph each sample location.', 'Submit samples to UKAS lab. Await results.', 'Compile survey report with risk register.', 'Handover to client with management plan recommendations.'],
+  },
+  {
+    id: 'fire-stopping', trade: 'Fire Stopping & Compartmentation', category: 'specialist', icon: '🔥',
+    description: 'Penetration sealing, fire collars, intumescent paint',
+    raItems: ['RA-MH-001', 'RA-WAH-002', 'RA-FW-001'],
+    coshhItems: ['COSHH-019'], havsItems: [], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-rpe'],
+    defaultDocs: ['method-statement', 'risk-assessment', 'coshh'],
+    msSteps: ['IFC-certified or equivalent qualified operatives.', 'Survey existing compartmentation. Mark up plans.', 'Pre-install MEP penetrations confirmed.', 'Install batt/sleeve to manufacturer detail.', 'Apply mastic/foam per spec. Fire-rated only.', 'Photographic record of every penetration.', 'Compile fire stopping register with location plans.', 'Handover to FM with O&M and maintenance plan.'],
+  },
+  {
+    id: 'intumescent', trade: 'Intumescent Paint to Steelwork', category: 'specialist', icon: '🔥',
+    description: 'Fire protection coatings to structural steel',
+    raItems: ['RA-WAH-001', 'RA-MH-001'],
+    coshhItems: ['COSHH-019'], havsItems: [], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-rpe', 'ppe-coverall'],
+    defaultDocs: ['method-statement', 'risk-assessment', 'coshh'],
+    msSteps: ['ICATS-trained applicator. Manufacturer spec confirmed.', 'Surface prep — abrasive blast / power tool clean to Sa 2.5.', 'Primer applied per spec.', 'Build coats of intumescent to required DFT.', 'DFT measurement at agreed frequency. Reject and recoat if low.', 'Topcoat where exposed.', 'QA records — substrate, primer DFT, IUM DFT, topcoat.', 'Hand over with ICATS certificate per element.'],
+  },
+  {
+    id: 'curtain-walling', trade: 'Curtain Walling Install', category: 'envelope', icon: '🪟',
+    description: 'Aluminium / steel curtain wall systems',
+    raItems: ['RA-WAH-001', 'RA-LO-001', 'RA-MH-008', 'RA-EL-005'],
+    coshhItems: ['COSHH-007'], havsItems: ['HAVS-006'], noiseItems: ['NOISE-001'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-harness'],
+    defaultDocs: ['method-statement', 'risk-assessment', 'lift-plan'],
+    msSteps: ['Setting-out from primary structure datum.', 'Brackets to slab. Survey checked.', 'Mullions lifted into position. Tied off where SG4.', 'Transoms installed. Plumb and align.', 'Glazing units lifted with vacuum lifters or mechanical aid.', 'Glazing gaskets and pressure plates. Caps installed.', 'Pressure test sample bays.', 'Snag and final clean.'],
+  },
+  {
+    id: 'structural-glazing', trade: 'Structural Glazing / Frameless', category: 'envelope', icon: '🪟',
+    description: 'Frameless glass walls, balustrades, atrium glazing',
+    raItems: ['RA-WAH-001', 'RA-LO-001', 'RA-MH-008'],
+    coshhItems: ['COSHH-019', 'COSHH-007'], havsItems: [], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-harness'],
+    defaultDocs: ['method-statement', 'risk-assessment', 'lift-plan'],
+    msSteps: ['Pre-install survey. Tolerances to glass manufacturer.', 'Install fixings to structure.', 'Lift glass with vacuum lifters. Spreader bar for large units.', 'Position glass. Bond with structural silicone per manufacturer.', '7-day cure before load.', 'Edge protection until cured.', 'Snag and clean.', 'Handover with structural sign-off.'],
+  },
+  {
+    id: 'shop-fitting', trade: 'Shop Fitting / Joinery', category: 'fitout', icon: '🪚',
+    description: 'Bespoke joinery, shopfront, retail fitout',
+    raItems: ['RA-MH-001', 'RA-EL-003', 'RA-PM-006'],
+    coshhItems: ['COSHH-007', 'COSHH-002'], havsItems: ['HAVS-018', 'HAVS-019'], noiseItems: ['NOISE-004'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-rpe', 'ppe-glasses'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['Workshop fabrication where possible.', 'Site delivery and storage.', 'Setting-out from finished floor and ceiling.', 'Carcass install. Plumb and level.', 'Front pieces and detail joinery.', 'Wiring/plumbing into joinery as required.', 'Final clean and protection.', 'Snag and handover with care instructions.'],
+  },
+
+  // ═══ DEMOLITION ═══
+  {
+    id: 'soft-strip', trade: 'Soft Strip Demolition', category: 'demolition', icon: '💥',
+    description: 'Internal strip-out — fixtures, fittings, services',
+    raItems: ['RA-MH-001', 'RA-WAH-002', 'RA-DU-002', 'RA-EL-003', 'RA-CH-002'],
+    coshhItems: ['COSHH-018'], havsItems: ['HAVS-006', 'HAVS-009'], noiseItems: ['NOISE-001'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-rpe'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['Pre-strip asbestos survey. R&D survey reviewed.', 'Isolations confirmed for all services.', 'Strip in agreed sequence — top-down typically.', 'Segregate waste streams. Skip strategy.', 'Manual handling — mechanical aids for heavy items.', 'Daily clean-down. Damping for dust.', 'Recovery materials for re-use where practical.', 'Handover for full structural demolition.'],
+  },
+  {
+    id: 'structural-demolition', trade: 'Structural Demolition', category: 'demolition', icon: '💥',
+    description: 'Full structural demolition by mechanical means',
+    raItems: ['RA-WAH-001', 'RA-WAH-006', 'RA-PM-001', 'RA-PM-004', 'RA-DU-001', 'RA-NV-001'],
+    coshhItems: ['COSHH-018', 'COSHH-013'], havsItems: ['HAVS-002', 'HAVS-003'], noiseItems: ['NOISE-002', 'NOISE-013'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-rpe', 'ppe-ear'],
+    defaultDocs: ['method-statement', 'risk-assessment', 'noise'],
+    msSteps: ['CCDO-trained operatives. Demolition plan signed off.', 'Hoarding and exclusion zone.', 'Dust suppression — mist cannon or water spray.', 'Demolish in agreed sequence — high reach excavator.', 'Process arisings on-site for re-use. Steel separation.', 'Continuous noise/dust monitoring per consent.', 'Final ground level. Clear arisings.', 'Handover for next phase.'],
+  },
+  {
+    id: 'concrete-cutting', trade: 'Concrete Cutting & Drilling', category: 'demolition', icon: '🪨',
+    description: 'Diamond cutting, core drilling, controlled demolition',
+    raItems: ['RA-PM-005', 'RA-DU-001', 'RA-WAH-006', 'RA-GS-001'],
+    coshhItems: ['COSHH-013'], havsItems: ['HAVS-024', 'HAVS-028'], noiseItems: ['NOISE-001', 'NOISE-003'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-rpe', 'ppe-ear', 'ppe-glasses'],
+    defaultDocs: ['method-statement', 'risk-assessment', 'coshh'],
+    msSteps: ['Drawing review. Services scanned (GPR if structural).', 'Set up wet cutting — no dry methods inside buildings.', 'Mark cut lines. Operative briefing.', 'Execute cuts — diamond saw or core drill.', 'Slurry containment. No mains discharge.', 'Remove cut sections — mechanical aid.', 'Make good edges. Clean up slurry.', 'Handover to next trade.'],
+  },
+
+  // ═══ INFRASTRUCTURE — RAIL / MARINE / AVIATION ═══
+  {
+    id: 'rail-track', trade: 'Rail Track Works (Network Rail)', category: 'infrastructure', icon: '🛤️',
+    description: 'Track maintenance, possessions, S&T works',
+    raItems: ['RA-TV-001', 'RA-WAH-002', 'RA-EX-001', 'RA-EL-002', 'RA-PM-001'],
+    coshhItems: ['COSHH-008'], havsItems: ['HAVS-002', 'HAVS-011'], noiseItems: ['NOISE-002', 'NOISE-008'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-ear', 'ppe-glasses'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['Sentinel-trained operatives. PTS competence current.', 'COSS / IWA appointed per Rule Book.', 'T2/T3 possession or line blockage as planned.', 'Site briefing pre-shift. Headcount on/off track.', 'Carry out works within possession window.', 'Post-work inspection. P-Way records.', 'Handback signed by COSS.', 'Possession returned per timetable.'],
+  },
+  {
+    id: 'marine-works', trade: 'Marine / Dockyard Works', category: 'infrastructure', icon: '⚓',
+    description: 'Wharf, jetty, harbour construction',
+    raItems: ['RA-MA-001', 'RA-WAH-001', 'RA-LO-001', 'RA-EX-002', 'RA-EN-002'],
+    coshhItems: ['COSHH-008', 'COSHH-011'], havsItems: ['HAVS-011'], noiseItems: ['NOISE-001', 'NOISE-010'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-harness', 'ppe-lifejacket'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['Tide window confirmed. Met office briefing.', 'Lifejackets mandatory. Throw line and rescue plan.', 'Marine traffic management with port authority.', 'Plant on barge — secured for sea state.', 'Carry out works within tidal window.', 'Environmental controls — silt curtains where needed.', 'Daily marine pollution check.', 'Handover with as-built bathymetry.'],
+  },
+  {
+    id: 'airside', trade: 'Airside / Airport Works', category: 'infrastructure', icon: '✈️',
+    description: 'Runway, taxiway, apron construction',
+    raItems: ['RA-TV-001', 'RA-PM-001', 'RA-EL-001'],
+    coshhItems: ['COSHH-008'], havsItems: ['HAVS-011'], noiseItems: ['NOISE-002', 'NOISE-008'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['Airside permit / pass for all operatives.', 'Airfield Driving Permit (ADP) for plant operators.', 'NOTAM / Method of Work agreed with airfield ops.', 'FOD control — every plant inspected before/after.', 'Work to agreed window. Plant clear of airfield by close-out.', 'Surface laying / works as per design.', 'Linemarking and friction test where applicable.', 'Hand over to airfield ops.'],
+  },
+
+  // ═══ EXTERNAL — SOFT LANDSCAPING / TREE WORKS ═══
+  {
+    id: 'soft-landscaping', trade: 'Soft Landscaping & Planting', category: 'external', icon: '🌿',
+    description: 'Topsoil, turf, planting, irrigation',
+    raItems: ['RA-MH-001', 'RA-MH-003', 'RA-PM-001', 'RA-EX-001', 'RA-EN-001'],
+    coshhItems: ['COSHH-006'], havsItems: ['HAVS-016', 'HAVS-051'], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['Site clearance. Subgrade prep.', 'Topsoil import. Distribute to design depth.', 'Turfing or seed sowing per spec.', 'Plant tree pits — root barriers as needed.', 'Irrigation install where specified.', 'Establish maintenance regime.', 'Snag — replace failed plants.', 'Hand over with planting schedule.'],
+  },
+  {
+    id: 'tree-surgery', trade: 'Tree Surgery / Arboriculture', category: 'external', icon: '🌳',
+    description: 'Tree felling, pruning, removal',
+    raItems: ['RA-WAH-001', 'RA-PM-001', 'RA-WC-002', 'RA-EN-001'],
+    coshhItems: ['COSHH-005'], havsItems: ['HAVS-014', 'HAVS-060'], noiseItems: ['NOISE-014'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves', 'ppe-ear', 'ppe-face-shield'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['City & Guilds NPTC qualified climbers/operators.', 'Tree assessment — TPO / conservation area check.', 'Exclusion zone established. Banksman.', 'Climber harness, second rope, friction hitch.', 'Sectional dismantling — tools tethered.', 'Chipper operation per safe distance rule.', 'Site clearance. Stump grinding if specified.', 'Sign off with works register.'],
+  },
+
+  // ═══ MEP EXPANSION ═══
+  {
+    id: 'sprinklers', trade: 'Sprinkler Installation', category: 'mep', icon: '💧',
+    description: 'Wet/dry sprinkler systems, BS EN 12845',
+    raItems: ['RA-WAH-002', 'RA-MH-001', 'RA-LO-002', 'RA-PM-008'],
+    coshhItems: [], havsItems: ['HAVS-006', 'HAVS-022'], noiseItems: ['NOISE-001'],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['LPCB-certified installer. Design certificate confirmed.', 'Pipework runs marked from drawings.', 'Hangers and clips installed first fix.', 'Pipework install — pressed or threaded per spec.', 'Sprinkler heads at design centres.', 'Hydraulic pressure test to 1.5x working pressure.', 'Commissioning per BS EN 12845.', 'LPCB certificate handover.'],
+  },
+  {
+    id: 'data-cabling', trade: 'Data / Structured Cabling', category: 'mep', icon: '🔌',
+    description: 'Cat 6/6A/7, fibre, OM3/4',
+    raItems: ['RA-WAH-002', 'RA-EL-003', 'RA-MH-007'],
+    coshhItems: [], havsItems: [], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['BICSI / equivalent trained. Cabling design reviewed.', 'Containment route confirmed. Trays installed first.', 'Cable pulling — drum jacks, lubrication.', 'Termination at panels — keystone or RJ45.', 'Patch panels. Labelling per BS EN 50173.', 'Test every cable — Fluke certifier or equivalent.', 'Compile test results.', 'Handover with as-built and test certificates.'],
+  },
+  {
+    id: 'fire-alarm-comm', trade: 'Fire Alarm — Commercial', category: 'mep', icon: '🔔',
+    description: 'L1-L5 fire alarm systems, BS 5839',
+    raItems: ['RA-WAH-002', 'RA-EL-003', 'RA-FW-001'],
+    coshhItems: [], havsItems: ['HAVS-022'], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['BAFE / equivalent certified. Drawings approved.', 'Containment install. Cabling — fire-rated where required.', 'Devices fixed — detectors, sounders, MCPs, beacons.', 'Wiring back to panel. Loop testing.', 'Cause-and-effect commissioning.', 'Tenant briefing — silence/reset procedures.', 'BS 5839 commissioning certificate.', 'Handover to FM.'],
+  },
+  {
+    id: 'gas-install', trade: 'Gas Installation', category: 'mep', icon: '🔥',
+    description: 'Domestic / commercial gas pipework and appliances',
+    raItems: ['RA-EL-003', 'RA-CH-001', 'RA-FW-001'],
+    coshhItems: ['COSHH-009'], havsItems: ['HAVS-006'], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves'],
+    defaultDocs: ['method-statement', 'risk-assessment', 'coshh'],
+    msSteps: ['Gas Safe registered engineer. Notification to GSR.', 'Isolate existing supply. Lock-off.', 'Pipework install per BS 6891.', 'Tightness test pre-commissioning.', 'Commission appliances. Flue gas analysis.', 'Customer briefing on isolation valves.', 'Building regs notification (Cat A).', 'Gas Safety Certificate handover.'],
+  },
+  {
+    id: 'access-control', trade: 'Access Control & CCTV', category: 'mep', icon: '🔒',
+    description: 'Electronic access control, intruder alarms, CCTV',
+    raItems: ['RA-WAH-002', 'RA-EL-003'],
+    coshhItems: [], havsItems: [], noiseItems: [],
+    ppe: ['ppe-hardhat', 'ppe-hivis', 'ppe-boots', 'ppe-gloves'],
+    defaultDocs: ['method-statement', 'risk-assessment'],
+    msSteps: ['NSI/SSAIB-approved installer. Drawings approved.', 'Cabling install — concealed or in containment.', 'Devices installed — readers, cameras, sounders.', 'Configuration — networks, ACL, time profiles.', 'Customer training on system.', 'Handover with O&M.', 'Service contract details.', 'GDPR compliance for CCTV recording.'],
   },
 ]

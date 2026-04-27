@@ -132,4 +132,35 @@ export const TOOLBOX_TOPICS: ToolboxTopic[] = [
   { id: "tt-recent-coshh", title: "Lessons from chemical exposure", subtitle: "Recent dermatitis / respiratory cases", category: "incident", icon: "📋" },
   { id: "tt-riddor", title: "RIDDOR — what to report and when", subtitle: "Categories, 7-day rule, who reports", category: "incident", icon: "📋" },
   { id: "tt-investigation", title: "How we investigate incidents", subtitle: "5-whys, no-blame, learning culture", category: "incident", icon: "🔍" },
+
+  // ═══ Additional WAH ═══
+  { id: "tt-mewp-rescue", title: "MEWP rescue plan", subtitle: "Emergency lower, second person trained, ground-controls", category: "wah", icon: "🪜" },
+  { id: "tt-fall-arrest-rescue", title: "Fall arrest rescue — suspension trauma", subtitle: "10-minute rule, rescue plan, controlled descent", category: "wah", icon: "🪢" },
+  { id: "tt-roof-edge-protection", title: "Roof edge protection inspection", subtitle: "Daily checks before access, integrity of guard rails", category: "wah", icon: "🪜" },
+  { id: "tt-ladder-tying", title: "Ladder tying-off / footing", subtitle: "Top tie or footed, never leaning unrestrained", category: "wah", icon: "🪜" },
+
+  // ═══ Additional plant ═══
+  { id: "tt-quick-hitch", title: "Quick-hitch attachment safety", subtitle: "Pin engagement check, no semi-auto, daily inspection", category: "plant", icon: "🚜" },
+  { id: "tt-hot-engine", title: "Refuelling and hot engines", subtitle: "Cool-down period, no smoking, spill kit, ground level", category: "plant", icon: "⛽" },
+  { id: "tt-machine-guards", title: "Machine guards — never bypass", subtitle: "Why guards matter, reporting damaged guards", category: "plant", icon: "🔧" },
+  { id: "tt-isolation-loto", title: "Lock-out tag-out (LOTO)", subtitle: "Isolation, padlock, tag, prove dead — every time", category: "plant", icon: "🔒" },
+
+  // ═══ Additional health ═══
+  { id: "tt-suicide-warning-signs", title: "Suicide warning signs in colleagues", subtitle: "Construction industry has highest male suicide rate — what to look for", category: "health", icon: "🧠" },
+  { id: "tt-mens-health", title: "Men's health on site", subtitle: "Annual checks, GP visits, prostate cancer awareness", category: "health", icon: "❤️" },
+  { id: "tt-back-care", title: "Back care for the building trade", subtitle: "Long-term posture, mechanical aids, stretching", category: "health", icon: "🦴" },
+
+  // ═══ Additional site hazards ═══
+  { id: "tt-bsl-recognition", title: "Recognising signs of asbestos", subtitle: "Where it lurks (Artex, AIB, AC sheeting) — STOP and report", category: "site", icon: "☣️" },
+  { id: "tt-public-interface", title: "Working near the public", subtitle: "Pedestrian segregation, vehicle marshalling, public safety", category: "site", icon: "👥" },
+  { id: "tt-water-hazard", title: "Water and drowning hazard", subtitle: "Excavations, lakes, deep tanks — life jackets and rescue", category: "site", icon: "💧" },
+
+  // ═══ Additional behavioural ═══
+  { id: "tt-decision-fatigue", title: "Decision fatigue at end of shift", subtitle: "Why most accidents happen in last hour — slow down", category: "behavioural", icon: "🤝" },
+  { id: "tt-just-culture", title: "Just culture — accountability vs blame", subtitle: "Why we report, what blame-free means", category: "behavioural", icon: "💬" },
+
+  // ═══ Additional incident-led ═══
+  { id: "tt-recent-quick-hitch", title: "Lessons from recent quick-hitch failures", subtitle: "Industry incidents — anatomy of a failure", category: "incident", icon: "📋" },
+  { id: "tt-recent-confined-fatality", title: "Lessons from confined space fatalities", subtitle: "Multi-fatality patterns — rescuers becoming victims", category: "incident", icon: "📋" },
+  { id: "tt-recent-suspension", title: "Lessons from suspension trauma incidents", subtitle: "Post-fall harness deaths — rescue urgency", category: "incident", icon: "📋" },
 ];

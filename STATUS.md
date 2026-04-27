@@ -1,6 +1,40 @@
 # Status — 27 Apr 2026
 
-## Latest: Full RAMs is live — picker-first, single scroll page, 10 sections
+## Latest: Library expansion in full — every picker now dense
+
+The library IS the product. After this push:
+
+| Library | Before | After | Delta |
+|---|---:|---:|---:|
+| Trade templates | 38 | **78** | +40 |
+| RA hazards | 119 | **177** | +58 |
+| HAVs tools | 62 | **80** | +18 |
+| Noise activities | 15 | **54** | +39 |
+| COSHH substances | 50 | **79** | +29 |
+| Toolbox topics | 81 | **100** | +19 |
+| **Total pickable items** | **365** | **568** | **+203** |
+
+### Trade expansion (38 → 78)
+New categories: **Heritage** (lime pointing, stone restoration, slate, lead, sash windows), **Occupied** (office/retail fit-out, healthcare, schools), **Renewables** (solar PV, EV chargers, heat pumps, UFH), **Access** (system scaffold, tube & fitting, mast climbers, IRATA rope access, BMU), **Infrastructure** (rail/Network Rail, marine, airside).
+
+Specialist additions: licensed asbestos removal, asbestos surveys (R&D), fire stopping, intumescent paint, curtain walling, structural glazing, shop fitting, soft strip, structural demolition, concrete cutting & drilling, kerbing, street furniture, sprinklers, data cabling, fire alarm commercial, gas install, access control & CCTV, soft landscaping, tree surgery.
+
+### RA hazard categories added
+Asbestos (6 entries), Health & Wellbeing (10 — mental health, stress, drugs/alcohol, fatigue, pregnancy, young workers, dermatitis, HAVS, vision strain, respiratory sensitisation), Occupied Premises (6), Weather & Seasonal (6). Plus expansions in WAH, Plant, Electrical, Fire, Confined, Excavation, Lifting, Demolition, Dust, COSHH, Traffic, Environment, Welding and Noise.
+
+### COSHH substances added
+Self-levelling compound, ready-mix concrete, OSB dust, wood preservatives, mild steel welding fume, rosin solder flux, intumescent paint, anti-graffiti coating, line marking paint, Bondit, Sika 1, polyurethane mastic, two-stroke petrol, kerosene, industrial degreaser, toilet/drain acid cleaner, cellulose insulation, sheep wool, mortar dust (silica), brick/block dust, Legionella, rodent contamination, blood/needle stick, photo-luminescent, asbestos encapsulant, tannin block, patio cleaner, screed additive.
+
+### Noise expansion (15 → 54)
+Drilling/cutting (8), plant/heavy (8), demolition/breaking (5), specialist trades (6), outdoor/landscaping (5), regional construction (7).
+
+### HAVs additions
+Cordless tools (4 entries), tile/stone work (2), roofing (2), MEP specialist (3), demolition/cutting (2), specialist heritage (2), plus three whole-body vibration entries for plant operators (dumper, excavator, roller).
+
+### Toolbox topic additions
+More WAH (4 — MEWP rescue, suspension trauma, edge protection, ladder tying), plant (4 — quick-hitch, hot engines, guards, LOTO), health (3 — suicide signs, men's health, back care), site hazards (3 — asbestos recognition, public interface, water hazard), behavioural (2 — decision fatigue, just culture), incidents (3 — quick-hitch failures, confined fatalities, suspension trauma).
+
+## Earlier same day: Full RAMs is live — picker-first, single scroll page, 10 sections
 
 **The headline tool now works end-to-end.** Pick a trade, all 10 sections populate. Scroll down, tweak what you want, hit download. One PDF, every requirement.
 
@@ -138,20 +172,19 @@ Sidebar gets a "Documents" entry just under "Dashboard" so it's always one click
 
 This is the pattern. Every other builder (Risk Assessment, COSHH, HAVs, Toolbox Talk, etc.) plugs into the same spine — each is ~200 lines of UI wiring, no infra to build.
 
-## Library targets (the user's "library is the product" call)
+## Library targets — first wave hit
 
-The libraries need to keep growing. Current vs targets:
+| Library | Initial scaffold | After picker-first | After expansion (now) | Stretch target |
+|---|---:|---:|---:|---:|
+| Trade templates | 38 | 38 | **78** | 100+ |
+| RA hazards | 119 | 119 | **177** | 300+ |
+| HAVs tools | 20 | 62 | **80** | 100+ |
+| Noise activities | 15 | 15 | **54** | 80+ |
+| COSHH substances | 0 | 50 | **79** | 120+ |
+| Toolbox topics | 30 | 81 | **100** | 150+ |
+| **Total** | **222** | **365** | **568** | **850+** |
 
-| Library | Now | Target |
-|---|---|---|
-| Trade templates (with method statements) | 38 | 80+ — add specialist trades (asbestos, scaffolding, lift install, façade access, etc.) |
-| Risk assessment hazards | 180 | 300+ — add specialist categories |
-| HAVs tool magnitudes | 62 | 80+ — add manufacturer-specific entries |
-| COSHH substances | 50 | 80+ — add more trade-specific (resin floor, intumescent paint, etc.) |
-| Noise activities | 15 | 50+ |
-| Toolbox talk topics | 81 | 100+ |
-
-These can grow in waves — each addition is purely additive and shows up in the picker the next page load.
+These grow additively — every entry shows up in the picker on next page load with zero refactoring.
 
 ## What's NOT wired yet
 
