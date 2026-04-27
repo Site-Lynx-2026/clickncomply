@@ -89,7 +89,21 @@ function blankHazard(): Hazard {
   };
 }
 
-export function RiskAssessmentBuilder() {
+export interface RiskAssessmentBuilderProps {
+  /** Override the builder slug (so this same component can back specialist
+   * assessments like Working at Height, Manual Handling, etc.) */
+  slug?: string;
+  /** Pre-filter trade list to a single category id (e.g. "wah", "mh"). */
+  categoryFilter?: string;
+  /** Default title prefix used when prefilling. */
+  defaultTitle?: string;
+}
+
+export function RiskAssessmentBuilder({
+  slug = "risk-assessment",
+  categoryFilter,
+  defaultTitle,
+}: RiskAssessmentBuilderProps = {}) {
   const {
     form,
     update,
@@ -99,7 +113,7 @@ export function RiskAssessmentBuilder() {
     manualSave,
     downloadPdf,
   } = useBuilderDocument<RiskAssessmentForm>({
-    builderSlug: "risk-assessment",
+    builderSlug: slug,
     emptyForm,
     titleFromForm: (f) => f.title || null,
   });

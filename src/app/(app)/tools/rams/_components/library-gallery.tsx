@@ -1,22 +1,21 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Check, X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * LibraryGallery — the universal "open" of every ClickNComply builder.
+ * LibraryGallery — picker for items inside a builder.
+ *
+ * Picking flow (the one Jamie wants): pick a category from a dropdown, see
+ * a clean simple list of items in that category. No grid. No emojis. No
+ * massive scroll. Two clicks to insert an item.
  *
  * Modes:
- *  - Single-pick (default): one click on a card commits the item.
- *  - Multi-pick: pass `onPickMany`. Cards become checkable. Sticky bottom
- *    bar shows the running count and a Continue button. Used when the
- *    library is dense and the user typically wants several items at once
- *    (RA hazards, COSHH substances, HAVs tools).
- *
- * The library IS the product — make it dense, browsable, and beautiful.
+ *  - Single-pick: click an item row → onPick fires.
+ *  - Multi-pick: pass onPickMany. Rows become checkable, sticky bar at the
+ *    bottom shows the count + Continue.
  */
 
 export interface LibraryGalleryItem {
@@ -24,39 +23,28 @@ export interface LibraryGalleryItem {
   title: string;
   subtitle?: string;
   category?: string;
-  icon?: string;
-  /** Small badge text in the top-right of the card. */
+  /** Small badge text on the right of the row. */
   meta?: string;
 }
 
 export interface LibraryGalleryCategory {
   id: string;
   label: string;
-  icon?: string;
 }
 
 interface LibraryGalleryProps<T extends LibraryGalleryItem> {
-  /** Items to render. */
   items: T[];
-  /** Categories. If omitted, no category filter rail is shown. */
   categories?: LibraryGalleryCategory[];
-  /** Single-pick: card click commits this item. */
   onPick?: (item: T) => void;
-  /** Multi-pick: when provided, gallery enters multi-select mode and this fires on Continue. */
   onPickMany?: (items: T[]) => void;
-  /** Banner heading for the gallery. */
   heading: string;
-  /** Sub-heading under the banner. */
   subheading?: string;
-  /** Search placeholder. */
-  searchPlaceholder?: string;
-  /** Show a permanent "Add custom" card at the end of the grid. */
   customLabel?: string;
   onAddCustom?: () => void;
-  /** Override which fields contribute to the search match. */
   searchableFields?: (item: T) => string[];
-  /** Override the Continue button label in multi-pick mode. */
   continueLabel?: (count: number) => string;
+  /** Legacy — accepted for back-compat with existing call sites. Unused. */
+  searchPlaceholder?: string;
 }
 
 export function LibraryGallery<T extends LibraryGalleryItem>({
@@ -66,31 +54,22 @@ export function LibraryGallery<T extends LibraryGalleryItem>({
   onPickMany,
   heading,
   subheading,
-  searchPlaceholder = "Search…",
   customLabel,
   onAddCustom,
-  searchableFields,
   continueLabel,
 }: LibraryGalleryProps<T>) {
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<string>("all");
+  // Default to the first real category (not "all") so the user always lands
+  // on a focused list, never the firehose.
+  const firstCat = categories?.[0]?.id ?? "all";
+  const [category, setCategory] = useState<string>(firstCat);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const multi = !!onPickMany;
 
   const filtered = useMemo(() => {
-    const q = query.toLowerCase().trim();
-    return items.filter((item) => {
-      if (category !== "all" && item.category !== category) return false;
-      if (!q) return true;
-      const haystack = (
-        searchableFields?.(item) ?? [item.title, item.subtitle ?? ""]
-      )
-        .join(" ")
-        .toLowerCase();
-      return haystack.includes(q);
-    });
-  }, [items, query, category, searchableFields]);
+    if (category === "all") return items;
+    return items.filter((i) => i.category === category);
+  }, [items, category]);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: items.length };
@@ -100,7 +79,7 @@ export function LibraryGallery<T extends LibraryGalleryItem>({
     return c;
   }, [items]);
 
-  function handleCardClick(item: T) {
+  function handleRowClick(item: T) {
     if (multi) {
       setSelectedIds((prev) => {
         const next = new Set(prev);
@@ -121,61 +100,49 @@ export function LibraryGallery<T extends LibraryGalleryItem>({
     setSelectedIds(new Set());
   }
 
-  function clearSelection() {
-    setSelectedIds(new Set());
-  }
-
   const continueText = continueLabel
     ? continueLabel(selectedIds.size)
-    : `Continue with ${selectedIds.size} item${selectedIds.size === 1 ? "" : "s"}`;
+    : `Add ${selectedIds.size} item${selectedIds.size === 1 ? "" : "s"}`;
 
   return (
-    <div className="space-y-6">
-      <header className="border rounded-lg bg-card p-6">
-        <h2 className="text-xl font-semibold tracking-tight mb-1">
-          {heading}
-        </h2>
+    <div className="space-y-4">
+      <header className="border rounded-lg bg-card p-5">
+        <h2 className="text-lg font-semibold tracking-tight mb-1">{heading}</h2>
         {subheading && (
           <p className="text-sm text-muted-foreground mb-4">{subheading}</p>
         )}
-        {multi && (
-          <p className="text-xs text-muted-foreground mb-4 inline-flex items-center gap-1.5">
-            <span className="size-1.5 rounded-full bg-brand" />
-            Multi-pick mode — click as many as you need, then hit Continue.
-          </p>
-        )}
-        <div className="relative max-w-md">
-          <Search className="size-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={searchPlaceholder}
-            className="pl-9"
-          />
-        </div>
+
+        {/* The picker. Native select — fast, works everywhere, no library
+            chrome to learn. */}
         {categories && categories.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mt-4">
-            <CategoryChip
-              label={`All (${counts.all ?? 0})`}
-              active={category === "all"}
-              onClick={() => setCategory("all")}
-            />
-            {categories.map((c) => (
-              <CategoryChip
-                key={c.id}
-                label={`${c.icon ? c.icon + " " : ""}${c.label} (${counts[c.id] ?? 0})`}
-                active={category === c.id}
-                onClick={() => setCategory(c.id)}
-              />
-            ))}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <label
+              htmlFor="cat-select"
+              className="text-xs font-medium text-muted-foreground sm:w-20 shrink-0"
+            >
+              Category
+            </label>
+            <select
+              id="cat-select"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="flex-1 h-9 px-3 rounded-md border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              <option value="all">All ({counts.all ?? 0})</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.label} ({counts[c.id] ?? 0})
+                </option>
+              ))}
+            </select>
           </div>
         )}
       </header>
 
       {filtered.length === 0 ? (
-        <div className="border-2 border-dashed rounded-lg p-12 text-center bg-muted/20">
+        <div className="border-2 border-dashed rounded-lg p-10 text-center bg-muted/20">
           <p className="text-sm text-muted-foreground mb-3">
-            No matches. Try a different search or category.
+            Nothing in this category yet.
           </p>
           {onAddCustom && customLabel && (
             <button
@@ -189,8 +156,8 @@ export function LibraryGallery<T extends LibraryGalleryItem>({
       ) : (
         <div
           className={cn(
-            "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3",
-            multi && selectedIds.size > 0 && "pb-24"
+            "border rounded-lg bg-card divide-y",
+            multi && selectedIds.size > 0 && "mb-24"
           )}
         >
           {filtered.map((item) => {
@@ -198,83 +165,55 @@ export function LibraryGallery<T extends LibraryGalleryItem>({
             return (
               <button
                 key={item.id}
-                onClick={() => handleCardClick(item)}
+                onClick={() => handleRowClick(item)}
                 className={cn(
-                  "group text-left border rounded-lg p-4 transition relative",
-                  isSelected
-                    ? "bg-foreground text-background border-foreground shadow-sm"
-                    : "bg-card hover:border-foreground hover:shadow-sm"
+                  "w-full text-left px-4 py-3 flex items-center gap-3 transition-colors",
+                  "hover:bg-muted/50",
+                  isSelected && "bg-muted"
                 )}
               >
                 {multi && (
                   <span
                     className={cn(
-                      "absolute top-3 left-3 size-4 rounded border flex items-center justify-center transition",
+                      "size-4 rounded border flex items-center justify-center shrink-0 transition",
                       isSelected
-                        ? "bg-brand border-brand"
-                        : "bg-background border-border group-hover:border-foreground/40"
+                        ? "bg-foreground border-foreground"
+                        : "bg-background border-border"
                     )}
                   >
                     {isSelected && (
-                      <Check className="size-3 text-foreground" strokeWidth={3} />
+                      <Check className="size-3 text-background" strokeWidth={3} />
                     )}
                   </span>
                 )}
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium tracking-tight truncate">
+                    {item.title}
+                  </div>
+                  {item.subtitle && (
+                    <div className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
+                      {item.subtitle}
+                    </div>
+                  )}
+                </div>
                 {item.meta && (
-                  <span
-                    className={cn(
-                      "absolute top-3 right-3 text-[9px] uppercase tracking-wider",
-                      isSelected
-                        ? "text-background/70"
-                        : "text-muted-foreground"
-                    )}
-                  >
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground shrink-0">
                     {item.meta}
                   </span>
                 )}
-                <div className={cn("flex items-start gap-3", multi && "pl-6")}>
-                  {item.icon && (
-                    <span className="text-2xl shrink-0 leading-none">
-                      {item.icon}
-                    </span>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <h3
-                      className={cn(
-                        "text-sm font-semibold tracking-tight mb-0.5",
-                        isSelected
-                          ? "text-background"
-                          : "group-hover:text-foreground"
-                      )}
-                    >
-                      {item.title}
-                    </h3>
-                    {item.subtitle && (
-                      <p
-                        className={cn(
-                          "text-xs line-clamp-2 leading-relaxed",
-                          isSelected
-                            ? "text-background/75"
-                            : "text-muted-foreground"
-                        )}
-                      >
-                        {item.subtitle}
-                      </p>
-                    )}
-                  </div>
-                </div>
               </button>
             );
           })}
-          {onAddCustom && customLabel && (
-            <button
-              onClick={onAddCustom}
-              className="border-2 border-dashed rounded-lg p-4 hover:border-foreground hover:bg-muted/30 transition text-center text-sm text-muted-foreground hover:text-foreground"
-            >
-              + {customLabel}
-            </button>
-          )}
         </div>
+      )}
+
+      {onAddCustom && customLabel && filtered.length > 0 && (
+        <button
+          onClick={onAddCustom}
+          className="w-full border-2 border-dashed rounded-lg py-3 text-sm text-muted-foreground hover:text-foreground hover:border-foreground transition"
+        >
+          + {customLabel}
+        </button>
       )}
 
       {/* Sticky Continue bar — multi-pick only */}
@@ -288,7 +227,11 @@ export function LibraryGallery<T extends LibraryGalleryItem>({
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={clearSelection}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedIds(new Set())}
+              >
                 <X className="size-3.5 mr-1.5" />
                 Clear
               </Button>
@@ -298,29 +241,5 @@ export function LibraryGallery<T extends LibraryGalleryItem>({
         </div>
       )}
     </div>
-  );
-}
-
-function CategoryChip({
-  label,
-  active,
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "text-xs px-2.5 py-1 rounded-full border transition",
-        active
-          ? "bg-foreground text-background border-foreground"
-          : "bg-background hover:bg-muted text-muted-foreground hover:text-foreground"
-      )}
-    >
-      {label}
-    </button>
   );
 }

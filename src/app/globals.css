@@ -2,6 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Barlow + Barlow Condensed are loaded via next/font in src/app/layout.tsx
+   and exposed as --font-sans and --font-display CSS variables. */
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -10,6 +13,7 @@
   --font-sans: var(--font-sans), system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
   --font-heading: var(--font-sans), system-ui, sans-serif;
+  --font-display: var(--font-display), var(--font-sans), system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -114,6 +118,36 @@
 
   /* Radius — sharper than shadcn default for the brutalist feel */
   --radius: 0.5rem;
+
+  /* ─── Depth & status palette (added 28 Apr 2026) ───
+     Layered surfaces, semantic colours, and a 3-tier shadow scale.
+     Goal: lift the UI off the page without going dark. */
+
+  /* Surface tiers — page → canvas → card → raised */
+  --surface-canvas: oklch(0.985 0 0);            /* faint cool grey under cards */
+  --surface-raised: oklch(1 0 0);                /* card body */
+  --surface-pebble: oklch(0.965 0 0);            /* table headers, info bars */
+  --surface-tinted: oklch(0.975 0.01 119);       /* faintest brand wash */
+
+  /* Two-weight border system */
+  --border-soft: oklch(0.94 0 0);                /* default rules */
+  --border-strong: oklch(0.88 0 0);              /* hover, focus */
+
+  /* Status (low chroma, AA on white) */
+  --status-success: oklch(0.62 0.14 145);        /* green */
+  --status-success-bg: oklch(0.96 0.04 145);
+  --status-warning: oklch(0.7 0.15 70);          /* amber */
+  --status-warning-bg: oklch(0.96 0.06 80);
+  --status-danger: oklch(0.6 0.2 27);            /* red */
+  --status-danger-bg: oklch(0.96 0.04 27);
+  --status-info: oklch(0.55 0.14 245);           /* blue */
+  --status-info-bg: oklch(0.96 0.03 245);
+
+  /* Shadow scale — cool tone, layered */
+  --shadow-sm: 0 1px 2px rgba(15,23,42,0.04), 0 1px 1px rgba(15,23,42,0.03);
+  --shadow-md: 0 4px 12px rgba(15,23,42,0.06), 0 2px 4px rgba(15,23,42,0.04);
+  --shadow-lg: 0 12px 32px rgba(15,23,42,0.10), 0 4px 8px rgba(15,23,42,0.05);
+  --shadow-glow-brand: 0 8px 32px oklch(0.95 0.27 119 / 0.20);
 }
 
 /*
@@ -208,4 +242,36 @@
 
 @utility border-brand {
   border-color: var(--brand);
+}
+
+/* ─── Depth utilities ─── */
+@utility surface-canvas { background-color: var(--surface-canvas); }
+@utility surface-raised { background-color: var(--surface-raised); }
+@utility surface-pebble { background-color: var(--surface-pebble); }
+@utility surface-tinted { background-color: var(--surface-tinted); }
+
+@utility border-soft { border-color: var(--border-soft); }
+@utility border-strong { border-color: var(--border-strong); }
+
+@utility shadow-sm-cool { box-shadow: var(--shadow-sm); }
+@utility shadow-md-cool { box-shadow: var(--shadow-md); }
+@utility shadow-lg-cool { box-shadow: var(--shadow-lg); }
+@utility shadow-glow-brand { box-shadow: var(--shadow-glow-brand); }
+
+/* Status pill backgrounds + text */
+@utility status-success { background-color: var(--status-success-bg); color: var(--status-success); }
+@utility status-warning { background-color: var(--status-warning-bg); color: var(--status-warning); }
+@utility status-danger { background-color: var(--status-danger-bg); color: var(--status-danger); }
+@utility status-info    { background-color: var(--status-info-bg);    color: var(--status-info); }
+
+@utility text-status-success { color: var(--status-success); }
+@utility text-status-warning { color: var(--status-warning); }
+@utility text-status-danger  { color: var(--status-danger); }
+@utility text-status-info    { color: var(--status-info); }
+
+/* Display type — Barlow Condensed for chunky stat numbers and uppercase
+   page titles, the SL/WL "GOOD EVENING" treatment. */
+@utility font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
 }

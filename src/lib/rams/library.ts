@@ -17,36 +17,36 @@ export interface COSHHLibraryItem {
 export interface HAVSLibraryItem { id: string; tool: string; vibrationMag: number; typicalUse: string }
 export interface NoiseLibraryItem { id: string; activity: string; typicalDb: number; hearingProtection: string; controls: string }
 export interface RAMSTrade {
-  id: string; trade: string; category: string; icon: string; description: string
+  id: string; trade: string; category: string; icon?: string; description: string
   raItems: string[]; coshhItems: string[]; havsItems: string[]; noiseItems: string[]
   ppe: string[]; msSteps: string[]; defaultDocs: string[]
 }
-export interface TradeCategory { id: string; label: string; icon: string }
+export interface TradeCategory { id: string; label: string; icon?: string }
 
 // ── RA CATEGORIES ──
 export const RA_CATEGORIES: TradeCategory[] = [
-  { id: 'wah', label: 'Working at Height', icon: '🪜' },
-  { id: 'mh', label: 'Manual Handling', icon: '📦' },
-  { id: 'plant', label: 'Plant & Machinery', icon: '🚜' },
-  { id: 'electrical', label: 'Electrical', icon: '⚡' },
-  { id: 'fire', label: 'Fire & Hot Works', icon: '🔥' },
-  { id: 'confined', label: 'Confined Spaces', icon: '🕳️' },
-  { id: 'excavation', label: 'Excavation & Groundworks', icon: '⛏️' },
-  { id: 'structural', label: 'Structural', icon: '🏗️' },
-  { id: 'lifting', label: 'Lifting Operations', icon: '🏋️' },
-  { id: 'scaffold', label: 'Scaffolding', icon: '🪜' },
-  { id: 'demolition', label: 'Demolition', icon: '💥' },
-  { id: 'welding', label: 'Welding & Cutting', icon: '🔧' },
-  { id: 'noise', label: 'Noise & Vibration', icon: '🔊' },
-  { id: 'dust', label: 'Dust & Respiratory', icon: '💨' },
-  { id: 'coshh', label: 'Chemical / COSHH', icon: '☣️' },
-  { id: 'traffic', label: 'Traffic & Vehicles', icon: '🚛' },
-  { id: 'environment', label: 'Environmental', icon: '🌿' },
-  { id: 'general', label: 'General Site', icon: '🔨' },
-  { id: 'asbestos', label: 'Asbestos', icon: '☣️' },
-  { id: 'health', label: 'Health & Wellbeing', icon: '❤️' },
-  { id: 'occupied', label: 'Occupied Premises', icon: '🏢' },
-  { id: 'weather', label: 'Weather & Seasonal', icon: '🌦️' },
+  { id: 'wah', label: 'Working at Height' },
+  { id: 'mh', label: 'Manual Handling' },
+  { id: 'plant', label: 'Plant & Machinery' },
+  { id: 'electrical', label: 'Electrical' },
+  { id: 'fire', label: 'Fire & Hot Works' },
+  { id: 'confined', label: 'Confined Spaces' },
+  { id: 'excavation', label: 'Excavation & Groundworks' },
+  { id: 'structural', label: 'Structural' },
+  { id: 'lifting', label: 'Lifting Operations' },
+  { id: 'scaffold', label: 'Scaffolding' },
+  { id: 'demolition', label: 'Demolition' },
+  { id: 'welding', label: 'Welding & Cutting' },
+  { id: 'noise', label: 'Noise & Vibration' },
+  { id: 'dust', label: 'Dust & Respiratory' },
+  { id: 'coshh', label: 'Chemical / COSHH' },
+  { id: 'traffic', label: 'Traffic & Vehicles' },
+  { id: 'environment', label: 'Environmental' },
+  { id: 'general', label: 'General Site' },
+  { id: 'asbestos', label: 'Asbestos' },
+  { id: 'health', label: 'Health & Wellbeing' },
+  { id: 'occupied', label: 'Occupied Premises' },
+  { id: 'weather', label: 'Weather & Seasonal' },
 ]
 
 // ── RISK ASSESSMENT LIBRARY ──
@@ -481,26 +481,26 @@ export const NOISE_LIBRARY: NoiseLibraryItem[] = [
 
 // ── TRADE CATEGORIES ──
 export const TRADE_CATEGORIES: TradeCategory[] = [
-  { id: 'structural', label: 'Structural', icon: '🏗️' },
-  { id: 'mep', label: 'MEP (Mechanical, Electrical, Plumbing)', icon: '⚡' },
-  { id: 'envelope', label: 'Building Envelope', icon: '🏠' },
-  { id: 'fitout', label: 'Fitout & Finishes', icon: '🎨' },
-  { id: 'external', label: 'External Works', icon: '🌿' },
-  { id: 'demolition', label: 'Demolition & Enabling', icon: '💥' },
-  { id: 'specialist', label: 'Specialist', icon: '🔬' },
-  { id: 'civil', label: 'Civil & Highways', icon: '🛣️' },
-  { id: 'heritage', label: 'Heritage & Listed Buildings', icon: '🏛️' },
-  { id: 'occupied', label: 'Occupied / Live Premises', icon: '🏢' },
-  { id: 'renewables', label: 'Renewables & Low Carbon', icon: '☀️' },
-  { id: 'access', label: 'Working at Height & Access', icon: '🪜' },
-  { id: 'infrastructure', label: 'Rail, Marine & Aviation', icon: '🛤️' },
+  { id: 'structural', label: 'Structural' },
+  { id: 'mep', label: 'MEP (Mechanical, Electrical, Plumbing)' },
+  { id: 'envelope', label: 'Building Envelope' },
+  { id: 'fitout', label: 'Fitout & Finishes' },
+  { id: 'external', label: 'External Works' },
+  { id: 'demolition', label: 'Demolition & Enabling' },
+  { id: 'specialist', label: 'Specialist' },
+  { id: 'civil', label: 'Civil & Highways' },
+  { id: 'heritage', label: 'Heritage & Listed Buildings' },
+  { id: 'occupied', label: 'Occupied / Live Premises' },
+  { id: 'renewables', label: 'Renewables & Low Carbon' },
+  { id: 'access', label: 'Working at Height & Access' },
+  { id: 'infrastructure', label: 'Rail, Marine & Aviation' },
 ]
 
 // ── TRADE TEMPLATES ──
 export const RAMS_TRADES: RAMSTrade[] = [
   // ═══ STRUCTURAL ═══
   {
-    id: 'structural-steelwork', trade: 'Structural Steelwork', category: 'structural', icon: '🏗️',
+    id: 'structural-steelwork', trade: 'Structural Steelwork', category: 'structural',
     description: 'Steel erection, fabrication, bolted/welded connections',
     raItems: ['RA-WAH-001', 'RA-WAH-004', 'RA-WAH-009', 'RA-ST-001', 'RA-ST-002', 'RA-LO-001', 'RA-LO-002', 'RA-LO-003', 'RA-WC-001', 'RA-WC-002', 'RA-FW-001', 'RA-PM-005', 'RA-NV-001', 'RA-MH-008', 'RA-TV-001', 'RA-GS-001', 'RA-GS-002'],
     coshhItems: ['COSHH-003', 'COSHH-004'], havsItems: ['HAVS-001', 'HAVS-015', 'HAVS-006'], noiseItems: ['NOISE-001', 'NOISE-005', 'NOISE-015'],
@@ -509,7 +509,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Receive and check steel delivery against fabrication drawings. Verify mill certificates and CE marking.', 'Establish exclusion zone around erection area. Erect barriers and signage.', 'Erect steel to sequence per erection method statement. Install temporary bracing as work progresses.', 'Bolt connections to design torque. Record bolt tightening on inspection sheet.', 'Carry out welding per WPS. Welding inspection to BS EN 1090. Record NDT results.', 'Install safety nets/edge protection as steelwork progresses. Maintain fall arrest systems.', 'Complete snag list and walk-through with site manager. Record on handover sheet.', 'Remove temporary works and bracing per TWC instruction. Confirm structural stability.'],
   },
   {
-    id: 'concrete-formwork', trade: 'Concrete & Formwork', category: 'structural', icon: '🧱',
+    id: 'concrete-formwork', trade: 'Concrete & Formwork', category: 'structural',
     description: 'In-situ concrete, formwork, reinforcement fixing',
     raItems: ['RA-WAH-001', 'RA-WAH-004', 'RA-ST-003', 'RA-ST-006', 'RA-MH-001', 'RA-CH-001', 'RA-PM-001', 'RA-LO-002', 'RA-NV-001', 'RA-DR-001', 'RA-GS-001', 'RA-TV-001'],
     coshhItems: ['COSHH-001', 'COSHH-013'], havsItems: ['HAVS-004', 'HAVS-001'], noiseItems: ['NOISE-009', 'NOISE-003'],
@@ -518,7 +518,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Review structural drawings and pour schedule. Confirm rebar schedule and formwork design.', 'Erect formwork to design. Check alignment, level, and structural adequacy. Record on checklist.', 'Fix reinforcement per drawing. Spacers at correct centres. Cover meter check before pour.', 'Pre-pour inspection — formwork, rebar, inserts, services all checked and signed off.', 'Concrete pour — monitor pour rate, vibrate to remove air voids, take test cubes as required.', 'Curing regime as per specification. Protect from frost/wind/rain as needed.', 'Strike formwork per engineer instruction. Minimum striking times observed. Inspect concrete surface.', 'Snag and remedial works. Apply repair mortar to honeycombing or defects.'],
   },
   {
-    id: 'masonry', trade: 'Masonry & Brickwork', category: 'structural', icon: '🧱',
+    id: 'masonry', trade: 'Masonry & Brickwork', category: 'structural',
     description: 'Brickwork, blockwork, stonework',
     raItems: ['RA-WAH-001', 'RA-WAH-004', 'RA-ST-005', 'RA-MH-001', 'RA-MH-006', 'RA-CH-001', 'RA-PM-005', 'RA-NV-001', 'RA-DR-001', 'RA-GS-001', 'RA-GS-002'],
     coshhItems: ['COSHH-001', 'COSHH-002', 'COSHH-010'], havsItems: ['HAVS-001', 'HAVS-004'], noiseItems: ['NOISE-001', 'NOISE-003'],
@@ -527,7 +527,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Set out wall positions from drawings. Check levels and alignment.', 'Scaffold erected to provide safe working platform. Inspected before use.', 'Build masonry to drawings — check gauge, level, plumb at each course.', 'Install wall ties at specified centres. Record on inspection sheet.', 'Form openings with lintels per structural design. Prop until cured if required.', 'Point/rake out joints. Clean down brickwork face.', 'Install DPC, cavity trays, and weep holes per details.', 'Final inspection — plumb, level, alignment, pointing quality.'],
   },
   {
-    id: 'timber-frame', trade: 'Timber Frame', category: 'structural', icon: '🪵',
+    id: 'timber-frame', trade: 'Timber Frame', category: 'structural',
     description: 'Timber frame erection, SIPs, CLT',
     raItems: ['RA-WAH-001', 'RA-WAH-004', 'RA-ST-001', 'RA-LO-002', 'RA-MH-001', 'RA-MH-006', 'RA-FW-002', 'RA-PM-010', 'RA-NV-001', 'RA-DR-002', 'RA-GS-001', 'RA-GS-002'],
     coshhItems: [], havsItems: ['HAVS-008', 'HAVS-010'], noiseItems: ['NOISE-006', 'NOISE-013'],
@@ -538,7 +538,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ MEP ═══
   {
-    id: 'electrical-1st-fix', trade: 'Electrical — 1st Fix', category: 'mep', icon: '⚡',
+    id: 'electrical-1st-fix', trade: 'Electrical — 1st Fix', category: 'mep',
     description: 'Cable routes, containment, back boxes',
     raItems: ['RA-EL-001', 'RA-EL-003', 'RA-EL-004', 'RA-WAH-002', 'RA-WAH-008', 'RA-PM-005', 'RA-MH-007', 'RA-DR-001', 'RA-NV-001', 'RA-GS-001'],
     coshhItems: [], havsItems: ['HAVS-004', 'HAVS-001'], noiseItems: ['NOISE-003', 'NOISE-001'],
@@ -547,7 +547,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Review electrical layout drawings and cable schedule. Mark out routes on walls/soffits.', 'Install containment (tray, trunking, conduit) per layout. Fire-rated where crossing compartments.', 'Chase walls for back boxes where required. Dust suppression during chasing.', 'Install back boxes, ceiling roses, consumer unit enclosures per layout.', 'Pull cables through containment. Label all cables at each end.', 'Make off connections at back boxes. Leave tails for 2nd fix.', 'Test containment earthing. Megger test all circuits. Record results.', 'Handover to 2nd fix team with test results and marked-up drawings.'],
   },
   {
-    id: 'electrical-2nd-fix', trade: 'Electrical — 2nd Fix', category: 'mep', icon: '⚡',
+    id: 'electrical-2nd-fix', trade: 'Electrical — 2nd Fix', category: 'mep',
     description: 'Final connections, accessories, testing, commissioning',
     raItems: ['RA-EL-001', 'RA-EL-003', 'RA-EL-005', 'RA-WAH-002', 'RA-GS-001'],
     coshhItems: [], havsItems: [], noiseItems: [],
@@ -556,7 +556,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Verify 1st fix complete and tested. Check all circuits isolated before work.', 'Fit accessories — sockets, switches, luminaires per specification.', 'Connect final circuits at consumer unit / distribution board.', 'Complete initial verification per BS 7671. Record all test results on certificates.', 'Commission lighting and power circuits. Function test all circuits.', 'Issue Electrical Installation Certificate (EIC) or Minor Works Certificate.', 'Handover to client/main contractor with test certificates and O&M information.'],
   },
   {
-    id: 'plumbing', trade: 'Plumbing & Pipework', category: 'mep', icon: '🔧',
+    id: 'plumbing', trade: 'Plumbing & Pipework', category: 'mep',
     description: 'Hot/cold water, waste, soil stacks',
     raItems: ['RA-EL-001', 'RA-WAH-002', 'RA-WAH-008', 'RA-MH-002', 'RA-FW-001', 'RA-PM-005', 'RA-CH-001', 'RA-GS-001'],
     coshhItems: ['COSHH-008'], havsItems: ['HAVS-004', 'HAVS-001'], noiseItems: ['NOISE-003', 'NOISE-001'],
@@ -565,7 +565,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Review mechanical drawings and pipe schedule. Mark out pipe routes and penetrations.', 'Core drill or form penetrations. Use CAT scanner before drilling.', 'Install brackets and supports per design. Fire-rated where penetrating compartments.', 'Install pipework to layout. Test joints progressively.', 'Pressure test system per specification. Record results.', 'Insulate pipework per specification. Label pipework per BS 1710.', 'Commission system — flush, chlorinate (if potable), final test.', 'Handover with test certificates and as-built drawings.'],
   },
   {
-    id: 'mechanical-hvac', trade: 'Mechanical / HVAC', category: 'mep', icon: '🌡️',
+    id: 'mechanical-hvac', trade: 'Mechanical / HVAC', category: 'mep',
     description: 'Heating, ventilation, air conditioning',
     raItems: ['RA-EL-001', 'RA-EL-003', 'RA-WAH-001', 'RA-WAH-003', 'RA-LO-002', 'RA-MH-001', 'RA-FW-001', 'RA-NV-001', 'RA-GS-001'],
     coshhItems: ['COSHH-009'], havsItems: ['HAVS-004', 'HAVS-001'], noiseItems: ['NOISE-003', 'NOISE-013'],
@@ -574,7 +574,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Review M&E drawings. Coordinate with other trades on builders work.', 'Install major plant items (AHUs, chillers, boilers) per lift plan if crane required.', 'Install ductwork to layout. Support per DW/144. Seal all joints.', 'Install pipework for heating/cooling circuits. Pressure test progressively.', 'Install controls and BMS points per controls spec.', 'Commission each system per BSRIA/CIBSE guidance. Record commissioning data.', 'Balance air/water systems. Adjust to design flowrates.', 'Handover with commissioning records, O&M manuals, and as-built drawings.'],
   },
   {
-    id: 'fire-alarm', trade: 'Fire Alarm Installation', category: 'mep', icon: '🔔',
+    id: 'fire-alarm', trade: 'Fire Alarm Installation', category: 'mep',
     description: 'Fire detection, alarm systems, emergency lighting',
     raItems: ['RA-EL-001', 'RA-EL-003', 'RA-WAH-002', 'RA-WAH-008', 'RA-GS-001'],
     coshhItems: [], havsItems: ['HAVS-004'], noiseItems: ['NOISE-003'],
@@ -585,7 +585,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ BUILDING ENVELOPE ═══
   {
-    id: 'roofing-flat', trade: 'Flat Roofing', category: 'envelope', icon: '🏠',
+    id: 'roofing-flat', trade: 'Flat Roofing', category: 'envelope',
     description: 'Single ply, built-up felt, liquid applied',
     raItems: ['RA-WAH-001', 'RA-WAH-004', 'RA-WAH-007', 'RA-FW-001', 'RA-FW-006', 'RA-MH-001', 'RA-PM-005', 'RA-NV-001', 'RA-GS-002', 'RA-GS-001'],
     coshhItems: ['COSHH-011', 'COSHH-006'], havsItems: ['HAVS-001'], noiseItems: ['NOISE-001'],
@@ -594,7 +594,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Erect edge protection at all roof perimeters before roofing works commence.', 'Prepare substrate — clean, prime where required, check falls.', 'Install insulation to design U-value. Mechanical fix or adhere per spec.', 'Install membrane — single ply mechanically fixed or adhered per manufacturer.', 'Detail upstands, penetrations, outlets per manufacturer details.', 'Test for watertightness. Flood test if specified.', 'Remove edge protection only after all roof works complete.'],
   },
   {
-    id: 'roofing-pitched', trade: 'Pitched Roofing', category: 'envelope', icon: '🏠',
+    id: 'roofing-pitched', trade: 'Pitched Roofing', category: 'envelope',
     description: 'Tiles, slates, lead work',
     raItems: ['RA-WAH-001', 'RA-WAH-004', 'RA-WAH-005', 'RA-WAH-011', 'RA-MH-001', 'RA-SC-001', 'RA-NV-001', 'RA-GS-002', 'RA-GS-001'],
     coshhItems: ['COSHH-012'], havsItems: ['HAVS-001', 'HAVS-010'], noiseItems: ['NOISE-001', 'NOISE-006'],
@@ -603,7 +603,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Erect scaffolding with eaves edge protection. Roof ladder access.', 'Install underlay/breathable membrane. Batten to gauge.', 'Load out materials to scaffold. Do not overload.', 'Tile/slate from eaves to ridge. Hip and valley details per spec.', 'Install ridge tiles. Dry fix or mortar per specification.', 'Lead work to valleys, abutments, flashings per Lead Sheet Association guidance.', 'Inspect completed roof from scaffold. Photograph for record.'],
   },
   {
-    id: 'cladding', trade: 'Cladding', category: 'envelope', icon: '🏢',
+    id: 'cladding', trade: 'Cladding', category: 'envelope',
     description: 'Metal cladding, rainscreen, composite panels',
     raItems: ['RA-WAH-001', 'RA-WAH-003', 'RA-WAH-004', 'RA-LO-002', 'RA-MH-001', 'RA-PM-005', 'RA-NV-001', 'RA-GS-002', 'RA-GS-001'],
     coshhItems: ['COSHH-006'], havsItems: ['HAVS-001', 'HAVS-004', 'HAVS-015'], noiseItems: ['NOISE-001', 'NOISE-015'],
@@ -612,7 +612,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Survey structure and check alignment/tolerances for cladding installation.', 'Install brackets and support rails per cladding design.', 'Install insulation and vapour barrier.', 'Install cladding panels — bottom up per layout. Use MEWP or scaffold.', 'Fix flashings, trims, and sealant joints per details.', 'Clean down completed cladding. Remove protective film.', 'Inspection and snagging. Record on completion checklist.'],
   },
   {
-    id: 'curtain-wall', trade: 'Curtain Walling', category: 'envelope', icon: '🪟',
+    id: 'curtain-wall', trade: 'Curtain Walling', category: 'envelope',
     description: 'Aluminium curtain wall, structural glazing',
     raItems: ['RA-WAH-001', 'RA-WAH-003', 'RA-WAH-004', 'RA-LO-002', 'RA-LO-007', 'RA-MH-001', 'RA-PM-005', 'RA-GS-002', 'RA-GS-001'],
     coshhItems: ['COSHH-006'], havsItems: ['HAVS-004'], noiseItems: ['NOISE-003'],
@@ -621,7 +621,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Survey slab edges for alignment. Set out mullion positions.', 'Install brackets per structural design. Torque bolts and record.', 'Install mullions — plumb, align, fix. Temporary bracing where needed.', 'Install transoms. Check squareness and level.', 'Glaze units into frames using vacuum lifter. Wind speed limitations observed.', 'Install pressure plates, caps, and gaskets.', 'Seal all perimeter joints. Water test completed areas.', 'Clean and inspect. Handover with warranty documentation.'],
   },
   {
-    id: 'glazing', trade: 'Glazing & Windows', category: 'envelope', icon: '🪟',
+    id: 'glazing', trade: 'Glazing & Windows', category: 'envelope',
     description: 'Window installation, door sets, glass replacement',
     raItems: ['RA-WAH-002', 'RA-WAH-008', 'RA-MH-001', 'RA-MH-006', 'RA-PM-005', 'RA-GS-001'],
     coshhItems: ['COSHH-006'], havsItems: ['HAVS-004'], noiseItems: ['NOISE-003'],
@@ -630,7 +630,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Check openings for size and square. Report discrepancies.', 'Lift windows to opening. Mechanical aids for heavy units.', 'Fix frames — packers, fixings per window supplier specification.', 'Glaze sealed units. Gaskets and beading per spec.', 'Seal perimeter with appropriate sealant. Backer rod where needed.', 'Adjust ironmongery and hardware. Function test all opening lights.', 'Clean and inspect. Protect from following trades.'],
   },
   {
-    id: 'insulation', trade: 'Insulation', category: 'envelope', icon: '🧣',
+    id: 'insulation', trade: 'Insulation', category: 'envelope',
     description: 'Thermal insulation, acoustic insulation',
     raItems: ['RA-WAH-002', 'RA-WAH-008', 'RA-MH-001', 'RA-DR-003', 'RA-GS-001'],
     coshhItems: ['COSHH-015'], havsItems: [], noiseItems: [],
@@ -639,7 +639,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Review insulation specification and U-value requirements.', 'Prepare surfaces — clean, dry, free from debris.', 'Cut and fit insulation to design thickness. Stagger joints. No gaps.', 'Fix mechanically or adhere per manufacturer instruction.', 'Install vapour control layer where specified. Seal all joints and laps.', 'Inspect for gaps and thermal bridges. Remediate before covering.'],
   },
   {
-    id: 'waterproofing', trade: 'Waterproofing', category: 'envelope', icon: '💧',
+    id: 'waterproofing', trade: 'Waterproofing', category: 'envelope',
     description: 'Below ground waterproofing, tanking, damp proofing',
     raItems: ['RA-WAH-002', 'RA-CS-001', 'RA-EX-001', 'RA-MH-001', 'RA-CH-004', 'RA-GS-001'],
     coshhItems: ['COSHH-006', 'COSHH-007'], havsItems: ['HAVS-001'], noiseItems: [],
@@ -650,7 +650,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ FITOUT & FINISHES ═══
   {
-    id: 'drylining', trade: 'Drylining & Partitions', category: 'fitout', icon: '🪧',
+    id: 'drylining', trade: 'Drylining & Partitions', category: 'fitout',
     description: 'Metal stud partitions, plasterboard, dot and dab',
     raItems: ['RA-WAH-002', 'RA-WAH-008', 'RA-MH-001', 'RA-MH-006', 'RA-PM-005', 'RA-DR-003', 'RA-NV-001', 'RA-GS-001'],
     coshhItems: ['COSHH-014'], havsItems: ['HAVS-004', 'HAVS-001'], noiseItems: ['NOISE-001', 'NOISE-003'],
@@ -659,7 +659,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Set out partition positions from drawings. Laser level for lines.', 'Fix head and floor track. Check for services before fixing.', 'Install studs at specified centres. Door openings formed.', 'Install services (1st fix electrical/plumbing) before boarding.', 'Board one side. Insulation installed. Board second side.', 'Joint and tape. Sand smooth. Protect from damage.'],
   },
   {
-    id: 'plastering', trade: 'Plastering (Wet)', category: 'fitout', icon: '🎨',
+    id: 'plastering', trade: 'Plastering (Wet)', category: 'fitout',
     description: 'Wet plaster, rendering, screeding',
     raItems: ['RA-WAH-002', 'RA-WAH-008', 'RA-MH-001', 'RA-CH-001', 'RA-DR-003', 'RA-GS-001'],
     coshhItems: ['COSHH-001', 'COSHH-014'], havsItems: [], noiseItems: [],
@@ -668,7 +668,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Prepare surfaces — hack, PVA, dubbing out as required.', 'Apply scratch coat / base coat. Rule and float level.', 'Apply finish coat. Trowel smooth.', 'Protect finished plaster from damage and frost.', 'Clean tools and area on completion.'],
   },
   {
-    id: 'painting', trade: 'Painting & Decorating', category: 'fitout', icon: '🖌️',
+    id: 'painting', trade: 'Painting & Decorating', category: 'fitout',
     description: 'Internal/external painting, wallcoverings',
     raItems: ['RA-WAH-002', 'RA-WAH-008', 'RA-CH-003', 'RA-CH-005', 'RA-MH-003', 'RA-GS-001'],
     coshhItems: ['COSHH-005', 'COSHH-012'], havsItems: [], noiseItems: [],
@@ -677,7 +677,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Surface preparation — fill, sand, prime per specification.', 'Protect floors, fixtures, and adjacent finishes.', 'Apply paint system per specification (primer, undercoat, finish coats).', 'Allow drying time between coats per manufacturer.', 'Inspect and touch up. Remove protection.', 'Clean down and dispose of waste correctly. Solvent rags in sealed metal bin.'],
   },
   {
-    id: 'flooring', trade: 'Flooring', category: 'fitout', icon: '🏠',
+    id: 'flooring', trade: 'Flooring', category: 'fitout',
     description: 'Vinyl, carpet, laminate, raised access floor',
     raItems: ['RA-MH-001', 'RA-CH-003', 'RA-CH-004', 'RA-GS-001', 'RA-MH-003'],
     coshhItems: ['COSHH-006', 'COSHH-014'], havsItems: [], noiseItems: [],
@@ -686,7 +686,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Check subfloor for level, moisture content, cleanliness.', 'Apply levelling compound if required. Allow to cure.', 'Acclimatise flooring material per manufacturer instruction.', 'Install flooring per specification — adhesive, click-fit, or loose-lay.', 'Trim and fit to edges. Install threshold strips and trims.', 'Protect installed flooring from following trades.'],
   },
   {
-    id: 'tiling', trade: 'Tiling & Stone', category: 'fitout', icon: '🔲',
+    id: 'tiling', trade: 'Tiling & Stone', category: 'fitout',
     description: 'Wall and floor tiling, natural stone',
     raItems: ['RA-MH-001', 'RA-CH-001', 'RA-PM-005', 'RA-DR-001', 'RA-GS-001', 'RA-MH-003'],
     coshhItems: ['COSHH-001', 'COSHH-002'], havsItems: ['HAVS-001'], noiseItems: ['NOISE-001'],
@@ -695,7 +695,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Set out tile layout. Establish datum levels and centre lines.', 'Prepare substrate — tanking/waterproofing in wet areas per BS 5385.', 'Apply adhesive and fix tiles to layout. Spacers at correct width.', 'Cut tiles with wet cutter (water suppression for dust). Edge trim where specified.', 'Grout joints. Clean off excess. Seal grout if specified.', 'Apply silicone sealant to movement joints and perimeters.', 'Protect tiled areas from following trades.'],
   },
   {
-    id: 'joinery', trade: 'Joinery & Carpentry', category: 'fitout', icon: '🪚',
+    id: 'joinery', trade: 'Joinery & Carpentry', category: 'fitout',
     description: '2nd fix carpentry, door hanging, kitchen fitting',
     raItems: ['RA-WAH-002', 'RA-PM-005', 'RA-PM-006', 'RA-PM-010', 'RA-DR-002', 'RA-MH-001', 'RA-GS-001'],
     coshhItems: [], havsItems: ['HAVS-010', 'HAVS-008'], noiseItems: ['NOISE-004', 'NOISE-006'],
@@ -704,7 +704,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Receive and check joinery items against schedule. Store flat and protected.', 'Set out positions from drawings. Door openings squared and checked.', 'Fix frames/linings. Plumb and level. Pack and fix securely.', 'Hang doors. Adjust hinges, latch, and lock. Gap tolerances per spec.', 'Fit architraves, skirting, and trims. Mitre corners.', 'Install kitchen units/worktops per layout. Level and secure.', 'Final adjust all ironmongery. Function test fire doors. Protect from damage.'],
   },
   {
-    id: 'ceilings', trade: 'Ceiling Installation', category: 'fitout', icon: '⬜',
+    id: 'ceilings', trade: 'Ceiling Installation', category: 'fitout',
     description: 'Suspended ceilings, MF ceilings, bulkheads',
     raItems: ['RA-WAH-002', 'RA-WAH-008', 'RA-MH-001', 'RA-MH-006', 'RA-DR-003', 'RA-GS-001'],
     coshhItems: [], havsItems: ['HAVS-004'], noiseItems: ['NOISE-003'],
@@ -715,7 +715,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ EXTERNAL WORKS ═══
   {
-    id: 'groundworks', trade: 'Groundworks', category: 'external', icon: '⛏️',
+    id: 'groundworks', trade: 'Groundworks', category: 'external',
     description: 'Foundations, substructure, ground preparation',
     raItems: ['RA-EX-001', 'RA-EX-002', 'RA-EX-003', 'RA-EX-005', 'RA-EX-006', 'RA-PM-001', 'RA-PM-003', 'RA-PM-007', 'RA-LO-002', 'RA-MH-001', 'RA-TV-001', 'RA-EN-001', 'RA-GS-001'],
     coshhItems: ['COSHH-001', 'COSHH-008'], havsItems: ['HAVS-011', 'HAVS-012'], noiseItems: ['NOISE-002', 'NOISE-008'],
@@ -724,7 +724,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Review geotechnical report and foundation design. Obtain service records.', 'Set out excavation positions. Mark services. Obtain permit to dig.', 'Excavate to formation level. Shore/batter as required.', 'Inspect formation. Competent person to verify.', 'Blind and place reinforcement per structural design.', 'Pour concrete foundations. Vibrate and cure per spec.', 'Backfill and compact in layers to specified density.', 'Final levels and handover to superstructure.'],
   },
   {
-    id: 'drainage', trade: 'Drainage', category: 'external', icon: '🚰',
+    id: 'drainage', trade: 'Drainage', category: 'external',
     description: 'Below ground drainage, manholes, connections',
     raItems: ['RA-EX-001', 'RA-EX-002', 'RA-EX-003', 'RA-EX-004', 'RA-PM-001', 'RA-CS-001', 'RA-MH-001', 'RA-TV-001', 'RA-EN-001', 'RA-GS-001'],
     coshhItems: ['COSHH-008'], havsItems: ['HAVS-011'], noiseItems: ['NOISE-008'],
@@ -733,7 +733,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Set out drainage layout from drawings. Establish invert levels.', 'Excavate trench to formation. Shore if deeper than 1.2m.', 'Lay bedding material. Level and compact.', 'Install pipes to fall. Joint and bed per manufacturer.', 'Build manholes/inspection chambers per details.', 'Backfill in layers. Compact to specified density.', 'CCTV survey and water/air test. Record results.', 'Connect to existing system per water authority approval.'],
   },
   {
-    id: 'landscaping', trade: 'Landscaping', category: 'external', icon: '🌿',
+    id: 'landscaping', trade: 'Landscaping', category: 'external',
     description: 'Hard and soft landscaping, planting',
     raItems: ['RA-PM-001', 'RA-PM-005', 'RA-MH-001', 'RA-NV-002', 'RA-EN-001', 'RA-GS-001', 'RA-GS-002', 'RA-GS-009'],
     coshhItems: ['COSHH-008'], havsItems: ['HAVS-011', 'HAVS-016'], noiseItems: ['NOISE-008'],
@@ -742,7 +742,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Set out landscape layout from drawings.', 'Prepare ground — clear, grade, cultivate as required.', 'Install hard landscaping — kerbs, paving, edgings per details.', 'Install drainage and irrigation if specified.', 'Prepare planting areas — topsoil, compost, amendments.', 'Plant per planting schedule. Stake trees. Mulch beds.', 'Install fencing and street furniture per layout.', 'Final clean-up and handover.'],
   },
   {
-    id: 'paving', trade: 'Paving & Kerbing', category: 'external', icon: '🛤️',
+    id: 'paving', trade: 'Paving & Kerbing', category: 'external',
     description: 'Block paving, flags, tarmac, kerb laying',
     raItems: ['RA-PM-001', 'RA-PM-005', 'RA-MH-001', 'RA-NV-001', 'RA-DR-001', 'RA-TV-001', 'RA-GS-001'],
     coshhItems: ['COSHH-001', 'COSHH-011'], havsItems: ['HAVS-001', 'HAVS-011'], noiseItems: ['NOISE-001', 'NOISE-008'],
@@ -751,7 +751,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Set out levels and alignment from drawings.', 'Prepare sub-base — excavate, compact, level.', 'Lay kerbs/edgings to line and level. Haunch with concrete.', 'Lay base course/bedding material. Compact.', 'Install paving/flags to pattern. Cut with wet cutter.', 'Joint and compact. Kiln-dried sand for block paving.', 'Final clean and inspection.'],
   },
   {
-    id: 'fencing', trade: 'Fencing & Boundaries', category: 'external', icon: '🏗️',
+    id: 'fencing', trade: 'Fencing & Boundaries', category: 'external',
     description: 'Security fencing, timber fencing, gates',
     raItems: ['RA-EX-002', 'RA-PM-005', 'RA-MH-001', 'RA-GS-001', 'RA-GS-002'],
     coshhItems: ['COSHH-001'], havsItems: ['HAVS-004'], noiseItems: ['NOISE-003'],
@@ -762,7 +762,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ DEMOLITION & ENABLING ═══
   {
-    id: 'soft-strip', trade: 'Soft Strip', category: 'demolition', icon: '🔧',
+    id: 'soft-strip', trade: 'Soft Strip', category: 'demolition',
     description: 'Internal strip-out, removal of finishes and services',
     raItems: ['RA-DM-001', 'RA-DM-002', 'RA-DM-004', 'RA-DM-005', 'RA-EL-001', 'RA-MH-001', 'RA-WAH-002', 'RA-DR-005', 'RA-GS-001'],
     coshhItems: ['COSHH-002'], havsItems: ['HAVS-002', 'HAVS-004'], noiseItems: ['NOISE-002', 'NOISE-003'],
@@ -771,7 +771,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Review asbestos survey (R&D). Asbestos removed by licensed contractor first.', 'Isolate all services — electric, gas, water. Obtain isolation certificates.', 'Remove fixtures, fittings, and services in sequence.', 'Remove ceiling tiles, partitions, flooring — work top down.', 'Segregate waste — timber, metal, plasterboard, general.', 'Dust suppression throughout. Dampen before disturbing.', 'Clear and clean. Final inspection before structural demo or refit.'],
   },
   {
-    id: 'structural-demolition', trade: 'Structural Demolition', category: 'demolition', icon: '💥',
+    id: 'structural-demolition', trade: 'Structural Demolition', category: 'demolition',
     description: 'Structural demolition, machine demolition',
     raItems: ['RA-DM-001', 'RA-DM-002', 'RA-DM-003', 'RA-DM-004', 'RA-DM-005', 'RA-PM-001', 'RA-PM-003', 'RA-EX-001', 'RA-LO-002', 'RA-NV-001', 'RA-DR-001', 'RA-TV-001', 'RA-EN-001'],
     coshhItems: ['COSHH-002', 'COSHH-008'], havsItems: ['HAVS-002'], noiseItems: ['NOISE-002', 'NOISE-010'],
@@ -780,7 +780,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Demolition plan prepared by competent engineer. Method statement approved.', 'Pre-demolition structural survey completed.', 'Asbestos removal complete. Clearance certificate obtained.', 'All services isolated and capped. Certificates obtained.', 'Establish exclusion zone. Hoarding, signage, banksman.', 'Demolish in sequence per plan — top down, working back from perimeter.', 'Dust suppression throughout — water cannons, misting.', 'Process materials on site — crush concrete, segregate steel.', 'Backfill and grade to formation. Final inspection.'],
   },
   {
-    id: 'site-clearance', trade: 'Site Clearance', category: 'demolition', icon: '🌾',
+    id: 'site-clearance', trade: 'Site Clearance', category: 'demolition',
     description: 'Vegetation clearance, tree removal, site preparation',
     raItems: ['RA-PM-001', 'RA-PM-005', 'RA-NV-002', 'RA-MH-001', 'RA-GS-001', 'RA-GS-007', 'RA-GS-009', 'RA-EN-001'],
     coshhItems: ['COSHH-008'], havsItems: ['HAVS-014', 'HAVS-016'], noiseItems: ['NOISE-011'],
@@ -791,7 +791,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ SPECIALIST ═══
   {
-    id: 'fire-stopping', trade: 'Fire Stopping', category: 'specialist', icon: '🔥',
+    id: 'fire-stopping', trade: 'Fire Stopping', category: 'specialist',
     description: 'Penetration seals, linear gap seals, cavity barriers',
     raItems: ['RA-WAH-002', 'RA-WAH-008', 'RA-CH-004', 'RA-DR-003', 'RA-MH-001', 'RA-GS-001'],
     coshhItems: ['COSHH-006', 'COSHH-007'], havsItems: ['HAVS-004'], noiseItems: [],
@@ -800,7 +800,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Review fire strategy and penetration schedule. Identify all fire-rated walls/floors.', 'Survey and record all penetrations requiring fire stopping.', 'Prepare penetrations — clean, remove debris, check size.', 'Install fire stopping products per manufacturer test evidence.', 'Photograph each installation. Record on fire stopping register.', 'Third party inspection where specified. Obtain certificate.'],
   },
   {
-    id: 'scaffolding-erection', trade: 'Scaffolding', category: 'specialist', icon: '🪜',
+    id: 'scaffolding-erection', trade: 'Scaffolding', category: 'specialist',
     description: 'Scaffold erection, adaptation, dismantling',
     raItems: ['RA-SC-001', 'RA-SC-002', 'RA-SC-004', 'RA-WAH-001', 'RA-WAH-004', 'RA-LO-002', 'RA-MH-001', 'RA-MH-008', 'RA-NV-001', 'RA-TV-001', 'RA-GS-001', 'RA-GS-002'],
     coshhItems: [], havsItems: [], noiseItems: ['NOISE-014'],
@@ -809,7 +809,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Review scaffold design/TG20 compliance sheet. Check ground conditions.', 'Lay sole plates. Install base plates and standards.', 'Erect scaffold to design — ledgers, transoms, bracing.', 'Install ties at specified centres. Record on tie schedule.', 'Install platforms, guard rails, toe boards, ladder access.', 'Complete scaffold inspection and apply green tag.', 'Brief users on scaffold rules and load limits.', 'Dismantle in reverse order. Exclusion zone below.'],
   },
   {
-    id: 'lift-installation', trade: 'Lift Installation', category: 'specialist', icon: '🛗',
+    id: 'lift-installation', trade: 'Lift Installation', category: 'specialist',
     description: 'Passenger/goods lift installation',
     raItems: ['RA-WAH-001', 'RA-WAH-006', 'RA-CS-001', 'RA-EL-001', 'RA-EL-005', 'RA-LO-002', 'RA-MH-001', 'RA-PM-002', 'RA-GS-001'],
     coshhItems: ['COSHH-009'], havsItems: ['HAVS-004'], noiseItems: ['NOISE-003'],
@@ -818,7 +818,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Survey lift shaft — dimensions, plumb, fixings.', 'Install guide rails. Plumb and align.', 'Install machine room equipment / traction machine.', 'Install car frame, platform, doors.', 'Install wiring and controls.', 'Commission and test per BS EN 81. Load test.', 'Issue Declaration of Conformity. Handover to client with O&M.'],
   },
   {
-    id: 'temporary-works', trade: 'Temporary Works', category: 'specialist', icon: '🏗️',
+    id: 'temporary-works', trade: 'Temporary Works', category: 'specialist',
     description: 'Propping, shoring, temporary structures',
     raItems: ['RA-ST-001', 'RA-ST-003', 'RA-WAH-001', 'RA-LO-002', 'RA-MH-001', 'RA-GS-001'],
     coshhItems: [], havsItems: [], noiseItems: [],
@@ -827,7 +827,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Temporary works designed by competent engineer (TWC).', 'Design checked by independent checker (TWS).', 'Brief installation team on design and sequence.', 'Install per design. No deviations without engineer approval.', 'Inspect and sign off before loading.', 'Monitor during use. Report any movement/damage.', 'Remove only on engineer instruction. Sequence per design.'],
   },
   {
-    id: 'piling', trade: 'Piling', category: 'specialist', icon: '🏗️',
+    id: 'piling', trade: 'Piling', category: 'specialist',
     description: 'Bored piling, driven piling, CFA',
     raItems: ['RA-EX-001', 'RA-EX-002', 'RA-EX-007', 'RA-PM-001', 'RA-PM-003', 'RA-LO-002', 'RA-NV-001', 'RA-NV-003', 'RA-EN-001', 'RA-TV-001', 'RA-GS-001'],
     coshhItems: ['COSHH-001', 'COSHH-008'], havsItems: [], noiseItems: ['NOISE-010'],
@@ -838,7 +838,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ CIVIL & HIGHWAYS ═══
   {
-    id: 'road-works', trade: 'Road Works & Highways', category: 'civil', icon: '🛣️',
+    id: 'road-works', trade: 'Road Works & Highways', category: 'civil',
     description: 'Road construction, resurfacing, traffic management',
     raItems: ['RA-TV-001', 'RA-TV-003', 'RA-TV-004', 'RA-PM-001', 'RA-PM-007', 'RA-EX-002', 'RA-NV-001', 'RA-DR-001', 'RA-GS-001', 'RA-GS-002', 'RA-EN-003'],
     coshhItems: ['COSHH-011', 'COSHH-008'], havsItems: ['HAVS-011', 'HAVS-001'], noiseItems: ['NOISE-001', 'NOISE-008', 'NOISE-012'],
@@ -847,7 +847,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Implement traffic management per approved TM plan. Chapter 8 signage.', 'Set out works from drawings. Survey levels.', 'Plane/excavate existing surface. Dispose of arisings.', 'Prepare sub-base. Compact and level.', 'Lay base course/binder course. Compact and level.', 'Lay surface course. Check levels and crossfall.', 'Line markings, road studs, signage per highway design.', 'Open to traffic. Remove TM. Handover with as-built records.'],
   },
   {
-    id: 'utilities', trade: 'Utility Connections', category: 'civil', icon: '🔌',
+    id: 'utilities', trade: 'Utility Connections', category: 'civil',
     description: 'Gas, electric, water, telecoms connections',
     raItems: ['RA-EX-001', 'RA-EX-002', 'RA-EL-001', 'RA-EL-006', 'RA-CS-001', 'RA-PM-001', 'RA-TV-004', 'RA-GS-001'],
     coshhItems: [], havsItems: ['HAVS-002', 'HAVS-004'], noiseItems: ['NOISE-002', 'NOISE-003'],
@@ -856,7 +856,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Obtain utility records and permits. Coordinate with statutory bodies.', 'Set out trench routes. CAT scan for existing services.', 'Excavate trench. Hand dig near existing services.', 'Install ducts/pipes per utility company specification.', 'Backfill and compact in layers. Warning tape above services.', 'Connection by utility company or accredited contractor.', 'Reinstate surface. Test and commission.', 'As-built survey and handover records.'],
   },
   {
-    id: 'kerbing', trade: 'Kerbing & Edging', category: 'civil', icon: '🛣️',
+    id: 'kerbing', trade: 'Kerbing & Edging', category: 'civil',
     description: 'Kerb laying, channel, edge restraint',
     raItems: ['RA-MH-001', 'RA-MH-002', 'RA-PM-001', 'RA-TV-001', 'RA-GS-001'],
     coshhItems: ['COSHH-001'], havsItems: ['HAVS-004', 'HAVS-001'], noiseItems: ['NOISE-001'],
@@ -865,7 +865,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Set out kerb line from drawings. Check levels.', 'Excavate kerb foundation to required depth.', 'Pour concrete bedding. Strike off level.', 'Lift kerbs into position using mechanical aid.', 'Set kerbs to line and level. Joint and haunch.', 'Backfill behind kerb. Compact in layers.', 'Pointing where required.', 'Snag and handover.'],
   },
   {
-    id: 'street-furniture', trade: 'Street Furniture & Signage', category: 'civil', icon: '🚧',
+    id: 'street-furniture', trade: 'Street Furniture & Signage', category: 'civil',
     description: 'Bollards, benches, lighting columns, signage',
     raItems: ['RA-MH-001', 'RA-EX-001', 'RA-PM-001', 'RA-TV-001', 'RA-EL-006'],
     coshhItems: ['COSHH-001'], havsItems: ['HAVS-002', 'HAVS-004'], noiseItems: ['NOISE-002'],
@@ -876,7 +876,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ HERITAGE & LISTED BUILDINGS ═══
   {
-    id: 'lime-pointing', trade: 'Lime Pointing & Mortar Repair', category: 'heritage', icon: '🏛️',
+    id: 'lime-pointing', trade: 'Lime Pointing & Mortar Repair', category: 'heritage',
     description: 'Traditional lime mortar repointing, repairs to listed structures',
     raItems: ['RA-WAH-001', 'RA-WAH-002', 'RA-MH-001', 'RA-CH-001', 'RA-FW-005'],
     coshhItems: ['COSHH-001', 'COSHH-013'], havsItems: ['HAVS-001', 'HAVS-029'], noiseItems: ['NOISE-001'],
@@ -885,7 +885,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Pre-start condition survey. Photograph existing fabric.', 'Heritage Officer/Conservation Officer briefing if required.', 'Set up scaffold or access platform. Edge protection.', 'Rake out defective mortar by hand or with low-impact tools — avoid damage to historic stonework.', 'Mix lime mortar to specified ratio (e.g. NHL 3.5). Hot lime training where used.', 'Pack mortar in courses. Tooling to match historic profile.', 'Protect from rapid drying — damp hessian/sheeting per heritage spec.', 'Curing period 28+ days. Final photographic record. Handover with material certificates.'],
   },
   {
-    id: 'stone-restoration', trade: 'Stone Masonry & Restoration', category: 'heritage', icon: '🏛️',
+    id: 'stone-restoration', trade: 'Stone Masonry & Restoration', category: 'heritage',
     description: 'Stone repair, indenting, dutchman repairs, replacement',
     raItems: ['RA-WAH-001', 'RA-MH-008', 'RA-LO-001', 'RA-CH-002', 'RA-DU-001'],
     coshhItems: ['COSHH-001', 'COSHH-013'], havsItems: ['HAVS-001', 'HAVS-024', 'HAVS-029'], noiseItems: ['NOISE-001', 'NOISE-003'],
@@ -894,7 +894,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Heritage assessment. Method approved by Conservation Officer.', 'Set up scaffold with full edge protection.', 'Cut out defective stone using diamond-tipped hand tools — avoid percussive impact.', 'Cut new stone (matched to original). Lift with mechanical aid.', 'Set stone in lime mortar. Match coursing.', 'Pin where required (stainless steel pins).', 'Tool finish to match adjacent stone.', 'Final inspection by Conservation Officer. Photographic handover.'],
   },
   {
-    id: 'slate-roofing', trade: 'Slate Roofing (Heritage)', category: 'heritage', icon: '🏛️',
+    id: 'slate-roofing', trade: 'Slate Roofing (Heritage)', category: 'heritage',
     description: 'Welsh slate, traditional slating, lead detailing',
     raItems: ['RA-WAH-001', 'RA-WAH-007', 'RA-WAH-011', 'RA-MH-006', 'RA-FW-006'],
     coshhItems: ['COSHH-006', 'COSHH-001'], havsItems: ['HAVS-001'], noiseItems: ['NOISE-001'],
@@ -903,7 +903,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Pre-start condition survey. Identify existing slates for re-use.', 'Erect scaffold with edge protection. Roof ladders and crawl boards.', 'Strip existing slates carefully. Stack for re-use.', 'Inspect and repair battens, felt, sarking as required.', 'Set out slate courses. Hole/peg as required.', 'Lay slates from eaves up. Match historic detailing.', 'Lead flashing/valleys per heritage detail.', 'Final inspection. Handover with slate provenance records.'],
   },
   {
-    id: 'lead-work', trade: 'Lead Work & Flashings', category: 'heritage', icon: '🏛️',
+    id: 'lead-work', trade: 'Lead Work & Flashings', category: 'heritage',
     description: 'Lead roofing, flashings, decorative lead work',
     raItems: ['RA-WAH-001', 'RA-WAH-007', 'RA-FW-001', 'RA-FW-003', 'RA-MH-006'],
     coshhItems: ['COSHH-014'], havsItems: ['HAVS-001'], noiseItems: ['NOISE-001'],
@@ -912,7 +912,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Hot work permit. Fire watch arrangements.', 'Set up access. Edge protection.', 'Cut lead to size from rolls. Use shears or knives — no powered cutting.', 'Form lead using bossing tools. Avoid dry hammering (lead poisoning).', 'Lead burn welding (fully PPE\'d operatives only).', 'Fix lead with copper or stainless clips per heritage detail.', 'Patination oil applied to slow oxidation.', 'Final inspection. Hand and face washing essential post-work.'],
   },
   {
-    id: 'sash-window', trade: 'Sash Window Restoration', category: 'heritage', icon: '🪟',
+    id: 'sash-window', trade: 'Sash Window Restoration', category: 'heritage',
     description: 'Box sash window repair, draught-proofing, glass restoration',
     raItems: ['RA-WAH-001', 'RA-WAH-002', 'RA-MH-006', 'RA-CH-001'],
     coshhItems: ['COSHH-002', 'COSHH-007'], havsItems: ['HAVS-013'], noiseItems: [],
@@ -923,7 +923,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ OCCUPIED / LIVE PREMISES ═══
   {
-    id: 'office-fit-out', trade: 'Office Fit-Out (Occupied)', category: 'occupied', icon: '🏢',
+    id: 'office-fit-out', trade: 'Office Fit-Out (Occupied)', category: 'occupied',
     description: 'Cat A/B fit-out in occupied or partially-occupied premises',
     raItems: ['RA-WAH-002', 'RA-MH-001', 'RA-EL-003', 'RA-FW-001', 'RA-DU-002', 'RA-NV-001', 'RA-GS-002'],
     coshhItems: ['COSHH-007', 'COSHH-018'], havsItems: ['HAVS-006', 'HAVS-013'], noiseItems: ['NOISE-001'],
@@ -932,7 +932,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Liaise with FM/tenant. Out-of-hours working agreed.', 'Erect dust screens/hoarding. Floor protection.', 'Daily clean-down regime. Limit dust generation.', 'Carry out works per floor plan and finishes schedule.', 'Coordinate with live MEP services. Permit to work for live areas.', 'Snag end-of-shift. Re-instate clean state for next-day occupants.', 'Practical completion walkthrough with FM.', 'Handover with O&M manuals and asset register.'],
   },
   {
-    id: 'retail-fit-out', trade: 'Retail Fit-Out', category: 'occupied', icon: '🏪',
+    id: 'retail-fit-out', trade: 'Retail Fit-Out', category: 'occupied',
     description: 'Shop fit-out, often in occupied shopping centres',
     raItems: ['RA-MH-001', 'RA-EL-003', 'RA-FW-001', 'RA-WAH-002', 'RA-TV-002'],
     coshhItems: ['COSHH-007', 'COSHH-018'], havsItems: ['HAVS-006'], noiseItems: ['NOISE-001'],
@@ -941,7 +941,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Centre management briefing. Out-of-hours working window.', 'Hoarding and dust screens. Public separation.', 'Strip-out per agreed sequence.', 'Install shop floor finishes, joinery, services.', 'Connect signage and shopfront per landlord spec.', 'Final clean. Snag.', 'Tenant fit-out completion certificate.', 'Hand over to retailer.'],
   },
   {
-    id: 'healthcare-works', trade: 'Healthcare / Hospital Works', category: 'occupied', icon: '🏥',
+    id: 'healthcare-works', trade: 'Healthcare / Hospital Works', category: 'occupied',
     description: 'Works in operational healthcare environments — infection control critical',
     raItems: ['RA-WAH-002', 'RA-DU-002', 'RA-EL-003', 'RA-NV-001', 'RA-GS-002', 'RA-FW-001'],
     coshhItems: ['COSHH-018', 'COSHH-007'], havsItems: ['HAVS-006'], noiseItems: ['NOISE-001'],
@@ -950,7 +950,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['HBN/HTM compliance check. Infection control briefing.', 'IPC permit raised. Daily HEPA inspection.', 'Negative pressure enclosure where required.', 'Operatives via separate route. Clean PPE in clinical area.', 'Daily wet-clean of works area. No dry sweeping.', 'Smoke detection isolation by FM only — never directly.', 'Air monitoring (particulate count) where specified.', 'Handover with terminal clean certificate.'],
   },
   {
-    id: 'school-works', trade: 'School Works (Occupied)', category: 'occupied', icon: '🎓',
+    id: 'school-works', trade: 'School Works (Occupied)', category: 'occupied',
     description: 'Construction in occupied school or academy environments',
     raItems: ['RA-WAH-002', 'RA-MH-001', 'RA-FW-001', 'RA-PM-001', 'RA-EL-003', 'RA-GS-002'],
     coshhItems: [], havsItems: [], noiseItems: ['NOISE-001'],
@@ -961,7 +961,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ ACCESS & WORKING AT HEIGHT (specialist) ═══
   {
-    id: 'scaffold-system', trade: 'System Scaffolding (Layher/Cuplok)', category: 'access', icon: '🪜',
+    id: 'scaffold-system', trade: 'System Scaffolding (Layher/Cuplok)', category: 'access',
     description: 'Modular system scaffold erection',
     raItems: ['RA-WAH-001', 'RA-WAH-008', 'RA-WAH-010', 'RA-MH-001', 'RA-MH-002', 'RA-LO-001', 'RA-PM-001'],
     coshhItems: [], havsItems: [], noiseItems: [],
@@ -970,7 +970,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['CISRS-trained operatives only. PASMA where mobile.', 'Pre-start scaffold design check. Loading specification.', 'Erect base lifts. Sole boards on soft ground.', 'Build lifts to design. Bracing and ties as drawing.', 'Edge protection at all platforms — guard rail, mid-rail, toe board.', 'Ladders or stair towers for access.', 'Scaffold tagged GREEN before handover. Daily inspection.', 'Strike in reverse sequence. Stack for re-use.'],
   },
   {
-    id: 'scaffold-tube', trade: 'Tube & Fitting Scaffolding', category: 'access', icon: '🪜',
+    id: 'scaffold-tube', trade: 'Tube & Fitting Scaffolding', category: 'access',
     description: 'Traditional tube and clip scaffolding',
     raItems: ['RA-WAH-001', 'RA-WAH-008', 'RA-WAH-010', 'RA-MH-001', 'RA-MH-002'],
     coshhItems: [], havsItems: [], noiseItems: [],
@@ -979,7 +979,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['CISRS-trained operatives. SG4 fall arrest where applicable.', 'Confirm scaffold design from drawings.', 'Erect base lift. Sole boards. Adjustable bases.', 'Build standards, ledgers, transoms.', 'Brace per design. Tie to structure as required.', 'Boards, guard rails, toe boards.', 'Tag GREEN. Hand over with inspection certificate.', 'Periodic inspection at 7-day intervals.'],
   },
   {
-    id: 'mast-climber', trade: 'Mast Climbing Work Platforms (MCWP)', category: 'access', icon: '🪜',
+    id: 'mast-climber', trade: 'Mast Climbing Work Platforms (MCWP)', category: 'access',
     description: 'Twin mast climbers for façade access',
     raItems: ['RA-WAH-001', 'RA-WAH-003', 'RA-WAH-010', 'RA-LO-001', 'RA-NV-002'],
     coshhItems: [], havsItems: [], noiseItems: [],
@@ -988,7 +988,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['IPAF MCWP trained operators only. Lift plan approved.', 'Erect masts to base structure. Securing pins.', 'Erect platform. Wind speed monitoring.', 'Tie to structure at design intervals.', 'Test platform travel up/down. Emergency descent test.', 'Edge protection on platform.', 'Operatives at height tied off where SG4 applies.', 'Strike on completion in reverse sequence.'],
   },
   {
-    id: 'rope-access', trade: 'Rope Access (IRATA)', category: 'access', icon: '🪢',
+    id: 'rope-access', trade: 'Rope Access (IRATA)', category: 'access',
     description: 'IRATA rope access for inspection, maintenance, façade work',
     raItems: ['RA-WAH-001', 'RA-WAH-002', 'RA-WAH-006'],
     coshhItems: [], havsItems: [], noiseItems: [],
@@ -997,7 +997,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['IRATA Level 1/2/3 ratio per IRATA TACS. L3 supervisor on site.', 'Rope rigging plan. Anchor inspection (15 kN minimum).', 'Two independent ropes per operative. Back-up device.', 'Pre-start checks of all PPE and equipment.', 'Operatives descend in twin-rope system. Tools tethered.', 'Bottom-up rescue plan rehearsed. Top-team awareness.', 'Daily logging of equipment and rope hours.', 'Safe egress. Equipment de-rigged and inspected.'],
   },
   {
-    id: 'bmu', trade: 'BMU / Façade Access Equipment', category: 'access', icon: '🏢',
+    id: 'bmu', trade: 'BMU / Façade Access Equipment', category: 'access',
     description: 'Building maintenance unit operation, suspended cradle works',
     raItems: ['RA-WAH-001', 'RA-WAH-003', 'RA-LO-001', 'RA-NV-002'],
     coshhItems: [], havsItems: [], noiseItems: [],
@@ -1008,7 +1008,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ RENEWABLES & LOW CARBON ═══
   {
-    id: 'solar-pv', trade: 'Solar PV Installation', category: 'renewables', icon: '☀️',
+    id: 'solar-pv', trade: 'Solar PV Installation', category: 'renewables',
     description: 'Roof and ground-mount photovoltaic systems',
     raItems: ['RA-WAH-001', 'RA-WAH-007', 'RA-WAH-011', 'RA-EL-001', 'RA-EL-005', 'RA-MH-006'],
     coshhItems: [], havsItems: ['HAVS-006'], noiseItems: [],
@@ -1017,7 +1017,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['MCS-certified installer. Roof structural check.', 'Erect roof access. Edge protection or harness.', 'Install rails to roof per manufacturer spec.', 'Lift panels (manual handling — 2-person carry).', 'Mount panels. DC cabling — kept off roof until ready.', 'Inverter installation by qualified electrician.', 'Commissioning per MCS protocol. G98/G99 connection.', 'Handover with as-built and yield projection.'],
   },
   {
-    id: 'ev-charge-point', trade: 'EV Charge Point Installation', category: 'renewables', icon: '⚡',
+    id: 'ev-charge-point', trade: 'EV Charge Point Installation', category: 'renewables',
     description: 'EV charging point install — domestic and commercial',
     raItems: ['RA-EL-001', 'RA-EL-003', 'RA-EX-001', 'RA-MH-001', 'RA-TV-002'],
     coshhItems: [], havsItems: ['HAVS-006', 'HAVS-022'], noiseItems: ['NOISE-003'],
@@ -1026,7 +1026,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['OZEV-approved installer. Pre-install survey complete.', 'Isolate supply. Lock-out tag-out.', 'Run cabling per BS 7671. RCD type B.', 'Install charge point. Earth as required.', 'OZEV/DNO notification (G98/G99 where required).', 'Commission. Test under load.', 'Customer demonstration. Hand over with certificates.', 'Register with vehicle/grant body as required.'],
   },
   {
-    id: 'heat-pump', trade: 'Air-Source Heat Pump Install', category: 'renewables', icon: '🌡️',
+    id: 'heat-pump', trade: 'Air-Source Heat Pump Install', category: 'renewables',
     description: 'ASHP / GSHP install with associated MEP',
     raItems: ['RA-MH-001', 'RA-EL-001', 'RA-EX-001', 'RA-PM-001', 'RA-WC-001'],
     coshhItems: ['COSHH-016'], havsItems: ['HAVS-006'], noiseItems: ['NOISE-001'],
@@ -1035,7 +1035,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['MCS-certified installer. F-Gas registered for refrigerant work.', 'Pre-install survey. EPC and heat-loss calc reviewed.', 'Strip existing system if applicable. Drain down safely.', 'Pour external pad for unit. Install brackets.', 'Lift unit into position. Mechanical aid for heavy units.', 'Pipework, refrigerant lines, electrical to BS 7671.', 'Refrigerant charge by F-Gas qualified engineer.', 'Commission per MCS. Customer demo + handover.'],
   },
   {
-    id: 'underfloor-heating', trade: 'Underfloor Heating Install', category: 'renewables', icon: '🌡️',
+    id: 'underfloor-heating', trade: 'Underfloor Heating Install', category: 'renewables',
     description: 'Wet UFH manifold, pipework, screed',
     raItems: ['RA-MH-001', 'RA-MH-003', 'RA-EL-003', 'RA-CH-001'],
     coshhItems: ['COSHH-001', 'COSHH-016'], havsItems: [], noiseItems: [],
@@ -1046,7 +1046,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ SPECIALIST EXPANSIONS ═══
   {
-    id: 'asbestos-licensed', trade: 'Licensed Asbestos Removal', category: 'specialist', icon: '☣️',
+    id: 'asbestos-licensed', trade: 'Licensed Asbestos Removal', category: 'specialist',
     description: 'Licensed removal of asbestos-containing materials',
     raItems: ['RA-WAH-002', 'RA-MH-001', 'RA-DU-002', 'RA-CH-002'],
     coshhItems: ['COSHH-018'], havsItems: [], noiseItems: [],
@@ -1055,7 +1055,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['HSE-licensed contractor. ASB5 notification 14 days before start.', 'Pre-start meeting with analyst.', 'Erect enclosure. Negative pressure unit. 3-stage decon.', 'Operatives with current medical and FFP3/powered RPE.', 'Wet stripping. Bag waste in red/asbestos-marked sacks.', 'Smoke test enclosure. Visual inspection by analyst.', 'Reassurance air clearance. Certificate of Reoccupation.', 'Waste disposal via licensed carrier to permitted site.'],
   },
   {
-    id: 'asbestos-survey', trade: 'Asbestos Surveys (R&D)', category: 'specialist', icon: '☣️',
+    id: 'asbestos-survey', trade: 'Asbestos Surveys (R&D)', category: 'specialist',
     description: 'Asbestos refurbishment & demolition surveys',
     raItems: ['RA-WAH-002', 'RA-CS-001'],
     coshhItems: ['COSHH-018'], havsItems: [], noiseItems: [],
@@ -1064,7 +1064,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['BOHS P402 surveyor. PASMA/IPAF as required.', 'Pre-survey desk study. Site induction.', 'Walk-through inspection — all areas.', 'Take samples per HSG264. Bag and label.', 'Photograph each sample location.', 'Submit samples to UKAS lab. Await results.', 'Compile survey report with risk register.', 'Handover to client with management plan recommendations.'],
   },
   {
-    id: 'fire-stopping', trade: 'Fire Stopping & Compartmentation', category: 'specialist', icon: '🔥',
+    id: 'fire-stopping-compartmentation', trade: 'Fire Stopping & Compartmentation', category: 'specialist',
     description: 'Penetration sealing, fire collars, intumescent paint',
     raItems: ['RA-MH-001', 'RA-WAH-002', 'RA-FW-001'],
     coshhItems: ['COSHH-019'], havsItems: [], noiseItems: [],
@@ -1073,7 +1073,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['IFC-certified or equivalent qualified operatives.', 'Survey existing compartmentation. Mark up plans.', 'Pre-install MEP penetrations confirmed.', 'Install batt/sleeve to manufacturer detail.', 'Apply mastic/foam per spec. Fire-rated only.', 'Photographic record of every penetration.', 'Compile fire stopping register with location plans.', 'Handover to FM with O&M and maintenance plan.'],
   },
   {
-    id: 'intumescent', trade: 'Intumescent Paint to Steelwork', category: 'specialist', icon: '🔥',
+    id: 'intumescent', trade: 'Intumescent Paint to Steelwork', category: 'specialist',
     description: 'Fire protection coatings to structural steel',
     raItems: ['RA-WAH-001', 'RA-MH-001'],
     coshhItems: ['COSHH-019'], havsItems: [], noiseItems: [],
@@ -1082,7 +1082,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['ICATS-trained applicator. Manufacturer spec confirmed.', 'Surface prep — abrasive blast / power tool clean to Sa 2.5.', 'Primer applied per spec.', 'Build coats of intumescent to required DFT.', 'DFT measurement at agreed frequency. Reject and recoat if low.', 'Topcoat where exposed.', 'QA records — substrate, primer DFT, IUM DFT, topcoat.', 'Hand over with ICATS certificate per element.'],
   },
   {
-    id: 'curtain-walling', trade: 'Curtain Walling Install', category: 'envelope', icon: '🪟',
+    id: 'curtain-walling', trade: 'Curtain Walling Install', category: 'envelope',
     description: 'Aluminium / steel curtain wall systems',
     raItems: ['RA-WAH-001', 'RA-LO-001', 'RA-MH-008', 'RA-EL-005'],
     coshhItems: ['COSHH-007'], havsItems: ['HAVS-006'], noiseItems: ['NOISE-001'],
@@ -1091,7 +1091,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Setting-out from primary structure datum.', 'Brackets to slab. Survey checked.', 'Mullions lifted into position. Tied off where SG4.', 'Transoms installed. Plumb and align.', 'Glazing units lifted with vacuum lifters or mechanical aid.', 'Glazing gaskets and pressure plates. Caps installed.', 'Pressure test sample bays.', 'Snag and final clean.'],
   },
   {
-    id: 'structural-glazing', trade: 'Structural Glazing / Frameless', category: 'envelope', icon: '🪟',
+    id: 'structural-glazing', trade: 'Structural Glazing / Frameless', category: 'envelope',
     description: 'Frameless glass walls, balustrades, atrium glazing',
     raItems: ['RA-WAH-001', 'RA-LO-001', 'RA-MH-008'],
     coshhItems: ['COSHH-019', 'COSHH-007'], havsItems: [], noiseItems: [],
@@ -1100,7 +1100,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Pre-install survey. Tolerances to glass manufacturer.', 'Install fixings to structure.', 'Lift glass with vacuum lifters. Spreader bar for large units.', 'Position glass. Bond with structural silicone per manufacturer.', '7-day cure before load.', 'Edge protection until cured.', 'Snag and clean.', 'Handover with structural sign-off.'],
   },
   {
-    id: 'shop-fitting', trade: 'Shop Fitting / Joinery', category: 'fitout', icon: '🪚',
+    id: 'shop-fitting', trade: 'Shop Fitting / Joinery', category: 'fitout',
     description: 'Bespoke joinery, shopfront, retail fitout',
     raItems: ['RA-MH-001', 'RA-EL-003', 'RA-PM-006'],
     coshhItems: ['COSHH-007', 'COSHH-002'], havsItems: ['HAVS-018', 'HAVS-019'], noiseItems: ['NOISE-004'],
@@ -1111,7 +1111,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ DEMOLITION ═══
   {
-    id: 'soft-strip', trade: 'Soft Strip Demolition', category: 'demolition', icon: '💥',
+    id: 'soft-strip', trade: 'Soft Strip Demolition', category: 'demolition',
     description: 'Internal strip-out — fixtures, fittings, services',
     raItems: ['RA-MH-001', 'RA-WAH-002', 'RA-DU-002', 'RA-EL-003', 'RA-CH-002'],
     coshhItems: ['COSHH-018'], havsItems: ['HAVS-006', 'HAVS-009'], noiseItems: ['NOISE-001'],
@@ -1120,7 +1120,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Pre-strip asbestos survey. R&D survey reviewed.', 'Isolations confirmed for all services.', 'Strip in agreed sequence — top-down typically.', 'Segregate waste streams. Skip strategy.', 'Manual handling — mechanical aids for heavy items.', 'Daily clean-down. Damping for dust.', 'Recovery materials for re-use where practical.', 'Handover for full structural demolition.'],
   },
   {
-    id: 'structural-demolition', trade: 'Structural Demolition', category: 'demolition', icon: '💥',
+    id: 'structural-demolition', trade: 'Structural Demolition', category: 'demolition',
     description: 'Full structural demolition by mechanical means',
     raItems: ['RA-WAH-001', 'RA-WAH-006', 'RA-PM-001', 'RA-PM-004', 'RA-DU-001', 'RA-NV-001'],
     coshhItems: ['COSHH-018', 'COSHH-013'], havsItems: ['HAVS-002', 'HAVS-003'], noiseItems: ['NOISE-002', 'NOISE-013'],
@@ -1129,7 +1129,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['CCDO-trained operatives. Demolition plan signed off.', 'Hoarding and exclusion zone.', 'Dust suppression — mist cannon or water spray.', 'Demolish in agreed sequence — high reach excavator.', 'Process arisings on-site for re-use. Steel separation.', 'Continuous noise/dust monitoring per consent.', 'Final ground level. Clear arisings.', 'Handover for next phase.'],
   },
   {
-    id: 'concrete-cutting', trade: 'Concrete Cutting & Drilling', category: 'demolition', icon: '🪨',
+    id: 'concrete-cutting', trade: 'Concrete Cutting & Drilling', category: 'demolition',
     description: 'Diamond cutting, core drilling, controlled demolition',
     raItems: ['RA-PM-005', 'RA-DU-001', 'RA-WAH-006', 'RA-GS-001'],
     coshhItems: ['COSHH-013'], havsItems: ['HAVS-024', 'HAVS-028'], noiseItems: ['NOISE-001', 'NOISE-003'],
@@ -1140,7 +1140,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ INFRASTRUCTURE — RAIL / MARINE / AVIATION ═══
   {
-    id: 'rail-track', trade: 'Rail Track Works (Network Rail)', category: 'infrastructure', icon: '🛤️',
+    id: 'rail-track', trade: 'Rail Track Works (Network Rail)', category: 'infrastructure',
     description: 'Track maintenance, possessions, S&T works',
     raItems: ['RA-TV-001', 'RA-WAH-002', 'RA-EX-001', 'RA-EL-002', 'RA-PM-001'],
     coshhItems: ['COSHH-008'], havsItems: ['HAVS-002', 'HAVS-011'], noiseItems: ['NOISE-002', 'NOISE-008'],
@@ -1149,7 +1149,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Sentinel-trained operatives. PTS competence current.', 'COSS / IWA appointed per Rule Book.', 'T2/T3 possession or line blockage as planned.', 'Site briefing pre-shift. Headcount on/off track.', 'Carry out works within possession window.', 'Post-work inspection. P-Way records.', 'Handback signed by COSS.', 'Possession returned per timetable.'],
   },
   {
-    id: 'marine-works', trade: 'Marine / Dockyard Works', category: 'infrastructure', icon: '⚓',
+    id: 'marine-works', trade: 'Marine / Dockyard Works', category: 'infrastructure',
     description: 'Wharf, jetty, harbour construction',
     raItems: ['RA-MA-001', 'RA-WAH-001', 'RA-LO-001', 'RA-EX-002', 'RA-EN-002'],
     coshhItems: ['COSHH-008', 'COSHH-011'], havsItems: ['HAVS-011'], noiseItems: ['NOISE-001', 'NOISE-010'],
@@ -1158,7 +1158,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Tide window confirmed. Met office briefing.', 'Lifejackets mandatory. Throw line and rescue plan.', 'Marine traffic management with port authority.', 'Plant on barge — secured for sea state.', 'Carry out works within tidal window.', 'Environmental controls — silt curtains where needed.', 'Daily marine pollution check.', 'Handover with as-built bathymetry.'],
   },
   {
-    id: 'airside', trade: 'Airside / Airport Works', category: 'infrastructure', icon: '✈️',
+    id: 'airside', trade: 'Airside / Airport Works', category: 'infrastructure',
     description: 'Runway, taxiway, apron construction',
     raItems: ['RA-TV-001', 'RA-PM-001', 'RA-EL-001'],
     coshhItems: ['COSHH-008'], havsItems: ['HAVS-011'], noiseItems: ['NOISE-002', 'NOISE-008'],
@@ -1169,7 +1169,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ EXTERNAL — SOFT LANDSCAPING / TREE WORKS ═══
   {
-    id: 'soft-landscaping', trade: 'Soft Landscaping & Planting', category: 'external', icon: '🌿',
+    id: 'soft-landscaping', trade: 'Soft Landscaping & Planting', category: 'external',
     description: 'Topsoil, turf, planting, irrigation',
     raItems: ['RA-MH-001', 'RA-MH-003', 'RA-PM-001', 'RA-EX-001', 'RA-EN-001'],
     coshhItems: ['COSHH-006'], havsItems: ['HAVS-016', 'HAVS-051'], noiseItems: [],
@@ -1178,7 +1178,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Site clearance. Subgrade prep.', 'Topsoil import. Distribute to design depth.', 'Turfing or seed sowing per spec.', 'Plant tree pits — root barriers as needed.', 'Irrigation install where specified.', 'Establish maintenance regime.', 'Snag — replace failed plants.', 'Hand over with planting schedule.'],
   },
   {
-    id: 'tree-surgery', trade: 'Tree Surgery / Arboriculture', category: 'external', icon: '🌳',
+    id: 'tree-surgery', trade: 'Tree Surgery / Arboriculture', category: 'external',
     description: 'Tree felling, pruning, removal',
     raItems: ['RA-WAH-001', 'RA-PM-001', 'RA-WC-002', 'RA-EN-001'],
     coshhItems: ['COSHH-005'], havsItems: ['HAVS-014', 'HAVS-060'], noiseItems: ['NOISE-014'],
@@ -1189,7 +1189,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
 
   // ═══ MEP EXPANSION ═══
   {
-    id: 'sprinklers', trade: 'Sprinkler Installation', category: 'mep', icon: '💧',
+    id: 'sprinklers', trade: 'Sprinkler Installation', category: 'mep',
     description: 'Wet/dry sprinkler systems, BS EN 12845',
     raItems: ['RA-WAH-002', 'RA-MH-001', 'RA-LO-002', 'RA-PM-008'],
     coshhItems: [], havsItems: ['HAVS-006', 'HAVS-022'], noiseItems: ['NOISE-001'],
@@ -1198,7 +1198,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['LPCB-certified installer. Design certificate confirmed.', 'Pipework runs marked from drawings.', 'Hangers and clips installed first fix.', 'Pipework install — pressed or threaded per spec.', 'Sprinkler heads at design centres.', 'Hydraulic pressure test to 1.5x working pressure.', 'Commissioning per BS EN 12845.', 'LPCB certificate handover.'],
   },
   {
-    id: 'data-cabling', trade: 'Data / Structured Cabling', category: 'mep', icon: '🔌',
+    id: 'data-cabling', trade: 'Data / Structured Cabling', category: 'mep',
     description: 'Cat 6/6A/7, fibre, OM3/4',
     raItems: ['RA-WAH-002', 'RA-EL-003', 'RA-MH-007'],
     coshhItems: [], havsItems: [], noiseItems: [],
@@ -1207,7 +1207,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['BICSI / equivalent trained. Cabling design reviewed.', 'Containment route confirmed. Trays installed first.', 'Cable pulling — drum jacks, lubrication.', 'Termination at panels — keystone or RJ45.', 'Patch panels. Labelling per BS EN 50173.', 'Test every cable — Fluke certifier or equivalent.', 'Compile test results.', 'Handover with as-built and test certificates.'],
   },
   {
-    id: 'fire-alarm-comm', trade: 'Fire Alarm — Commercial', category: 'mep', icon: '🔔',
+    id: 'fire-alarm-comm', trade: 'Fire Alarm — Commercial', category: 'mep',
     description: 'L1-L5 fire alarm systems, BS 5839',
     raItems: ['RA-WAH-002', 'RA-EL-003', 'RA-FW-001'],
     coshhItems: [], havsItems: ['HAVS-022'], noiseItems: [],
@@ -1216,7 +1216,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['BAFE / equivalent certified. Drawings approved.', 'Containment install. Cabling — fire-rated where required.', 'Devices fixed — detectors, sounders, MCPs, beacons.', 'Wiring back to panel. Loop testing.', 'Cause-and-effect commissioning.', 'Tenant briefing — silence/reset procedures.', 'BS 5839 commissioning certificate.', 'Handover to FM.'],
   },
   {
-    id: 'gas-install', trade: 'Gas Installation', category: 'mep', icon: '🔥',
+    id: 'gas-install', trade: 'Gas Installation', category: 'mep',
     description: 'Domestic / commercial gas pipework and appliances',
     raItems: ['RA-EL-003', 'RA-CH-001', 'RA-FW-001'],
     coshhItems: ['COSHH-009'], havsItems: ['HAVS-006'], noiseItems: [],
@@ -1225,7 +1225,7 @@ export const RAMS_TRADES: RAMSTrade[] = [
     msSteps: ['Gas Safe registered engineer. Notification to GSR.', 'Isolate existing supply. Lock-off.', 'Pipework install per BS 6891.', 'Tightness test pre-commissioning.', 'Commission appliances. Flue gas analysis.', 'Customer briefing on isolation valves.', 'Building regs notification (Cat A).', 'Gas Safety Certificate handover.'],
   },
   {
-    id: 'access-control', trade: 'Access Control & CCTV', category: 'mep', icon: '🔒',
+    id: 'access-control', trade: 'Access Control & CCTV', category: 'mep',
     description: 'Electronic access control, intruder alarms, CCTV',
     raItems: ['RA-WAH-002', 'RA-EL-003'],
     coshhItems: [], havsItems: [], noiseItems: [],

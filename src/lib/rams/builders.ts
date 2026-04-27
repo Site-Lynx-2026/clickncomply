@@ -215,7 +215,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Manual handling assessment using the HSE TILE structure. Load weights, lift heights, frequency, posture, environment. Auto-flags assessments above HSE guideline weights.",
     icon: PackageOpen,
-    status: "planned",
+    status: "wip",
     section: "documents",
   },
 
@@ -228,7 +228,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Working at Height Regulations 2005 compliant assessment. Avoid > prevent > mitigate hierarchy. Edge protection, MEWP, scaffolding, ladders, harness, rescue plan.",
     icon: ArrowUpFromLine,
-    status: "planned",
+    status: "wip",
     section: "specialist",
   },
   "lone-working": {
@@ -239,7 +239,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Lone worker risk assessment. Check-in cadence, supervisor escalation, lone worker device, panic procedure. Specific to site visits, surveys, out-of-hours work.",
     icon: UserMinus,
-    status: "planned",
+    status: "wip",
     section: "specialist",
   },
   "confined-space": {
@@ -250,7 +250,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Confined Spaces Regulations 1997 assessment. Atmospheric monitoring, ventilation, top-man duties, escape plan, rescue equipment. Tied to entry permit.",
     icon: CircleDot,
-    status: "planned",
+    status: "wip",
     section: "specialist",
   },
   "hot-works": {
@@ -261,7 +261,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Hot works risk assessment for welding, cutting, grinding, brazing. Fire watch duration, exclusion zone, extinguisher placement, smoke detection isolation.",
     icon: Flame,
-    status: "planned",
+    status: "wip",
     section: "specialist",
   },
   dsear: {
@@ -272,7 +272,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Dangerous Substances and Explosive Atmospheres Regulations 2002 assessment. Hazardous zones (0/1/2, 20/21/22), ignition source control, ATEX-rated equipment.",
     icon: Zap,
-    status: "planned",
+    status: "wip",
     section: "specialist",
   },
   "pregnant-worker": {
@@ -283,7 +283,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Risk assessment for pregnant workers and new/breastfeeding mothers. Manual handling limits, COSHH exclusions, posture, working time, rest provision.",
     icon: HeartPulse,
-    status: "planned",
+    status: "wip",
     section: "specialist",
   },
   "young-worker": {
@@ -294,7 +294,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Risk assessment for workers under 18. Supervision requirements, prohibited equipment, working hours, training and induction-specific controls.",
     icon: Baby,
-    status: "planned",
+    status: "wip",
     section: "specialist",
   },
   "whole-body-vibration": {
@@ -305,7 +305,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Whole-body vibration assessment for plant operators (dumpers, excavators, rollers). A(8) daily exposure calculation. EAV 0.5 m/s², ELV 1.15 m/s².",
     icon: Vibrate,
-    status: "planned",
+    status: "wip",
     section: "specialist",
   },
 
@@ -318,7 +318,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Generic permit-to-work template. Issuer, holder, validity window, work scope, isolations, controls, sign-off, hand-back.",
     icon: ClipboardCheck,
-    status: "planned",
+    status: "wip",
     section: "permits",
   },
   "hot-works-permit": {
@@ -329,7 +329,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Hot works permit aligned with FPA / RC7 guidance. Fire watch duration (60 min after-burn check), extinguisher placement, smoke alarm isolation.",
     icon: FlameKindling,
-    status: "planned",
+    status: "wip",
     section: "permits",
   },
   "permit-to-dig": {
@@ -340,7 +340,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Permit to dig with mandatory CAT and Genny scan record, statutory utility drawings, hand-dig exclusion zone marker.",
     icon: Shovel,
-    status: "planned",
+    status: "wip",
     section: "permits",
   },
   "confined-space-entry": {
@@ -351,7 +351,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Confined space entry permit. Atmospheric test log (O₂, LEL, H₂S, CO), entrant register, top-man details, rescue plan, validity window.",
     icon: ArrowDownToDot,
-    status: "planned",
+    status: "wip",
     section: "permits",
   },
   "working-at-height-permit": {
@@ -362,7 +362,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Working at height permit. Edge protection inspection, anchor point check, harness inspection, wind speed hold (28 mph default), rescue plan reference.",
     icon: MountainSnow,
-    status: "planned",
+    status: "wip",
     section: "permits",
   },
 
@@ -386,7 +386,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Full site induction pack — site rules, hazards, emergency procedures, welfare, contacts. Attendance register and competency declaration on the back.",
     icon: HardHat,
-    status: "planned",
+    status: "wip",
     section: "briefings",
   },
   "daily-activity-briefing": {
@@ -397,7 +397,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Daily Activity Briefing. Today's tasks, key hazards, weather, plant on site, attendance and sign-off. Auto-fills from any active RAMs.",
     icon: CalendarClock,
-    status: "planned",
+    status: "wip",
     section: "briefings",
   },
   "pre-task-briefing": {
@@ -408,7 +408,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Single-page pre-task briefing. Pulls from the parent RAMs, focuses on the task at hand, captures crew sign-off.",
     icon: ClipboardList,
-    status: "planned",
+    status: "wip",
     section: "briefings",
   },
 
@@ -421,7 +421,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "PUWER 1998 compliant pre-use inspection. Tool / plant condition checklist, defect log, operator sign-off. Pre-built sheets for common kit.",
     icon: Wrench,
-    status: "planned",
+    status: "wip",
     section: "plant",
   },
   "loler-inspection": {
@@ -432,7 +432,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "LOLER 1998 thorough examination record. Equipment ID, SWL, last exam, defects, competent person sign-off. Ties to lifting equipment register.",
     icon: Anchor,
-    status: "planned",
+    status: "wip",
     section: "plant",
   },
   "plant-prestart": {
@@ -443,7 +443,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Daily pre-start check for plant. Fluid levels, tyres / tracks, controls, lights, alarms, ROPS / FOPS. Operator sign-off, defect escalation.",
     icon: PlayCircle,
-    status: "planned",
+    status: "wip",
     section: "plant",
   },
   "equipment-register": {
@@ -454,7 +454,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Master register for tools, plant, lifting equipment, PPE. Last inspection, next due, owner, location. Ties to PUWER and LOLER records.",
     icon: Boxes,
-    status: "planned",
+    status: "wip",
     section: "plant",
   },
 
@@ -467,7 +467,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "PPE schedule keyed to tasks and hazards. Standard set + task-specific (RPE, gloves grade, eye protection rating). Issue log and replacement cadence.",
     icon: Shirt,
-    status: "planned",
+    status: "wip",
     section: "ppe",
   },
   "first-aid-assessment": {
@@ -478,7 +478,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "First aid needs assessment per HSE guidance. Headcount, hazard category, distance from A&E. Recommends FAW / EFAW provision and kit composition.",
     icon: Cross,
-    status: "planned",
+    status: "wip",
     section: "ppe",
   },
   "welfare-plan": {
@@ -489,7 +489,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Welfare provision plan per CDM 2015 Schedule 2. Toilets, washing, drying, rest, drinking water, heating. Headcount-driven sizing.",
     icon: Home,
-    status: "planned",
+    status: "wip",
     section: "ppe",
   },
   "emergency-action-plan": {
@@ -500,7 +500,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Emergency action plan covering fire, medical, environmental spill, structural failure, security incident. Assembly point, contacts, escalation, on-call.",
     icon: Siren,
-    status: "planned",
+    status: "wip",
     section: "ppe",
   },
 
@@ -524,7 +524,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Browse 80+ pre-built COSHH assessments — cement, silica, isocyanates, epoxies, solvents, fuels, sealants. Free tier read; paid tier copies into builder.",
     icon: FlaskRound,
-    status: "planned",
+    status: "wip",
     section: "library",
   },
   "havs-library": {
@@ -535,7 +535,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Vibration magnitude database for 60+ common tools — breakers, grinders, SDS drills, sanders, chainsaws. Manufacturer values where published, HSE typicals where not.",
     icon: Drill,
-    status: "planned",
+    status: "wip",
     section: "library",
   },
   "noise-library": {
@@ -546,7 +546,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Typical sound pressure levels for 50+ construction activities. Saw cutting, breaking, grinding, generator running. Drives the LEQ calculator.",
     icon: AudioLines,
-    status: "planned",
+    status: "wip",
     section: "library",
   },
   "trade-templates": {
@@ -557,7 +557,7 @@ export const BUILDERS: Record<BuilderSlug, Builder> = {
     description:
       "Trade-by-trade RAMs starter packs. Sparky, plumber, scaffolder, roofer, demolition, groundworker, joiner, painter, M&E. Pre-loads relevant RAs, COSHH, HAVs, noise.",
     icon: Hammer,
-    status: "planned",
+    status: "wip",
     section: "library",
   },
 };

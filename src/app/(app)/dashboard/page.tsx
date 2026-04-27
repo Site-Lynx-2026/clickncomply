@@ -122,14 +122,17 @@ export default async function DashboardPage() {
     <div className="container mx-auto max-w-6xl px-6 py-10">
       <TrialBanner tier={tier} daysLeft={daysLeft} />
 
-      {/* Greeting */}
+      {/* Greeting — SL signature: tiny eyebrow + Barlow Condensed uppercase */}
       <div className="mb-10">
-        <h1 className="text-3xl md:text-4xl font-semibold tracking-tight mb-1">
-          {greeting}, {firstName}.
+        <div className="text-[11px] text-muted-foreground uppercase tracking-[0.18em] font-bold mb-2">
+          Dashboard
+        </div>
+        <h1 className="font-display font-extrabold uppercase text-[44px] md:text-[56px] leading-[0.95] tracking-tight text-foreground mb-3">
+          {greeting}, {firstName}
         </h1>
         <p className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
           <span>Here&apos;s what&apos;s happening at</span>
-          <span className="font-medium text-foreground">
+          <span className="font-semibold text-foreground">
             {org?.name || "your workspace"}
           </span>
           <span>·</span>
@@ -150,25 +153,27 @@ export default async function DashboardPage() {
       </div>
 
       {/* Stats grid */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
         <StatCard
           icon={<FileText className="size-4" />}
           label="Docs this week"
           value={docsThisWeek ?? 0}
           href="/tools/rams/documents"
-          accent={(docsThisWeek ?? 0) > 0}
+          tone="info"
         />
         <StatCard
           icon={<Folder className="size-4" />}
           label="Active projects"
           value={activeProjectCount ?? 0}
           href="/projects"
+          tone="success"
         />
         <StatCard
           icon={<Users className="size-4" />}
           label="Clients"
           value={clientCount ?? 0}
           href="/clients"
+          tone="warning"
         />
         <StatCard
           icon={<Clock className="size-4" />}
@@ -189,7 +194,7 @@ export default async function DashboardPage() {
               : "—"
           }
           href="/account/billing"
-          accent={tier === "active"}
+          tone="brand"
         />
       </section>
 
@@ -381,45 +386,96 @@ function TrialBanner({
   );
 }
 
+type StatTone = "info" | "success" | "warning" | "brand" | "neutral";
+
 function StatCard({
   icon,
   label,
   value,
   href,
+  tone = "neutral",
   accent,
 }: {
   icon: React.ReactNode;
   label: string;
   value: number | string;
   href: string;
+  tone?: StatTone;
+  /** legacy boolean — promotes to brand tone */
   accent?: boolean;
 }) {
+  const effective: StatTone = accent ? "brand" : tone;
+
+  // Stripe colour (left edge, 4px) — semantic per tone.
+  const stripeBg: Record<StatTone, string> = {
+    info: "bg-[var(--status-info)]",
+    success: "bg-[var(--status-success)]",
+    warning: "bg-[var(--status-warning)]",
+    brand: "bg-brand",
+    neutral: "bg-foreground/15",
+  };
+  // Icon tile — tinted background pill matching the stripe.
+  const tileClass: Record<StatTone, string> = {
+    info: "status-info",
+    success: "status-success",
+    warning: "status-warning",
+    brand: "bg-brand text-foreground",
+    neutral: "surface-pebble text-muted-foreground",
+  };
+  // Halo gradient — the SL signature: subtle radial wash from the stripe
+  // edge fading to white. `radial-gradient` uses CSS variable colour.
+  const haloVar: Record<StatTone, string> = {
+    info: "var(--status-info-bg)",
+    success: "var(--status-success-bg)",
+    warning: "var(--status-warning-bg)",
+    brand: "oklch(0.95 0.27 119 / 0.30)",
+    neutral: "var(--surface-pebble)",
+  };
+
   return (
     <Link
       href={href}
-      className={cn(
-        "border rounded-lg p-4 hover:bg-muted/30 transition group flex flex-col gap-2",
-        accent && "border-brand/40"
-      )}
+      className="group relative block overflow-hidden rounded-xl border border-soft surface-raised shadow-sm-cool hover:shadow-md-cool hover:border-strong hover:-translate-y-0.5 transition-all duration-150 pl-6 pr-5 py-5 min-h-[148px]"
     >
-      <div className="flex items-center justify-between">
+      {/* Left stripe — semantic tone, 4px wide, full height */}
+      <span
+        className={cn(
+          "absolute top-0 bottom-0 left-0 w-[4px]",
+          stripeBg[effective]
+        )}
+        aria-hidden
+      />
+      {/* Soft radial halo — fades from the stripe corner outward */}
+      <span
+        className="absolute -top-12 -left-12 size-48 rounded-full pointer-events-none opacity-80"
+        style={{
+          background: `radial-gradient(circle, ${haloVar[effective]} 0%, transparent 70%)`,
+          filter: "blur(8px)",
+        }}
+        aria-hidden
+      />
+      {/* Header row — label left, icon tile right */}
+      <div className="relative flex items-start justify-between mb-3">
+        <div className="text-[10px] text-muted-foreground uppercase tracking-[0.12em] font-bold pt-1">
+          {label}
+        </div>
         <span
           className={cn(
-            "text-muted-foreground",
-            accent && "text-brand-foreground bg-brand rounded p-1"
+            "size-9 rounded-lg flex items-center justify-center shrink-0",
+            tileClass[effective]
           )}
         >
           {icon}
         </span>
-        <ArrowRight className="size-3 text-muted-foreground/50 group-hover:text-foreground group-hover:translate-x-0.5 transition" />
       </div>
-      <div>
-        <div className="text-2xl font-semibold tracking-tight tabular-nums">
-          {value}
-        </div>
-        <div className="text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">
-          {label}
-        </div>
+      {/* Big chunky number — Barlow Condensed, the SL signature */}
+      <div className="relative font-display font-bold text-foreground text-[56px] leading-none tabular-nums mb-1">
+        {value}
+      </div>
+      {/* Hover hint */}
+      <div className="relative flex items-center gap-1 text-[11px] text-muted-foreground/70 group-hover:text-foreground transition-colors mt-1">
+        <ArrowRight className="size-3 group-hover:translate-x-0.5 transition-transform" />
+        <span>View</span>
       </div>
     </Link>
   );

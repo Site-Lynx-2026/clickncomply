@@ -33,6 +33,7 @@ export default async function AppLayout({
             </Link>
             <nav className="hidden sm:flex items-center gap-1">
               <AppNavLink href="/dashboard">Dashboard</AppNavLink>
+              <AppNavLink href="/tools">Tools</AppNavLink>
               <AppNavLink href="/projects">Projects</AppNavLink>
               <AppNavLink href="/clients">Clients</AppNavLink>
               <AppNavLink href="/account">Account</AppNavLink>
@@ -57,7 +58,7 @@ export default async function AppLayout({
           <AppNavLink href="/account">Account</AppNavLink>
         </nav>
       </header>
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 surface-canvas">{children}</main>
     </div>
   );
 }

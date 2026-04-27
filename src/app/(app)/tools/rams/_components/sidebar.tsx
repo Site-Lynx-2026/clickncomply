@@ -26,6 +26,14 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
+/**
+ * Sidebar — sectioned nav of every builder, SL pattern.
+ *
+ * Sections render top-to-bottom in this order, each with a small uppercase
+ * eyebrow heading + the builders inside. Builders that are still "planned"
+ * still render but with a "soon" pip + muted styling so the user sees the
+ * whole roadmap at a glance.
+ */
 const SECTION_ORDER: BuilderSection[] = [
   "build",
   "documents",
@@ -37,10 +45,6 @@ const SECTION_ORDER: BuilderSection[] = [
   "library",
 ];
 
-/**
- * Desktop sidebar — fixed-width aside, collapsible to icon-only at 68px.
- * Hidden on mobile (md:flex). Mobile users get the Sheet drawer instead.
- */
 export function RAMsSidebar() {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -54,15 +58,14 @@ export function RAMsSidebar() {
         "transition-[width] duration-150 ease-out"
       )}
     >
-      {/* Header — RAMs Builder brand + collapse toggle */}
-      <div className="flex items-center justify-between px-4 py-3.5 border-b">
+      <div className="flex items-center justify-between px-4 py-4 border-b">
         {!collapsed && (
           <Link
             href="/tools/rams"
-            className="flex items-center gap-2 text-sm font-semibold tracking-tight hover:opacity-70 transition"
+            className="flex items-center gap-2 text-base font-semibold tracking-tight hover:opacity-70 transition"
           >
             <span className="size-1.5 rounded-full bg-brand" />
-            RAMs Builder
+            RAMs
           </Link>
         )}
         <button
@@ -70,11 +73,7 @@ export function RAMsSidebar() {
           className="p-1.5 rounded hover:bg-sidebar-accent text-muted-foreground hover:text-foreground transition"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {collapsed ? (
-            <ChevronsRight className="size-4" />
-          ) : (
-            <ChevronsLeft className="size-4" />
-          )}
+          {collapsed ? <ChevronsRight className="size-4" /> : <ChevronsLeft className="size-4" />}
         </button>
       </div>
 
@@ -83,16 +82,9 @@ export function RAMsSidebar() {
   );
 }
 
-/**
- * Mobile sidebar — hamburger trigger + Sheet drawer. Only renders below
- * the md: breakpoint (where the desktop sidebar is hidden).
- */
 export function RAMsSidebarMobileTrigger() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-
-  // Close the sheet automatically when navigation completes.
-  // (Radix Sheet doesn't auto-close on link click — handled here via effect.)
   const closeOnNav = () => setOpen(false);
 
   return (
@@ -105,18 +97,16 @@ export function RAMsSidebarMobileTrigger() {
               Menu
             </Button>
           </SheetTrigger>
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            RAMs Builder
-          </span>
+          <span className="font-semibold text-sm tracking-tight">RAMs</span>
         </div>
         <SheetContent
           side="left"
           className="p-0 w-[280px] flex flex-col bg-sidebar text-sidebar-foreground"
         >
-          <SheetHeader className="px-4 py-3.5 border-b">
-            <SheetTitle className="text-sm font-semibold tracking-tight inline-flex items-center gap-2">
+          <SheetHeader className="px-4 py-4 border-b">
+            <SheetTitle className="text-base font-semibold tracking-tight inline-flex items-center gap-2">
               <span className="size-1.5 rounded-full bg-brand" />
-              RAMs Builder
+              RAMs
             </SheetTitle>
           </SheetHeader>
           <div onClick={closeOnNav} className="flex-1 flex flex-col min-h-0">
@@ -128,10 +118,6 @@ export function RAMsSidebarMobileTrigger() {
   );
 }
 
-/**
- * The shared sidebar body — back-link, Documents pin, sectioned builder list.
- * Used by both desktop aside and mobile Sheet.
- */
 function SidebarBody({
   collapsed,
   pathname: pathnameOverride,
@@ -149,51 +135,49 @@ function SidebarBody({
       <Link
         href="/dashboard"
         className={cn(
-          "flex items-center gap-2 px-4 py-2.5 text-xs text-muted-foreground hover:text-foreground hover:bg-sidebar-accent transition border-b",
+          "flex items-center gap-2.5 px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-sidebar-accent transition border-b",
           collapsed && "justify-center px-0"
         )}
         title="Back to dashboard"
       >
-        <ArrowLeft className="size-3.5 shrink-0" />
+        <ArrowLeft className="size-4 shrink-0" />
         {!collapsed && <span>Dashboard</span>}
       </Link>
 
-      {/* Documents — saved RAMs across all builders */}
+      {/* My Documents pin */}
       <Link
         href="/tools/rams/documents"
         className={cn(
-          "relative flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors hover:bg-sidebar-accent border-b",
+          "relative flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors hover:bg-sidebar-accent border-b",
           collapsed && "justify-center px-0",
-          pathname === "/tools/rams/documents" && "bg-sidebar-accent font-medium"
+          pathname === "/tools/rams/documents" && "bg-sidebar-accent"
         )}
-        title="Documents"
+        title="My Documents"
       >
         {pathname === "/tools/rams/documents" && (
           <span
-            className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[2px] rounded-r bg-brand"
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[2px] rounded-r bg-brand"
             aria-hidden
           />
         )}
         <FolderOpen className="size-4 shrink-0" strokeWidth={1.6} />
-        {!collapsed && <span>Documents</span>}
+        {!collapsed && <span>My Documents</span>}
       </Link>
 
-      {/* Nav — sections + builders */}
+      {/* Sectioned nav */}
       <nav className="flex-1 overflow-y-auto py-2 min-h-0">
         {SECTION_ORDER.map((sectionKey) => {
           const builders = grouped[sectionKey];
           if (!builders || builders.length === 0) return null;
           const section = SECTIONS[sectionKey];
           return (
-            <div key={sectionKey} className="mb-2">
+            <div key={sectionKey} className="mb-3">
               {!collapsed && (
-                <div className="px-4 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                <div className="px-4 pt-3 pb-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground/70">
                   {section.label}
                 </div>
               )}
-              {collapsed && (
-                <div className="mx-3 my-2 h-px bg-sidebar-border" />
-              )}
+              {collapsed && <div className="mx-3 my-2 h-px bg-sidebar-border" />}
               <ul>
                 {builders.map((b) => (
                   <SidebarItem
@@ -224,20 +208,21 @@ function SidebarItem({
   const href = `/tools/rams/${builder.slug}`;
   const active = pathname === href;
   const Icon = builder.icon;
+  const planned = builder.status === "planned";
 
   return (
-    <li>
+    <li className="list-none">
       <Link
         href={href}
         className={cn(
           "group relative flex items-center gap-2.5 px-4 py-1.5 text-sm transition-colors",
           "hover:bg-sidebar-accent",
           collapsed && "justify-center px-0",
-          active && "bg-sidebar-accent font-medium"
+          active && "bg-sidebar-accent font-semibold",
+          planned && !active && "text-muted-foreground/70"
         )}
-        title={collapsed ? builder.name : undefined}
+        title={collapsed ? builder.shortName : undefined}
       >
-        {/* Active marker — lime stripe on the left */}
         {active && (
           <span
             className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[2px] rounded-r bg-brand"
@@ -246,28 +231,25 @@ function SidebarItem({
         )}
         <Icon
           className={cn(
-            "size-4 shrink-0 text-muted-foreground transition-colors",
-            "group-hover:text-foreground",
-            active && "text-foreground"
+            "size-4 shrink-0 transition-colors",
+            active
+              ? "text-foreground"
+              : planned
+              ? "text-muted-foreground/60"
+              : "text-muted-foreground group-hover:text-foreground"
           )}
           strokeWidth={1.6}
         />
         {!collapsed && (
           <>
-            <span className="flex-1 truncate">
-              {builder.section === "build" ? (
-                <span className="font-semibold">{builder.shortName}</span>
-              ) : (
-                builder.shortName
-              )}
-            </span>
-            {builder.status === "planned" && (
-              <span className="text-[9px] uppercase tracking-wider text-muted-foreground/70">
-                soon
-              </span>
-            )}
+            <span className="flex-1 truncate">{builder.shortName}</span>
             {builder.status === "wip" && !active && (
               <span className="size-1 rounded-full bg-brand" aria-label="building" />
+            )}
+            {planned && (
+              <span className="text-[8.5px] uppercase tracking-wider text-muted-foreground/60 font-bold">
+                soon
+              </span>
             )}
           </>
         )}
