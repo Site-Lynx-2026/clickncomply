@@ -6,7 +6,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
-  Wrench,
+  FileText,
   Briefcase,
   Users,
   UserCircle,
@@ -48,9 +48,11 @@ interface NavItem {
   icon: LucideIcon;
 }
 
+// "Documents" is the daily user's main destination — drafts, completed,
+// sent. Was "Tools" pointing at the deprecated module catalog at /tools.
 const NAV: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/tools", label: "Tools", icon: Wrench },
+  { href: "/tools/rams/documents", label: "Documents", icon: FileText },
   { href: "/projects", label: "Projects", icon: Briefcase },
   { href: "/clients", label: "Clients", icon: Users },
   { href: "/account", label: "Account", icon: UserCircle },

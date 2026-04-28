@@ -5,6 +5,35 @@ can pick up cold without re-reading the conversation. Update this every time
 something meaningful ships. STATUS.md is the formal product doc; this is the
 conversational version.
 
+## Last session — 2026-04-27 (Cut the fat — Tier 2)
+
+After the sidebar cut, ran the structural Tier 2 changes:
+
+- **`/tools` → redirect** to `/tools/rams`. The page was a "module
+  catalog" surfacing future products (QA, Permits Module, Plant
+  Inspections) that don't ship yet. For a daily user that's a
+  dead-weight click. Future modules will land as sidebar entries on
+  per-org-activation when they're real, not as marketing tiles inside
+  the logged-in app. The marketing page at `/` keeps the catalog.
+- **AppSidebar "Tools" → "Documents"**. Now points at
+  `/tools/rams/documents` (the actual list of saved/sent/draft docs)
+  with a `FileText` icon. "Tools" was misleading — most users want to
+  see their docs, not browse the tool registry.
+- **Dashboard "Your tools" + "Available tools" sections cut**.
+  These showed the framework_activations registry as marketing tiles
+  on the dashboard itself. Removed: `framework_activations` query,
+  `activeTools` / `availableTools` derivation, `ToolRow`,
+  `ActivateButton`, plus their imports (`ALL_TOOLS`, `formatPricing`,
+  `activateToolAction`, `ToolSlug`). The activation system itself
+  isn't dead — `/tools/[slug]` per-tool landing pages still use it
+  for prospect/marketing views.
+
+The dashboard is now lean: TrialBanner / Greeting / IntakeBox /
+ShareLinkCard / Continue drafting / Recently completed / Quick actions /
+Stats grid. No more marketing surfaces inside the logged-in flow.
+
+Type-check + lint clean.
+
 ## Last session — 2026-04-27 (Cut the fat — sidebar 37 → 10)
 
 After the touchless-surface trio shipped, Jamie called a sanity check
