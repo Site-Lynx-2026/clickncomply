@@ -5,7 +5,56 @@ can pick up cold without re-reading the conversation. Update this every time
 something meaningful ships. STATUS.md is the formal product doc; this is the
 conversational version.
 
-## Last session — 2026-04-27
+## Last session — 2026-04-28 (evening, structural foundations push)
+
+Jamie was frustrated. Three previous visual passes hadn't landed. He said
+the product is "leagues apart" from SiteLynx both structurally and
+aesthetically and asked me to take over and make the calls.
+
+I ran a side-by-side diff between SL (`c:\Users\Jamie\sitelynx-v2`) and
+CNC and identified five concrete gaps. Jamie pushed back hard on framing
+this as "be like SL" — the product is for 1–5 person solo traders, not the
+10–50 audience SL serves, AND the target needs to include both
+"engaged-with-the-system" users AND the touchless / phone-in-the-van users.
+
+Decision: don't rebuild as SL clone. Two-surface product. Engaged surface
+(the existing builders/sidebar/dashboard) gets polish. Touchless surface
+(share page, simple intake, renewal calendar) is a future add.
+
+This push focused on the foundation problems that were blocking everything
+visually:
+
+1. **Lime token family.** Built `--brand-hover / -dim / -soft-bg /
+   -soft-border / -ring`. Wired `--ring` to `var(--brand)` so every focus
+   state across the app (inputs, buttons, cards) is now lime-bordered
+   instead of near-black. Added utility classes: `bg-brand-hover`,
+   `bg-brand-soft`, `text-brand-dim`, `border-brand-soft`, `ring-brand`,
+   `focus-brand`.
+2. **Sidebar visibility.** `--sidebar` was `oklch(0.985)`,
+   `--surface-canvas` was `oklch(0.985 0.005 240)` — invisible side by
+   side. Sidebar is now pure white (`oklch(1)`) with stronger
+   `--sidebar-border` (`oklch(0.88)`) so it reads as a real rail.
+3. **Active nav state uses brand.** `<AppNavLink>` and the RAMs sidebar
+   active state both moved from `bg-muted` / `bg-sidebar-accent` to
+   `bg-brand-soft` with a 3px lime stripe down the left edge. The brand
+   finally appears in navigation feedback.
+4. **Lifted the sidebar pattern to the whole app.** New
+   `<AppSidebar>` + `<AppSidebarMobileTrigger>` in
+   `_components/app-sidebar.tsx`. Replaces the top nav. Same SL pattern:
+   collapsible rail, brand mark top, primary nav middle, user/logout
+   bottom. /tools/rams keeps its secondary rail (Linear-style dual
+   sidebar). Mobile: single Sheet with both layers.
+
+What broke + got fixed: Tailwind v4 doesn't allow `::before` in
+`@utility` names — caught at runtime, fixed by dropping the
+`nav-active::before` utility (the stripe is rendered by a real `<span>`
+in the components anyway).
+
+CommandPicker / NewDocChoiceModal / AIFillButton-everywhere — still
+orphaned. **Deliberately deferred** to keep this push focused on the
+structural-foundation problem. Wiring those is the obvious next move.
+
+## Last session — 2026-04-27 (early — multi-pick + library expansion)
 
 Built multi-pick across the gallery component. Risk Assessment hazard library,
 COSHH substance library, and HAVs tool library all now support shopping-cart
@@ -93,30 +142,41 @@ These are non-obvious and applied across every push:
 
 ## What I'd do next
 
-In priority order:
+After tonight's foundations push, the obvious follow-ups in order:
 
-1. **Multi-trade picker for Full RAMs** (the second item from the
-   "what's next" conversation). Most projects aren't one trade — house refurb
-   is groundworks + electrical + plastering. Allow picking 2–4 trades; merge
-   their msSteps + dedupe their raItems/havsItems/noiseItems + union their
-   PPE. ~3 hours.
+1. **Wire the orphan components (CommandPicker / NewDocChoiceModal /
+   AIFillButton).** They were built but never adopted. Now that the lime
+   tokens exist, they'll inherit the brand consistently when wired.
+   CommandPicker into RA / COSHH / HAVs (replaces LibraryGallery in those
+   builders' library-picker mode). NewDocChoiceModal as the first-load
+   choice when someone hits a builder URL. AIFillButton onto every text
+   field across all 33 builders. ~half day end-to-end.
 
-2. **Projects + Clients as persistent entities.** New Supabase tables
-   `clients` and `projects`. New doc → "Pick a project" → auto-fill site
-   name/address/dates from project. Documents page groups by project.
-   Foundational — unlocks send-to-client, smarter Documents page, project-level
-   ZIP downloads. ~6 hours.
+2. **Per-builder personality.** With the foundation now coherent, each
+   builder type can earn distinct chrome without it clashing — Permits
+   get traffic-light validity + issuer/holder pills, Briefings get a
+   sign-off table front-and-centre, Inspections get pass/fail rows.
+   Approach: build one (Permit) properly, extract a pattern, apply.
+   ~day per builder family.
 
-3. **Send-to-client email flow.** Resend already in package.json. Generate PDF
-   → email with magic-link sign-off → recipient clicks → records signed-off
-   timestamp + IP. SL has it; CnC doesn't. ~6 hours.
+3. **Touchless surface — share page (`/u/<slug>`).** The single most
+   "different from SL" feature for the 1–5 audience. Public read-only
+   URL with their branding, current insurance + certs + downloadable
+   docs. Customers/subbies hit one link instead of email round trips.
+   Doesn't disturb the engaged surface at all. ~1–2 days.
 
-4. **Smart Documents page.** Filter by builder, search, group by project,
-   recent / favourites. Becomes essential past 20 docs. ~4 hours.
+4. **"Today" home view.** Replace the dashboard's stat-card pattern
+   with a single column: drafts to finish, renewals due, "Make a thing"
+   (3 tap targets), Recent docs. Engaged user still has the sidebar to
+   drill in. Stops feeling like SaaS. ~half day.
 
-5. **Save-as-my-template.** User customises a Method Statement → "save as
-   template" → appears in their gallery with "MINE" badge. Differentiator
-   that builds switching cost. ~4 hours.
+5. **One-shot intake input.** Single text/voice box: "RAMs for kitchen
+   strip-out, 2nd floor, no asbestos" → AI routes to right builder +
+   prefills. Sits at the top of the home + in the global Cmd+K. ~day.
+
+Plus the older queue items still relevant: send-to-client email flow,
+save-as-my-template, project/client smarter Documents page (already
+partially built — see migration 0004).
 
 ## Notes / gotchas for next Claude
 

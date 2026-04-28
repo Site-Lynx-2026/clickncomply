@@ -51,7 +51,7 @@ export default async function RAMsLayout({
 
   return (
     <ProjectsProvider initialProjects={projects}>
-      <div className="flex flex-1 min-h-[calc(100vh-3.5rem)]">
+      <div className="flex flex-1 min-h-screen">
         <RAMsSidebar />
         <div className="flex-1 min-w-0 flex flex-col">
           <RAMsSidebarMobileTrigger />

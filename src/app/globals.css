@@ -86,18 +86,26 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.145 0 0);
 
-  /* Brand — lime (#d4ff00). Used for flourishes only:
-     "free tier" badges, marketing highlights, single signature stripe */
+  /* Brand — lime (#d4ff00). Full token family so the brand can live
+     beyond the hero — focus rings, active states, soft tints, borders.
+     Without these the brand only shows as a halo on a CTA; with them
+     it's woven through every interactive surface (Stripe-style). */
   --brand: oklch(0.95 0.27 119);
   --brand-foreground: oklch(0.145 0 0);
+  --brand-hover: oklch(0.91 0.27 119);            /* CTA pressed/hover */
+  --brand-dim: oklch(0.72 0.18 119);              /* secondary brand text */
+  --brand-soft-bg: oklch(0.97 0.08 119);          /* faint lime wash for tabs/active */
+  --brand-soft-border: oklch(0.85 0.18 119);      /* lime-tinted hairline */
+  --brand-ring: oklch(0.95 0.27 119 / 0.35);      /* focus ring colour with alpha */
 
   /* Status */
   --destructive: oklch(0.577 0.245 27.325);
 
-  /* Borders + ring */
+  /* Borders + ring — ring uses the brand so focus states finally feel
+     branded everywhere (inputs, buttons, links, cards on focus) */
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.145 0 0);
+  --ring: var(--brand);
 
   /* Charts (kept neutral — we don't show charts in this product, but shadcn references) */
   --chart-1: oklch(0.87 0 0);
@@ -106,15 +114,19 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
 
-  /* Sidebar */
-  --sidebar: oklch(0.985 0 0);
+  /* Sidebar — must read as a distinct rail above the canvas, not the
+     same colour. Was effectively invisible (oklch 0.985 vs canvas 0.985);
+     now: pure white card with a strong divider, hover/active states use
+     a more saturated pebble surface so they're felt, not whispered.
+     Sidebar ring = brand, like the global ring. */
+  --sidebar: oklch(1 0 0);                        /* pure white rail */
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.145 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent: oklch(0.94 0.005 240);        /* hover/active surface */
   --sidebar-accent-foreground: oklch(0.145 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.145 0 0);
+  --sidebar-border: oklch(0.88 0 0);              /* strong enough to read as a rail */
+  --sidebar-ring: var(--brand);
 
   /* Radius — sharper than shadcn default for the brutalist feel */
   --radius: 0.5rem;
@@ -236,18 +248,50 @@
   }
 }
 
-/* Brand utility — for lime flourishes (badges, headers, accents) */
+/* Brand utilities — full lime family for interactive feedback. */
 @utility bg-brand {
   background-color: var(--brand);
   color: var(--brand-foreground);
 }
-
+@utility bg-brand-hover {
+  background-color: var(--brand-hover);
+  color: var(--brand-foreground);
+}
+@utility bg-brand-soft {
+  background-color: var(--brand-soft-bg);
+  color: var(--foreground);
+}
 @utility text-brand {
   color: var(--brand);
 }
-
+@utility text-brand-dim {
+  color: var(--brand-dim);
+}
 @utility border-brand {
   border-color: var(--brand);
+}
+@utility border-brand-soft {
+  border-color: var(--brand-soft-border);
+}
+@utility ring-brand {
+  --tw-ring-color: var(--brand-ring);
+}
+
+/* Branded focus state — apply to inputs/buttons that should glow lime
+   on keyboard focus. Replaces the default near-black ring. */
+@utility focus-brand {
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--brand-ring);
+    border-color: var(--brand);
+  }
+}
+
+/* Active nav indicator — soft lime fill. The left stripe is rendered by
+   a sibling <span> in the components (Tailwind v4 doesn't allow `::before`
+   pseudo-elements in `@utility` names). */
+@utility nav-active {
+  background-color: var(--brand-soft-bg);
 }
 
 /* ─── Depth utilities ─── */

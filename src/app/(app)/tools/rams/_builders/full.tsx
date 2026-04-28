@@ -288,7 +288,7 @@ export function FullRamsBuilder() {
   return (
     <div className="space-y-4 pb-24">
       {/* Sticky header */}
-      <div className="sticky top-14 z-20 -mx-8 px-8 py-3 bg-background/90 backdrop-blur border-b flex items-center justify-between">
+      <div className="sticky top-0 z-20 -mx-8 px-8 py-3 bg-background/90 backdrop-blur border-b flex items-center justify-between">
         <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={backToGallery}

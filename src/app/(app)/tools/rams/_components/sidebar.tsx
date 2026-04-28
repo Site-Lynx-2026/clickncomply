@@ -52,8 +52,8 @@ export function RAMsSidebar() {
     <aside
       className={cn(
         "hidden md:flex shrink-0 border-r bg-sidebar text-sidebar-foreground",
-        "flex-col sticky top-14",
-        "h-[calc(100vh-3.5rem)]",
+        "flex-col sticky top-0 self-start",
+        "h-screen",
         collapsed ? "w-[68px]" : "w-[260px]",
         "transition-[width] duration-150 ease-out"
       )}
@@ -88,7 +88,7 @@ export function RAMsSidebarMobileTrigger() {
   const closeOnNav = () => setOpen(false);
 
   return (
-    <div className="md:hidden border-b bg-background sticky top-14 z-20">
+    <div className="md:hidden border-b bg-background sticky top-12 z-20">
       <Sheet open={open} onOpenChange={setOpen}>
         <div className="flex items-center gap-2 px-4 py-2">
           <SheetTrigger asChild>
@@ -150,13 +150,13 @@ function SidebarBody({
         className={cn(
           "relative flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors hover:bg-sidebar-accent border-b",
           collapsed && "justify-center px-0",
-          pathname === "/tools/rams/documents" && "bg-sidebar-accent"
+          pathname === "/tools/rams/documents" && "bg-brand-soft"
         )}
         title="My Documents"
       >
         {pathname === "/tools/rams/documents" && (
           <span
-            className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[2px] rounded-r bg-brand"
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[3px] rounded-r-sm bg-brand"
             aria-hidden
           />
         )}
@@ -218,14 +218,15 @@ function SidebarItem({
           "group relative flex items-center gap-2.5 px-4 py-1.5 text-sm transition-colors",
           "hover:bg-sidebar-accent",
           collapsed && "justify-center px-0",
-          active && "bg-sidebar-accent font-semibold",
+          // Active state uses the brand soft fill so the lime appears in nav
+          active && "bg-brand-soft font-semibold",
           planned && !active && "text-muted-foreground/70"
         )}
         title={collapsed ? builder.shortName : undefined}
       >
         {active && (
           <span
-            className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[2px] rounded-r bg-brand"
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[3px] rounded-r-sm bg-brand"
             aria-hidden
           />
         )}

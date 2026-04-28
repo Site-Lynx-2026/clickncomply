@@ -1,11 +1,25 @@
-# Status — 28 Apr 2026
+# Status — 28 Apr 2026 (evening update)
 
 ## Bottom line
 
-Marathon session 27→28 Apr shipped a lot. Jamie is **not happy** with the
-result. Multiple visual lift passes have landed but none feel like the
-"yes, this is it" moment. The product reads as more thorough than yesterday
-but doesn't feel right when clicking through.
+Marathon session 27→28 Apr shipped a lot. Jamie was **not happy** with the
+result and asked for an honest read. After a side-by-side diff with
+SiteLynx it became clear the gap was foundational — lime had only two
+tokens, the sidebar was visually identical to canvas, and the SL pattern
+of a global left rail was missing. Three visual passes hadn't landed
+because there was no system *to* lift; the brand wasn't woven into
+interactive feedback.
+
+**Tonight's push fixed the foundations.** Lime now has a full 6-token
+family and is wired into focus rings, active nav, and soft fills. The
+sidebar reads as a distinct rail. The whole app uses a left sidebar
+pattern (replacing the top nav) — every page feels like a tool now,
+not a marketing site. /tools/rams retains its secondary rail (dual
+sidebar like Linear / Notion).
+
+The next push (TBC by Jamie) is wiring the orphan components
+(CommandPicker, NewDocChoiceModal, AIFillButton-everywhere) and
+starting per-builder personality.
 
 If you're picking this up cold — read this top-to-bottom before changing
 anything. The trap to avoid: pitching another visual pass without first
