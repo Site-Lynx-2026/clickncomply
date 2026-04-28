@@ -5,6 +5,54 @@ can pick up cold without re-reading the conversation. Update this every time
 something meaningful ships. STATUS.md is the formal product doc; this is the
 conversational version.
 
+## Last session — 2026-04-27 (Cut the fat — sidebar 37 → 10)
+
+After the touchless-surface trio shipped, Jamie called a sanity check
+on whether the system was actually navigable for the target user. The
+verdict: simple paths exist (intake / share / send) but coexist with a
+bloated 37-builder sidebar across 8 sections including a Library
+section that's authoring scaffolding, not user nav.
+
+Decided cut: 37 sidebar entries → **10 flat entries, no sections, no
+library**. Down from 8 sections to zero.
+
+Final 10:
+1. Full RAMs
+2. Method Statement
+3. Risk Assessment (absorbs WAH, Manual Handling, Hot Works, Confined
+   Space, Lone Working, DSEAR, Pregnant Worker, Young Worker, WBV)
+4. COSHH
+5. HAVs (kept separate — bespoke EAV/ELV calculator)
+6. Noise (kept separate — bespoke dB calculator)
+7. Permit (umbrella picker, 5 types)
+8. Briefing (umbrella picker, 4 types)
+9. Inspection (umbrella picker, 4 types)
+10. Plan (umbrella picker, 4 types)
+
+The 26 hidden slugs still work as deep links from AI intake and direct
+URLs — they're just not in the sidebar. Library section (RA Library,
+COSHH Library, HAVs DB, Noise DB, Trade Templates) hidden entirely.
+
+New plumbing:
+
+- `src/lib/rams/sidebar-items.ts` — curated `SIDEBAR_ITEMS` array
+  replacing `buildersBySection()` for sidebar consumption. The
+  `BUILDERS` registry stays as the source of truth for the registry
+  itself (route resolution, intake validation, PDF dispatch).
+- `src/app/(app)/tools/rams/_components/umbrella-picker.tsx` —
+  shared 4–5 tile picker component for the 4 umbrella entries.
+- 4 new pages: `/permits`, `/briefings`, `/inspections`, `/plans`
+  — each a small picker that links into the underlying slug-specific
+  builder.
+- Sidebar rewritten to consume `SIDEBAR_ITEMS`. Active state matches
+  prefix so being inside a permit slug highlights the "Permit" entry.
+- RAMs landing page restructured: hero (Full RAMs) + Documents (5
+  tiles) + Workflow (4 umbrella tiles). Dropped library section
+  entirely.
+
+Type-check + lint clean. The 37 builders all still exist as routes;
+this is purely a navigation cut, not a feature cut.
+
 ## Last session — 2026-04-27 (Send to client — Resend wired up)
 
 The third leg of the touchless-surface push: every builder now has a

@@ -4,12 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import {
-  buildersBySection,
-  SECTIONS,
-  type Builder,
-  type BuilderSection,
-} from "@/lib/rams/builders";
+import { SIDEBAR_ITEMS, type SidebarItem } from "@/lib/rams/sidebar-items";
 import {
   ArrowLeft,
   ChevronsLeft,
@@ -27,23 +22,13 @@ import {
 } from "@/components/ui/sheet";
 
 /**
- * Sidebar — sectioned nav of every builder, SL pattern.
+ * RAMs sidebar — flat 10-entry list, no sections, no library.
  *
- * Sections render top-to-bottom in this order, each with a small uppercase
- * eyebrow heading + the builders inside. Builders that are still "planned"
- * still render but with a "soon" pip + muted styling so the user sees the
- * whole roadmap at a glance.
+ * Down from 37/8 to 10/0. The four umbrella entries (Permit, Briefing,
+ * Inspection, Plan) link to picker pages that surface their variants;
+ * the rest link directly to their builder. The 26 hidden slugs still
+ * work as deep links from AI intake or direct URL.
  */
-const SECTION_ORDER: BuilderSection[] = [
-  "build",
-  "documents",
-  "specialist",
-  "permits",
-  "briefings",
-  "plant",
-  "ppe",
-  "library",
-];
 
 export function RAMsSidebar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -73,7 +58,11 @@ export function RAMsSidebar() {
           className="p-1.5 rounded hover:bg-sidebar-accent text-muted-foreground hover:text-foreground transition"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {collapsed ? <ChevronsRight className="size-4" /> : <ChevronsLeft className="size-4" />}
+          {collapsed ? (
+            <ChevronsRight className="size-4" />
+          ) : (
+            <ChevronsLeft className="size-4" />
+          )}
         </button>
       </div>
 
@@ -127,7 +116,6 @@ function SidebarBody({
 }) {
   const pathnameFromHook = usePathname();
   const pathname = pathnameOverride ?? pathnameFromHook;
-  const grouped = buildersBySection();
 
   return (
     <>
@@ -164,65 +152,46 @@ function SidebarBody({
         {!collapsed && <span>My Documents</span>}
       </Link>
 
-      {/* Sectioned nav */}
+      {/* Flat nav — 10 entries, no section headings */}
       <nav className="flex-1 overflow-y-auto py-2 min-h-0">
-        {SECTION_ORDER.map((sectionKey) => {
-          const builders = grouped[sectionKey];
-          if (!builders || builders.length === 0) return null;
-          const section = SECTIONS[sectionKey];
-          return (
-            <div key={sectionKey} className="mb-3">
-              {!collapsed && (
-                <div className="px-4 pt-3 pb-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground/70">
-                  {section.label}
-                </div>
-              )}
-              {collapsed && <div className="mx-3 my-2 h-px bg-sidebar-border" />}
-              <ul>
-                {builders.map((b) => (
-                  <SidebarItem
-                    key={b.slug}
-                    builder={b}
-                    pathname={pathname}
-                    collapsed={collapsed}
-                  />
-                ))}
-              </ul>
-            </div>
-          );
-        })}
+        <ul>
+          {SIDEBAR_ITEMS.map((item) => (
+            <SidebarRow
+              key={item.href}
+              item={item}
+              pathname={pathname}
+              collapsed={collapsed}
+            />
+          ))}
+        </ul>
       </nav>
     </>
   );
 }
 
-function SidebarItem({
-  builder,
+function SidebarRow({
+  item,
   pathname,
   collapsed,
 }: {
-  builder: Builder;
+  item: SidebarItem;
   pathname: string;
   collapsed: boolean;
 }) {
-  const href = `/tools/rams/${builder.slug}`;
-  const active = pathname === href;
-  const Icon = builder.icon;
-  const planned = builder.status === "planned";
+  const Icon = item.icon;
+  const active = isActive(pathname, item.href);
 
   return (
     <li className="list-none">
       <Link
-        href={href}
+        href={item.href}
         className={cn(
-          "group relative flex items-center gap-2.5 px-4 py-1.5 text-sm transition-colors",
+          "group relative flex items-center gap-2.5 px-4 py-2 text-sm transition-colors",
           "hover:bg-sidebar-accent",
           collapsed && "justify-center px-0",
-          // Active state uses the brand soft fill so the lime appears in nav
-          active && "bg-brand-soft font-semibold",
-          planned && !active && "text-muted-foreground/70"
+          active && "bg-brand-soft font-semibold"
         )}
-        title={collapsed ? builder.shortName : undefined}
+        title={collapsed ? item.label : undefined}
       >
         {active && (
           <span
@@ -235,26 +204,33 @@ function SidebarItem({
             "size-4 shrink-0 transition-colors",
             active
               ? "text-foreground"
-              : planned
-              ? "text-muted-foreground/60"
               : "text-muted-foreground group-hover:text-foreground"
           )}
           strokeWidth={1.6}
         />
         {!collapsed && (
           <>
-            <span className="flex-1 truncate">{builder.shortName}</span>
-            {builder.status === "wip" && !active && (
-              <span className="size-1 rounded-full bg-brand" aria-label="building" />
-            )}
-            {planned && (
-              <span className="text-[8.5px] uppercase tracking-wider text-muted-foreground/60 font-bold">
-                soon
-              </span>
+            <span className="flex-1 truncate">{item.label}</span>
+            {item.status === "wip" && !active && (
+              <span
+                className="size-1 rounded-full bg-brand"
+                aria-label="building"
+              />
             )}
           </>
         )}
       </Link>
     </li>
   );
+}
+
+/**
+ * An entry is "active" if the user is on its exact route or somewhere
+ * under it (e.g. /tools/rams/permits/hot-works-permit still highlights
+ * the "Permit" sidebar entry).
+ */
+function isActive(pathname: string, href: string): boolean {
+  if (pathname === href) return true;
+  // Sub-path match — but only at segment boundaries.
+  return pathname.startsWith(`${href}/`);
 }
