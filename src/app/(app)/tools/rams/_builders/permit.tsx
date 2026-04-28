@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
 import { useIntakePrefill } from "../_components/use-intake-prefill";
+import { SendButton } from "../_components/send-button";
 import { AIFillButton } from "@/components/ai-fill-button";
 
 export interface PermitForm {
@@ -148,7 +149,7 @@ function formatDateTime(iso: string): string {
 }
 
 export function PermitBuilder(props: PermitBuilderProps) {
-  const { form, update, saving, lastSaved, downloading, manualSave, downloadPdf } =
+  const { form, update, saving, lastSaved, downloading, manualSave, downloadPdf, docId } =
     useBuilderDocument<PermitForm>({
       builderSlug: props.slug,
       emptyForm: () => emptyForm(props),
@@ -190,6 +191,7 @@ export function PermitBuilder(props: PermitBuilderProps) {
           <Button variant="outline" size="sm" onClick={manualSave} disabled={saving}>
             Save
           </Button>
+          <SendButton docId={docId} docTypeLabel={props.defaultTitle || "Permit"} />
           <Button size="sm" onClick={downloadPdf} disabled={downloading}>
             <Download className="size-3.5 mr-1.5" />
             {downloading ? "Generating…" : "Download permit"}

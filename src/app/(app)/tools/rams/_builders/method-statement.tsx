@@ -20,6 +20,7 @@ import { SaveStatus } from "../_components/save-status";
 import { LibraryGallery } from "../_components/library-gallery";
 import { useProjectAutofill } from "../_components/use-project-autofill";
 import { useIntakePrefill } from "../_components/use-intake-prefill";
+import { SendButton } from "../_components/send-button";
 import type { ProjectRow } from "../_components/projects-context";
 import { RAMS_TRADES, TRADE_CATEGORIES } from "@/lib/rams/library";
 
@@ -68,6 +69,7 @@ export function MethodStatementBuilder() {
     downloading,
     manualSave,
     downloadPdf,
+    docId,
   } = useBuilderDocument<MethodStatementForm>({
     builderSlug: "method-statement",
     emptyForm,
@@ -416,14 +418,21 @@ export function MethodStatementBuilder() {
         </CardContent>
       </Card>
 
-      <div className="flex items-center justify-between border-t pt-4">
+      <div className="flex items-center justify-between border-t pt-4 gap-2">
         <Button variant="outline" onClick={manualSave} disabled={saving}>
           {saving ? "Saving…" : "Save draft"}
         </Button>
-        <Button onClick={downloadPdf} disabled={downloading}>
-          <Download className="size-3.5 mr-1.5" />
-          {downloading ? "Generating…" : "Download PDF"}
-        </Button>
+        <div className="flex items-center gap-2">
+          <SendButton
+            docId={docId}
+            docTypeLabel="Method Statement"
+            size="default"
+          />
+          <Button onClick={downloadPdf} disabled={downloading}>
+            <Download className="size-3.5 mr-1.5" />
+            {downloading ? "Generating…" : "Download PDF"}
+          </Button>
+        </div>
       </div>
     </div>
   );

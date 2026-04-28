@@ -5,6 +5,60 @@ can pick up cold without re-reading the conversation. Update this every time
 something meaningful ships. STATUS.md is the formal product doc; this is the
 conversational version.
 
+## Last session — 2026-04-27 (Send to client — Resend wired up)
+
+The third leg of the touchless-surface push: every builder now has a
+**Send** button that emails the doc PDF directly to a client/main
+contractor with the firm's name in the From, an optional one-liner
+message, and a link back to the public share page.
+
+New infra:
+
+- **`src/lib/email.ts`** — Resend client + `sendDocumentEmail()` helper
+  with HTML + plain-text templates. Includes a dev fallback when
+  `RESEND_API_KEY` is empty: logs the would-send and returns
+  `{ ok: true, simulated: true }` so the dialog flow can be exercised
+  without a real Resend account. Production refuses to fake-send.
+- **`src/lib/pdf-react/render-doc.ts`** — extracted the React-PDF
+  dispatcher into a shared helper that returns `{ bytes, doc, org }`.
+  Doesn't yet replace the inline dispatchers in
+  `/api/rams/[id]/pdf/route.ts` or `/api/share/doc/[id]/pdf/route.ts`
+  (those still work) — the helper is just used by the new send route.
+  Future cleanup: migrate both legacy routes to call the helper.
+- **`/api/docs/[id]/send/route.ts`** — auth + ownership check, rate-limit
+  (30/min user, 200/day org), renders PDF, sends via Resend, writes a
+  row to the new `document_sends` audit table. Returns
+  `{ ok: true, simulated: bool, id: string }` on success.
+- **Migration `0005_document_sends.sql`** — audit table with
+  `recipient_email`, `subject`, `message`, `pdf_filename`,
+  `resend_message_id`, `status` (sent/failed/simulated), `error`,
+  `sent_by`, `sent_at`. RLS read-only for org members; inserts go
+  through service role. Indexed by `(org, document_id)`,
+  `(org, sent_at desc)`, and `client_id`.
+- Types updated in `src/types/supabase.ts`.
+
+Client surface:
+
+- **`SendDialog`** — three-field dialog (To, Name, optional message)
+  with a Send button. Toast on success/failure; "Sent (dev mode)" when
+  simulated.
+- **`SendButton`** — drop-in primitive for builder action bars. Disabled
+  while the doc isn't saved (no id to send).
+
+Wired into 5 priority builders so far:
+- Method Statement
+- Permit (5 permit slugs)
+- Briefing (3 briefing slugs)
+- Inspection (4 inspection slugs)
+- Plan (4 plan slugs + Noise)
+
+That's 17 of the 22 builder slugs covered. RA, COSHH, HAVs, Toolbox,
+Full RAMs are next — same pattern, one-liner per builder.
+
+The Send + Share + Intake trio now form the full touchless surface:
+intake (push in) → builders (work) → share + send (push out). Type-check
+clean. Run migration 0005 before pushing to prod.
+
 ## Last session — 2026-04-27 (Today-style dashboard restructure)
 
 After intake landed, restructured the dashboard so the first thing a

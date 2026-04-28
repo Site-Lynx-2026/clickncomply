@@ -25,6 +25,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
+import { SendButton } from "../_components/send-button";
 
 export type InspectionStatus = "pass" | "fail" | "na";
 
@@ -79,7 +80,7 @@ function emptyForm(props: InspectionBuilderProps): InspectionForm {
  * items get red gutter, big stamp at the bottom for the overall result.
  */
 export function InspectionBuilder(props: InspectionBuilderProps) {
-  const { form, update, saving, lastSaved, downloading, manualSave, downloadPdf } =
+  const { form, update, saving, lastSaved, downloading, manualSave, downloadPdf, docId } =
     useBuilderDocument<InspectionForm>({
       builderSlug: props.slug,
       emptyForm: () => emptyForm(props),
@@ -133,6 +134,7 @@ export function InspectionBuilder(props: InspectionBuilderProps) {
           <Button variant="outline" size="sm" onClick={manualSave} disabled={saving}>
             Save
           </Button>
+          <SendButton docId={docId} docTypeLabel={props.defaultTitle || "Inspection"} />
           <Button size="sm" onClick={downloadPdf} disabled={downloading}>
             <Download className="size-3.5 mr-1.5" />
             {downloading ? "Generating…" : "Download report"}

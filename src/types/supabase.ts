@@ -499,6 +499,55 @@ export interface Database {
         };
         Relationships: [];
       };
+      document_sends: {
+        Row: {
+          id: string;
+          organisation_id: string;
+          document_id: string;
+          client_id: string | null;
+          recipient_email: string;
+          recipient_name: string | null;
+          subject: string;
+          message: string | null;
+          pdf_filename: string;
+          resend_message_id: string | null;
+          status: "sent" | "failed" | "simulated";
+          error: string | null;
+          sent_by: string | null;
+          sent_at: string;
+        };
+        Insert: {
+          id?: string;
+          organisation_id: string;
+          document_id: string;
+          client_id?: string | null;
+          recipient_email: string;
+          recipient_name?: string | null;
+          subject: string;
+          message?: string | null;
+          pdf_filename: string;
+          resend_message_id?: string | null;
+          status?: "sent" | "failed" | "simulated";
+          error?: string | null;
+          sent_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          organisation_id?: string;
+          document_id?: string;
+          client_id?: string | null;
+          recipient_email?: string;
+          recipient_name?: string | null;
+          subject?: string;
+          message?: string | null;
+          pdf_filename?: string;
+          resend_message_id?: string | null;
+          status?: "sent" | "failed" | "simulated";
+          error?: string | null;
+          sent_by?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;

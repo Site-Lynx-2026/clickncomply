@@ -24,6 +24,7 @@ import {
 import { useEffect, useRef } from "react";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { useIntakePrefill } from "../_components/use-intake-prefill";
+import { SendButton } from "../_components/send-button";
 import { SaveStatus } from "../_components/save-status";
 import { AIFillButton } from "@/components/ai-fill-button";
 
@@ -75,7 +76,7 @@ function emptyForm(props: BriefingBuilderProps): BriefingForm {
  * pre-fill from the slug-specific dispatcher.
  */
 export function BriefingBuilder(props: BriefingBuilderProps) {
-  const { form, update, saving, lastSaved, downloading, manualSave, downloadPdf } =
+  const { form, update, saving, lastSaved, downloading, manualSave, downloadPdf, docId } =
     useBuilderDocument<BriefingForm>({
       builderSlug: props.slug,
       emptyForm: () => emptyForm(props),
@@ -128,6 +129,7 @@ export function BriefingBuilder(props: BriefingBuilderProps) {
           <Button variant="outline" size="sm" onClick={manualSave} disabled={saving}>
             Save
           </Button>
+          <SendButton docId={docId} docTypeLabel={props.defaultTitle || "Briefing"} />
           <Button size="sm" onClick={downloadPdf} disabled={downloading}>
             <Download className="size-3.5 mr-1.5" />
             {downloading ? "Generating…" : "Download briefing"}

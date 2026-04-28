@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
 import { useIntakePrefill } from "../_components/use-intake-prefill";
+import { SendButton } from "../_components/send-button";
 import { AIFillButton } from "@/components/ai-fill-button";
 
 export interface PlanSection {
@@ -71,7 +72,7 @@ function emptyForm(props: PlanBuilderProps): PlanForm {
  * Emergency Action Plan.
  */
 export function PlanBuilder(props: PlanBuilderProps) {
-  const { form, update, saving, lastSaved, downloading, manualSave, downloadPdf } =
+  const { form, update, saving, lastSaved, downloading, manualSave, downloadPdf, docId } =
     useBuilderDocument<PlanForm>({
       builderSlug: props.slug,
       emptyForm: () => emptyForm(props),
@@ -118,6 +119,7 @@ export function PlanBuilder(props: PlanBuilderProps) {
           <Button variant="outline" size="sm" onClick={manualSave} disabled={saving}>
             Save
           </Button>
+          <SendButton docId={docId} docTypeLabel={props.defaultTitle || "Plan"} />
           <Button size="sm" onClick={downloadPdf} disabled={downloading}>
             <Download className="size-3.5 mr-1.5" />
             {downloading ? "Generating…" : "Download plan"}
