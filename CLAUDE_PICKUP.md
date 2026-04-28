@@ -5,6 +5,41 @@ can pick up cold without re-reading the conversation. Update this every time
 something meaningful ships. STATUS.md is the formal product doc; this is the
 conversational version.
 
+## Last session — 2026-04-27 (Today-style dashboard restructure)
+
+After intake landed, restructured the dashboard so the first thing a
+returning user sees is "what needs your attention" rather than ambient
+stats. New top-of-page order:
+
+1. PageHeader (greeting + tier pill)
+2. **IntakeBox** — "Make a thing" sentence input
+3. **ShareLinkCard** — public share URL with copy
+4. **Continue drafting** — pinned drafts block (top of LEFT 2/3 column,
+   only renders when drafts exist) — lime dot, lime-tinted icon tile,
+   "Continue →" CTA per row
+5. **Recently completed** — replaces "Recent activity"; filtered to
+   `status="complete"` only, ordered by `generated_at` desc
+6. Quick actions (RIGHT 1/3 column unchanged)
+7. Stats grid (demoted from top to ambient context)
+8. Active tools / Available tools
+
+Two parallel queries replace the single `recentDocs`:
+- `recentDrafts` — `status="draft"`, top 5 by `updated_at`
+- `recentCompleted` — `status="complete"`, top 5 by `generated_at`
+
+Smart empty state: if the user has drafts but no completed docs, the
+"Recently completed" block doesn't shout "No documents yet" — it gently
+says "Wrap a draft above and it'll appear here". Empty-empty users
+get the original "Type what you need above, or pick a builder" CTA.
+
+Both blocks share a `DashboardDoc` typedef so adding new fields later
+is one place. Type-check + lint clean.
+
+This completes the queue's "engaged dashboard polish" arc — drafts,
+recent, intake, share, stats all coherent on one page. Next up:
+renewal calendar (the missing piece — periodic docs that go stale),
+or send-to-client email flow via Resend.
+
 ## Last session — 2026-04-27 (one-shot intake — the magic surface)
 
 After the touchless surface, built the highest-magic feature on the queue:
