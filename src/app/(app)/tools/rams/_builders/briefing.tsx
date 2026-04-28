@@ -21,7 +21,9 @@ import {
   GripVertical,
   ListChecks,
 } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { useBuilderDocument } from "../_components/use-builder-document";
+import { useIntakePrefill } from "../_components/use-intake-prefill";
 import { SaveStatus } from "../_components/save-status";
 import { AIFillButton } from "@/components/ai-fill-button";
 
@@ -83,6 +85,20 @@ export function BriefingBuilder(props: BriefingBuilderProps) {
   function set<K extends keyof BriefingForm>(key: K, value: BriefingForm[K]) {
     update({ [key]: value } as Partial<BriefingForm>);
   }
+
+  // Dashboard intake → patch empty title + introduction.
+  const intakePrefill = useIntakePrefill();
+  const intakeAppliedRef = useRef(false);
+  useEffect(() => {
+    if (!intakePrefill || intakeAppliedRef.current) return;
+    intakeAppliedRef.current = true;
+    const patch: Partial<BriefingForm> = {};
+    if (!form.title.trim() && intakePrefill.title) patch.title = intakePrefill.title;
+    if (!form.introduction.trim() && intakePrefill.scope)
+      patch.introduction = intakePrefill.scope;
+    if (Object.keys(patch).length > 0) update(patch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [intakePrefill, update]);
 
   function addPoint() {
     update({

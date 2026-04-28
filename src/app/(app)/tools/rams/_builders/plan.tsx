@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +22,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
+import { useIntakePrefill } from "../_components/use-intake-prefill";
 import { AIFillButton } from "@/components/ai-fill-button";
 
 export interface PlanSection {
@@ -86,6 +87,19 @@ export function PlanBuilder(props: PlanBuilderProps) {
       sections: form.sections.map((s) => (s.id === id ? { ...s, body } : s)),
     });
   }
+
+  // Dashboard intake → patch empty title + scope.
+  const intakePrefill = useIntakePrefill();
+  const intakeAppliedRef = useRef(false);
+  useEffect(() => {
+    if (!intakePrefill || intakeAppliedRef.current) return;
+    intakeAppliedRef.current = true;
+    const patch: Partial<PlanForm> = {};
+    if (!form.title.trim() && intakePrefill.title) patch.title = intakePrefill.title;
+    if (!form.scope.trim() && intakePrefill.scope) patch.scope = intakePrefill.scope;
+    if (Object.keys(patch).length > 0) update(patch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [intakePrefill, update]);
 
   const counts = useMemo(() => {
     const total = form.sections.length;

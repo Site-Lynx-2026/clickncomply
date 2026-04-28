@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
 import { LibraryGallery } from "../_components/library-gallery";
+import { useIntakePrefill } from "../_components/use-intake-prefill";
 import { CommandPicker } from "@/components/command-picker";
 import { AIFillButton } from "@/components/ai-fill-button";
 
@@ -123,6 +124,55 @@ export function RiskAssessmentBuilder({
   const [mode, setMode] = useState<Mode>("by-trade");
   const [aiBusyFor, setAiBusyFor] = useState<string | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
+
+  // One-shot intake from the dashboard — if a trade was named and matches
+  // the library, load it; otherwise patch empty title/scope and stay in
+  // the picker view so the user can decide.
+  const intakePrefill = useIntakePrefill();
+  const intakeAppliedRef = useRef(false);
+  useEffect(() => {
+    if (!intakePrefill || intakeAppliedRef.current) return;
+    if (form.hazards.length > 0) {
+      intakeAppliedRef.current = true;
+      return;
+    }
+    intakeAppliedRef.current = true;
+
+    const tradeQuery = intakePrefill.trade.trim().toLowerCase();
+    const matched = tradeQuery
+      ? RAMS_TRADES.find(
+          (t) =>
+            t.trade.toLowerCase() === tradeQuery ||
+            t.trade.toLowerCase().includes(tradeQuery) ||
+            tradeQuery.includes(t.trade.toLowerCase())
+        )
+      : undefined;
+
+    if (matched) {
+      const items = matched.raItems
+        .map((id) => RA_LIBRARY.find((h) => h.id === id))
+        .filter((x): x is RALibraryItem => Boolean(x));
+      update({
+        title: intakePrefill.title || `Risk Assessment — ${matched.trade}`,
+        scope: intakePrefill.scope || matched.description,
+        hazards: items.map(fromLibrary),
+      });
+      toast.success(
+        `Loaded ${items.length} hazards for ${matched.trade}.`
+      );
+      // Drop the user straight into the editor view — same effect as
+      // the manual pickTrade flow, just one-shot from the intake.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setMode("editing");
+      return;
+    }
+
+    const patch: Partial<RiskAssessmentForm> = {};
+    if (!form.title.trim() && intakePrefill.title) patch.title = intakePrefill.title;
+    if (!form.scope.trim() && intakePrefill.scope) patch.scope = intakePrefill.scope;
+    if (Object.keys(patch).length > 0) update(patch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [intakePrefill, update]);
 
   /**
    * Pick a trade — instantly loads every relevant hazard from its raItems

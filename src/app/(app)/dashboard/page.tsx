@@ -20,6 +20,7 @@ import { trialState, trialDaysRemaining } from "@/lib/billing";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/page-header";
 import { ShareLinkCard } from "./_components/share-link-card";
+import { IntakeBox } from "./_components/intake-box";
 
 export const metadata = {
   title: "Dashboard — ClickNComply",
@@ -150,6 +151,8 @@ export default async function DashboardPage() {
           </>
         }
       />
+
+      <IntakeBox />
 
       {org?.slug && (
         <ShareLinkCard

@@ -5,6 +5,55 @@ can pick up cold without re-reading the conversation. Update this every time
 something meaningful ships. STATUS.md is the formal product doc; this is the
 conversational version.
 
+## Last session — 2026-04-27 (one-shot intake — the magic surface)
+
+After the touchless surface, built the highest-magic feature on the queue:
+the **one-shot intake**. A single input on the dashboard. Type:
+
+> first fix electrical at plot 12 lyme wood tomorrow
+
+…and the AI picks the right builder, drafts a title and scope, identifies
+the trade, and routes the user straight into the builder with the form
+pre-populated. For Method Statement and Risk Assessment, if the trade
+matches a library entry, the trade's pre-built steps/hazards load
+automatically — the user lands in the editor, not the picker. Skips the
+gallery entirely on the intake path.
+
+Files:
+
+- **`src/app/api/ai/intake/route.ts`** — Haiku 4.5 + JSON-only output.
+  Prompt lists every non-planned, non-library builder (slug + shortName +
+  tagline) so the model picks from a real enum. Tolerant JSON parsing
+  (handles ```json fences). Validates slug against the BUILDERS registry.
+  Shares the daily free-tier quota bucket with `/api/ai/fill`. Rate-limited
+  to 20/min per user.
+- **`src/app/(app)/dashboard/_components/intake-box.tsx`** — Sparkles
+  badge, "Make a thing" eyebrow, single text input with Enter-to-submit,
+  Loader2 spin during routing, lime brand halo top-right. Sits at the very
+  top of the dashboard above ShareLinkCard.
+- **`src/app/(app)/tools/rams/_components/use-intake-prefill.ts`** —
+  Lazy-initialised state captures `ai_title` / `ai_scope` / `ai_trade` from
+  the URL once on mount, then an effect strips them with `router.replace`
+  so a refresh doesn't re-apply. Returns a stable reference for the
+  component lifetime so consumers can safely use it as a useEffect dep.
+- **5 builder wires** — Method Statement, Risk Assessment, Briefing,
+  Permit, Plan all consume `useIntakePrefill()`. MS + RA additionally
+  fuzzy-match `ai_trade` against `RAMS_TRADES` and auto-load steps/hazards
+  when a match is found.
+
+The use-intake-prefill hook went through 3 lint iterations to satisfy
+React 19's stricter `react-hooks` plugin (no setState in effect, no ref
+mutation in render, no ref reads in render). Final form uses lazy
+`useState` initializer — the canonical "compute once from external source"
+pattern.
+
+UX win: on the gallery view, if the user's intake mentioned a trade
+that matches the library, they skip the gallery entirely. The
+8-step Electrical method statement just appears, title set, scope set —
+they're already drafting.
+
+Type-check clean. Committed as `8cd878d` style.
+
 ## Last session — 2026-04-27 (touchless surface MVP)
 
 Plan personality landed (commit 0b158ee). Then built the first cut of the

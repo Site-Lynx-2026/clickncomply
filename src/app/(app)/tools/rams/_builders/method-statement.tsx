@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,7 @@ import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
 import { LibraryGallery } from "../_components/library-gallery";
 import { useProjectAutofill } from "../_components/use-project-autofill";
+import { useIntakePrefill } from "../_components/use-intake-prefill";
 import type { ProjectRow } from "../_components/projects-context";
 import { RAMS_TRADES, TRADE_CATEGORIES } from "@/lib/rams/library";
 
@@ -75,6 +76,61 @@ export function MethodStatementBuilder() {
 
   // Project picker → title auto-populates if empty
   useProjectAutofill({ form, update, map: methodStatementAutofill });
+
+  // One-shot intake → if the dashboard sent us here with a trade,
+  // try to load that trade's pre-built steps automatically. Otherwise
+  // just patch any empty title/scope/trade fields.
+  const intakePrefill = useIntakePrefill();
+  const intakeAppliedRef = useRef(false);
+  useEffect(() => {
+    if (!intakePrefill || intakeAppliedRef.current) return;
+    if (form.steps.length > 0) {
+      // User already has a doc going — don't clobber.
+      intakeAppliedRef.current = true;
+      return;
+    }
+    intakeAppliedRef.current = true;
+
+    // Try to match the trade against the library by name (case-insensitive).
+    const tradeQuery = intakePrefill.trade.trim().toLowerCase();
+    const matched = tradeQuery
+      ? RAMS_TRADES.find(
+          (t) =>
+            t.trade.toLowerCase() === tradeQuery ||
+            t.trade.toLowerCase().includes(tradeQuery) ||
+            tradeQuery.includes(t.trade.toLowerCase())
+        )
+      : undefined;
+
+    if (matched) {
+      // Auto-pick the matched trade — drops user straight into editor with
+      // 8 steps loaded. Title/scope from intake override the trade defaults
+      // when present (intake prose is usually more specific).
+      update({
+        trade: matched.trade,
+        title: intakePrefill.title || `Method Statement — ${matched.trade}`,
+        scope: intakePrefill.scope || matched.description,
+        steps: matched.msSteps.map((description) => ({
+          id: crypto.randomUUID(),
+          description,
+          responsible: "",
+        })),
+      });
+      toast.success(
+        `Loaded ${matched.msSteps.length}-step ${matched.trade} method statement.`
+      );
+      return;
+    }
+
+    // No matching trade — patch empty fields only, leave user in gallery.
+    const patch: Partial<MethodStatementForm> = {};
+    if (!form.title.trim() && intakePrefill.title) patch.title = intakePrefill.title;
+    if (!form.scope.trim() && intakePrefill.scope) patch.scope = intakePrefill.scope;
+    if (!form.trade.trim() && intakePrefill.trade) patch.trade = intakePrefill.trade;
+    if (Object.keys(patch).length > 0) update(patch);
+    // form intentionally omitted — single-shot intake.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [intakePrefill, update]);
 
   const [aiBusy, setAiBusy] = useState(false);
 

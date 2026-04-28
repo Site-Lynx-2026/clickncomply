@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,6 +26,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
+import { useIntakePrefill } from "../_components/use-intake-prefill";
 import { AIFillButton } from "@/components/ai-fill-button";
 
 export interface PermitForm {
@@ -157,6 +158,20 @@ export function PermitBuilder(props: PermitBuilderProps) {
   function set<K extends keyof PermitForm>(key: K, value: PermitForm[K]) {
     update({ [key]: value } as Partial<PermitForm>);
   }
+
+  // Dashboard intake → patch empty title + work description.
+  const intakePrefill = useIntakePrefill();
+  const intakeAppliedRef = useRef(false);
+  useEffect(() => {
+    if (!intakePrefill || intakeAppliedRef.current) return;
+    intakeAppliedRef.current = true;
+    const patch: Partial<PermitForm> = {};
+    if (!form.title.trim() && intakePrefill.title) patch.title = intakePrefill.title;
+    if (!form.workDescription.trim() && intakePrefill.scope)
+      patch.workDescription = intakePrefill.scope;
+    if (Object.keys(patch).length > 0) update(patch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [intakePrefill, update]);
 
   const validity = useMemo(
     () => computeValidity(form.validFrom, form.validTo),
