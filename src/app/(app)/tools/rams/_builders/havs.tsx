@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
 import { LibraryGallery } from "../_components/library-gallery";
+import { CommandPicker } from "@/components/command-picker";
 import { toast } from "sonner";
 
 interface Tool {
@@ -51,6 +52,8 @@ export function HavsBuilder() {
     titleFromForm: (f) =>
       f.title || (f.workerName ? `HAVs — ${f.workerName}` : null),
   });
+
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const totalPoints = useMemo(
     () =>
@@ -175,18 +178,68 @@ export function HavsBuilder() {
   }
 
   // ── EDITOR VIEW ──
+  const existingToolNames = new Set(
+    form.tools.map((t) => t.name.toLowerCase())
+  );
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <button
-          onClick={backToGallery}
-          className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
-        >
-          <ChevronLeft className="size-3.5" />
-          Pick more tools
-        </button>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => setPickerOpen(true)}>
+            <Plus className="size-3.5 mr-1.5" />
+            Add tool (⌘K)
+          </Button>
+          <button
+            onClick={backToGallery}
+            className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+          >
+            <ChevronLeft className="size-3.5" />
+            Start over
+          </button>
+        </div>
         <SaveStatus saving={saving} lastSaved={lastSaved} />
       </div>
+
+      {/* CommandPicker — fast keyboard-driven add for repeat picks. */}
+      <CommandPicker
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        title="Add tools"
+        subtitle={`${HAVS_LIBRARY.length} pre-loaded vibration magnitudes`}
+        searchPlaceholder="Search tools..."
+        items={HAVS_LIBRARY.filter(
+          (t) => !existingToolNames.has(t.tool.toLowerCase())
+        ).map((t) => ({
+          id: t.id,
+          title: t.tool,
+          subtitle: `Typical use ${t.typicalUse}`,
+          meta: `${t.vibrationMag.toFixed(1)} m/s²`,
+          metaTone:
+            t.vibrationMag >= 10
+              ? ("danger" as const)
+              : t.vibrationMag >= 5
+                ? ("warning" as const)
+                : ("success" as const),
+        }))}
+        onPickMany={(picks) => {
+          pickTools(picks.map((p) => p.id));
+          setPickerOpen(false);
+        }}
+        continueLabel={(n) =>
+          `Add ${n} tool${n === 1 ? "" : "s"} to assessment`
+        }
+        onCreate={(text) => {
+          update({
+            tools: [
+              ...form.tools,
+              { id: crypto.randomUUID(), name: text, magnitude: 0, hours: 0 },
+            ],
+          });
+          setPickerOpen(false);
+          toast.success("Custom tool added — set the magnitude and hours.");
+        }}
+        createLabel={(t) => `+ Custom tool: "${t}"`}
+      />
 
       <Card>
         <CardHeader>

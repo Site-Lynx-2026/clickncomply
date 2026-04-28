@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
 import { LibraryGallery } from "../_components/library-gallery";
+import { CommandPicker } from "@/components/command-picker";
 
 interface Hazard {
   id: string;
@@ -120,6 +121,7 @@ export function RiskAssessmentBuilder({
 
   const [mode, setMode] = useState<Mode>("by-trade");
   const [aiBusyFor, setAiBusyFor] = useState<string | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   /**
    * Pick a trade — instantly loads every relevant hazard from its raItems
@@ -283,18 +285,73 @@ export function RiskAssessmentBuilder({
   }
 
   // ── EDITOR ──
+  // Existing hazard ids — used to suggest the user pick something they
+  // haven't already added when they re-open the picker.
+  const existingHazardSlugs = new Set(form.hazards.map((h) => h.hazard));
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <button
-          onClick={() => setMode("by-hazard")}
-          className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setPickerOpen(true)}
         >
-          <Plus className="size-3.5" />
-          Add more hazards from library
-        </button>
+          <Plus className="size-3.5 mr-1.5" />
+          Add hazards (⌘K)
+        </Button>
         <SaveStatus saving={saving} lastSaved={lastSaved} />
       </div>
+
+      {/* CommandPicker — fast multi-select for repeat adds. The initial
+          by-trade / by-hazard galleries are still the discovery path. */}
+      <CommandPicker
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        title="Add hazards"
+        subtitle={`${RA_LIBRARY.length} pre-built hazards across ${RA_CATEGORIES.length} categories`}
+        searchPlaceholder="Search hazards..."
+        items={RA_LIBRARY.filter((h) => !existingHazardSlugs.has(h.hazard)).map(
+          (h) => {
+            const score = riskScore(h.initialL, h.initialS);
+            const cat = RA_CATEGORIES.find((c) => c.id === h.category);
+            return {
+              id: h.id,
+              title: h.hazard,
+              subtitle: h.controls,
+              category: h.category,
+              meta: cat ? `${cat.icon} ${score.level}` : score.level,
+              metaTone:
+                score.level === "Critical"
+                  ? ("danger" as const)
+                  : score.level === "High"
+                    ? ("warning" as const)
+                    : score.level === "Medium"
+                      ? ("info" as const)
+                      : ("success" as const),
+              keywords: [h.whoAtRisk, h.consequences],
+            };
+          }
+        )}
+        categories={RA_CATEGORIES.map((c) => ({
+          id: c.id,
+          label: `${c.icon} ${c.label}`,
+        }))}
+        onPickMany={(picks) => {
+          pickHazards(picks.map((p) => p.id));
+          setPickerOpen(false);
+        }}
+        continueLabel={(n) =>
+          `Add ${n} hazard${n === 1 ? "" : "s"} to assessment`
+        }
+        onCreate={(text) => {
+          const blank = blankHazard();
+          blank.hazard = text;
+          update({ hazards: [...form.hazards, blank] });
+          setPickerOpen(false);
+          toast.success("Custom hazard added — fill in the controls.");
+        }}
+        createLabel={(t) => `+ Custom hazard: "${t}"`}
+      />
 
       <Card>
         <CardHeader>

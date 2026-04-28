@@ -1,6 +1,33 @@
-# Status — 28 Apr 2026 (evening update)
+# Status — 28 Apr 2026 (day-job update — depth + CommandPicker push)
 
-## Bottom line
+## Latest
+
+Continued the foundations work after Jamie said the black-on-white was
+still reading as "awful". The depth tokens existed but weren't doing
+visible work — pure white cards on pure white canvas with sub-percent
+shadows = invisible depth. Three changes:
+
+1. **Canvas + border tokens warmed up.** `--surface-canvas` from
+   `oklch(0.985 0.005 240)` to `oklch(0.975 0.012 240)` so it's actually
+   distinct from cards. Borders moved from pure greyscale to a slight
+   cool-blue tint (matching SL's `#E3E8EF`) so the UI stops reading
+   clinical/cold.
+2. **Shadow scale bumped one notch.** Previous tokens were Stripe-subtle
+   to a fault. Now each tier reads as actual depth without going clunky.
+3. **Card / Input / Textarea / Button primitives lifted.**
+   - Card: surface-raised + bigger header rule + footer surface-pebble
+   - Input/Textarea: bg-card (raised), brand lime focus ring, soft border
+     hover-darkens
+   - Button primary: cool shadow at rest, lifts on hover
+   - All focus rings now lime instead of black
+
+CommandPicker wired into the three picker-heavy builders (RA / COSHH /
+HAVs) as the in-editor "Add ⌘K" path. Initial gallery experience stays
+(it's the discovery / first-doc flow); CommandPicker is the upgrade for
+repeat adds — fast keyboard nav, fuzzy match, multi-select with sticky
+bar, custom-create when search misses.
+
+## Earlier today: foundations push (lime tokens + sidebar lift)
 
 Marathon session 27→28 Apr shipped a lot. Jamie was **not happy** with the
 result and asked for an honest read. After a side-by-side diff with

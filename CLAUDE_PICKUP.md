@@ -5,6 +5,25 @@ can pick up cold without re-reading the conversation. Update this every time
 something meaningful ships. STATUS.md is the formal product doc; this is the
 conversational version.
 
+## Last session — 2026-04-28 (day-job — depth + CommandPicker)
+
+Jamie said black-on-white was still reading as awful. Depth tokens existed
+but weren't doing visible work. Fixed:
+
+1. Canvas tint bumped (oklch 0.975, chroma 0.012) — distinct from cards.
+2. Borders given slight cool-blue tint (matches SL's #E3E8EF).
+3. Shadow scale bumped a notch — depth actually registers.
+4. Card primitive: header now has a real bottom rule, footer uses
+   surface-pebble, body padding consistent.
+5. Input + Textarea: bg-card (raised), brand lime focus ring, soft
+   border, hover-darkens to border-strong, h-9 (bigger touch target).
+6. Button primary: cool shadow at rest, lifts on hover, focus ring lime.
+
+CommandPicker wired into RA / COSHH / HAVs. Pattern: initial gallery
+stays (discovery), CommandPicker is the in-editor "Add ⌘K" upgrade —
+fuzzy search, multi-select, sticky-bar continue, inline custom-create.
+Filters out items already added so the picker never shows duplicates.
+
 ## Last session — 2026-04-28 (evening, structural foundations push)
 
 Jamie was frustrated. Three previous visual passes hadn't landed. He said

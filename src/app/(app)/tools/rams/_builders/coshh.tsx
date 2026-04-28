@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
 import { LibraryGallery } from "../_components/library-gallery";
+import { CommandPicker } from "@/components/command-picker";
 import {
   COSHH_SUBSTANCES,
   COSHH_CATEGORIES,
@@ -102,6 +103,7 @@ export function CoshhBuilder() {
 
   const [aiBusyFor, setAiBusyFor] = useState<string | null>(null);
   const [showGallery, setShowGallery] = useState(true);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   function pickSubstances(libIds: string[]) {
     const libs = libIds
@@ -246,18 +248,63 @@ export function CoshhBuilder() {
   }
 
   // ── EDITOR VIEW ──
+  const existingNames = new Set(
+    form.substances.map((s) => s.name.toLowerCase())
+  );
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <button
-          onClick={() => setShowGallery(true)}
-          className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
-        >
-          <Plus className="size-3.5" />
-          Add another substance from library
-        </button>
+        <Button variant="outline" size="sm" onClick={() => setPickerOpen(true)}>
+          <Plus className="size-3.5 mr-1.5" />
+          Add substance (⌘K)
+        </Button>
         <SaveStatus saving={saving} lastSaved={lastSaved} />
       </div>
+
+      {/* CommandPicker — fast keyboard-driven add. Initial gallery
+          experience above is the discovery path; this is the upgrade. */}
+      <CommandPicker
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        title="Add substances"
+        subtitle={`${COSHH_SUBSTANCES.length} pre-built substances across ${COSHH_CATEGORIES.length} categories`}
+        searchPlaceholder="Search substances..."
+        items={COSHH_SUBSTANCES.filter(
+          (s) => !existingNames.has(s.name.toLowerCase())
+        ).map((s) => ({
+          id: s.id,
+          title: s.name,
+          subtitle: s.summary,
+          category: s.category,
+          meta: `${s.icon} ${s.riskLevel.toUpperCase()}`,
+          metaTone:
+            s.riskLevel === "high"
+              ? ("danger" as const)
+              : s.riskLevel === "medium"
+                ? ("warning" as const)
+                : ("success" as const),
+          keywords: [s.controls, s.ppe],
+        }))}
+        categories={COSHH_CATEGORIES.map((c) => ({
+          id: c.id,
+          label: `${c.icon} ${c.label}`,
+        }))}
+        onPickMany={(picks) => {
+          pickSubstances(picks.map((p) => p.id));
+          setPickerOpen(false);
+        }}
+        continueLabel={(n) =>
+          `Add ${n} substance${n === 1 ? "" : "s"} to assessment`
+        }
+        onCreate={(text) => {
+          const blank = emptySubstance();
+          blank.name = text;
+          update({ substances: [...form.substances, blank] });
+          setPickerOpen(false);
+          toast.success("Custom substance added — fill in the controls.");
+        }}
+        createLabel={(t) => `+ Custom substance: "${t}"`}
+      />
 
       <Card>
         <CardHeader>
