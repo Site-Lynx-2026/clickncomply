@@ -19,6 +19,7 @@ import {
 import { trialState, trialDaysRemaining } from "@/lib/billing";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/page-header";
+import { ShareLinkCard } from "./_components/share-link-card";
 
 export const metadata = {
   title: "Dashboard — ClickNComply",
@@ -149,6 +150,15 @@ export default async function DashboardPage() {
           </>
         }
       />
+
+      {org?.slug && (
+        <ShareLinkCard
+          slug={org.slug}
+          hasCompletedDocs={(recentDocs ?? []).some(
+            (d) => d.status === "complete"
+          )}
+        />
+      )}
 
       {/* Stats grid */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">

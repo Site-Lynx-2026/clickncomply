@@ -5,6 +5,42 @@ can pick up cold without re-reading the conversation. Update this every time
 something meaningful ships. STATUS.md is the formal product doc; this is the
 conversational version.
 
+## Last session — 2026-04-27 (touchless surface MVP)
+
+Plan personality landed (commit 0b158ee). Then built the first cut of the
+**touchless surface** — the differentiating feature for solo traders that
+no other compliance tool in the £2–19/month bracket has.
+
+Three new files:
+
+- **`src/app/share/[slug]/page.tsx`** — public route, no auth. Server
+  component that looks up an org by slug, fetches up to 20
+  `status="complete"` docs, renders a branded identity card (logo, name,
+  industry, description) with the lime stripe, and lists docs with PDF
+  download buttons. `revalidate = 60`. Includes `generateMetadata` for SEO.
+- **`src/app/api/share/doc/[id]/pdf/route.ts`** — public PDF endpoint, no
+  auth. Hard-gated to `status="complete"` only. Mirrors the authed
+  endpoint's PDF dispatcher (all 30+ builder slugs route to the right
+  template). Watermark via `hasProAccess()` — free orgs get watermarked,
+  Pro orgs get clean. `Cache-Control: public, max-age=300`.
+- **`src/app/(app)/dashboard/_components/share-link-card.tsx`** — client
+  component "Your public share page" strip with lime stripe, Share2 icon,
+  the absolute URL in mono, copy-to-clipboard (with Check tick flash) and
+  View-in-new-tab buttons. Hint text adapts: with completed docs → "Send
+  this link to customers", without → "Mark a doc 'complete' and it'll
+  appear here".
+
+Wired into the dashboard right under the PageHeader so first-time users
+discover it the moment they land. Uses `org.slug` (already on the org).
+
+Security model: doc IDs are UUIDs (practically unguessable), and the
+`status="complete"` gate means drafts can never leak. Org slug is the only
+piece a customer needs. If we later want stronger control, add a per-doc
+`share_token` column.
+
+Type-check clean. No lint errors (removed two unused lucide imports from
+the share page).
+
 ## Last session — 2026-04-28 (day-job, continued — personality push)
 
 After the depth/CommandPicker work, kept going through the queue. Lifted
