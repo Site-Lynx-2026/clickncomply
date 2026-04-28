@@ -27,6 +27,7 @@ import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
 import { LibraryGallery } from "../_components/library-gallery";
 import { CommandPicker } from "@/components/command-picker";
+import { AIFillButton } from "@/components/ai-fill-button";
 
 interface Hazard {
   id: string;
@@ -369,7 +370,20 @@ export function RiskAssessmentBuilder({
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label htmlFor="ra-scope">Scope</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="ra-scope">Scope</Label>
+                <AIFillButton
+                  kind="scope"
+                  context={{
+                    documentType: "Risk Assessment",
+                    title: form.title,
+                  }}
+                  onFill={(text) => update({ scope: text })}
+                  hint="Draft scope"
+                  variant="icon"
+                  disabled={!form.title.trim()}
+                />
+              </div>
               <Input
                 id="ra-scope"
                 value={form.scope}

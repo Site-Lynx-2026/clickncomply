@@ -5,6 +5,31 @@ can pick up cold without re-reading the conversation. Update this every time
 something meaningful ships. STATUS.md is the formal product doc; this is the
 conversational version.
 
+## Last session — 2026-04-28 (day-job, continued — personality push)
+
+After the depth/CommandPicker work, kept going through the queue. Lifted
+3 generic builders into ones that actually *look* like their document type:
+
+- **Permit** — identity strip (corporate-permit feel), traffic-light
+  validity banner, side-by-side Issuer/Holder identity cards with
+  signed/unsigned pills, validity time-strip showing where 'now' sits
+  in the window, AlertTriangle on Precautions card
+- **Briefing** — talk-script feel: brand-striped headline banner with
+  audience/duration/point-count chips, presenter strip front-loaded,
+  numbered talking-point rows with foreground number badges, hover-
+  reveal delete
+- **Inspection** — inspection-cert header, live Pass/Fail/N/A count
+  tiles (update as user ticks through checklist), inspector strip,
+  failed items get a red gutter + ring + inline defect note,
+  big two-button Pass/Fail "stamp" at the bottom with icons
+
+Also lifted the dashboard list containers + projects/clients tables
+to use the new depth tokens (surface-raised + border-soft +
+shadow-sm-cool + lime hover) so the whole app reads as one piece.
+
+Plan (the 4th generic builder) wasn't lifted — it's free-text-heavy
+and used less; the Card primitive lift gave it most of what it needs.
+
 ## Last session — 2026-04-28 (day-job — depth + CommandPicker)
 
 Jamie said black-on-white was still reading as awful. Depth tokens existed

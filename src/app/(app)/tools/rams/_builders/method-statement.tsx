@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { GripVertical, Plus, Trash2, Download, ChevronLeft } from "lucide-react";
 import { AIButton } from "@/components/ui/ai-button";
+import { AIFillButton } from "@/components/ai-fill-button";
 import { toast } from "sonner";
 import { useBuilderDocument } from "../_components/use-builder-document";
 import { SaveStatus } from "../_components/save-status";
@@ -244,7 +245,21 @@ export function MethodStatementBuilder() {
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="scope">Scope of works</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="scope">Scope of works</Label>
+                <AIFillButton
+                  kind="scope"
+                  context={{
+                    documentType: "Method Statement",
+                    trade: form.trade,
+                    title: form.title,
+                  }}
+                  onFill={(text) => update({ scope: text })}
+                  hint="Draft scope"
+                  variant="icon"
+                  disabled={!form.trade.trim()}
+                />
+              </div>
               <Input
                 id="scope"
                 value={form.scope}
