@@ -98,9 +98,9 @@ export default async function ClientsPage({
       {(!clients || clients.length === 0) ? (
         <EmptyState />
       ) : (
-        <div className="border rounded-lg overflow-hidden">
+        <div className="surface-raised border border-soft rounded-xl shadow-sm-cool overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="border-b bg-muted/30">
+            <thead className="border-b border-soft surface-pebble">
               <tr>
                 <th className="text-left font-medium px-4 py-2.5">Name</th>
                 <th className="text-left font-medium px-4 py-2.5 hidden md:table-cell">

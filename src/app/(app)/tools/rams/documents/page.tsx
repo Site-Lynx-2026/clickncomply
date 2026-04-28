@@ -210,7 +210,7 @@ export default async function DocumentsPage({
                   client={client ?? null}
                   count={projectDocs.length}
                 />
-                <div className="border rounded-lg overflow-hidden divide-y bg-card">
+                <div className="surface-raised border border-soft rounded-xl shadow-sm-cool overflow-hidden divide-y divide-[var(--border-soft)]">
                   {projectDocs.map((d) => (
                     <DocRowItem key={d.id} doc={d} />
                   ))}

@@ -218,7 +218,7 @@ export default async function DashboardPage() {
           {!recentDocs || recentDocs.length === 0 ? (
             <RecentEmptyState />
           ) : (
-            <div className="border rounded-lg overflow-hidden divide-y">
+            <div className="surface-raised border border-soft rounded-xl shadow-sm-cool overflow-hidden divide-y divide-[var(--border-soft)]">
               {recentDocs.map((doc) => {
                 const builder = getBuilder(doc.builder_slug);
                 const project = doc.project_id
@@ -229,9 +229,9 @@ export default async function DashboardPage() {
                   <Link
                     key={doc.id}
                     href={`/tools/rams/${doc.builder_slug}?doc=${doc.id}`}
-                    className="flex items-center gap-3 p-4 hover:bg-muted/30 transition group"
+                    className="flex items-center gap-3 p-4 hover:bg-brand-soft transition-colors group"
                   >
-                    <div className="shrink-0 size-9 rounded-md bg-muted flex items-center justify-center">
+                    <div className="shrink-0 size-9 rounded-md surface-pebble border border-soft flex items-center justify-center group-hover:border-brand-soft transition-colors">
                       <Icon className="size-4" strokeWidth={1.6} />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -273,12 +273,13 @@ export default async function DashboardPage() {
           <h2 className="text-sm font-mono uppercase tracking-widest text-muted-foreground mb-3">
             Quick actions
           </h2>
-          <div className="border rounded-lg overflow-hidden divide-y">
+          <div className="surface-raised border border-soft rounded-xl shadow-sm-cool overflow-hidden divide-y divide-[var(--border-soft)]">
             <QuickAction
               href="/tools/rams/full"
               title="New full RAMs"
               subtitle="One doc, every section"
               icon={<Sparkles className="size-4" />}
+              tone="brand"
             />
             <QuickAction
               href="/tools/rams/method-statement"
@@ -308,7 +309,7 @@ export default async function DashboardPage() {
           <h2 className="text-sm font-mono uppercase tracking-widest text-muted-foreground mb-3">
             Your tools
           </h2>
-          <div className="border rounded-lg overflow-hidden divide-y">
+          <div className="surface-raised border border-soft rounded-xl shadow-sm-cool overflow-hidden divide-y divide-[var(--border-soft)]">
             {activeTools.map((tool) => (
               <ToolRow key={tool.slug} tool={tool} state="active" />
             ))}
@@ -322,7 +323,7 @@ export default async function DashboardPage() {
           <h2 className="text-sm font-mono uppercase tracking-widest text-muted-foreground mb-3">
             {activeTools.length === 0 ? "Pick your first tool" : "More tools"}
           </h2>
-          <div className="border rounded-lg overflow-hidden divide-y">
+          <div className="surface-raised border border-soft rounded-xl shadow-sm-cool overflow-hidden divide-y divide-[var(--border-soft)]">
             {availableTools.map((tool) => (
               <ToolRow key={tool.slug} tool={tool} state="inactive" />
             ))}
@@ -485,35 +486,46 @@ function QuickAction({
   title,
   subtitle,
   icon,
+  tone = "neutral",
 }: {
   href: string;
   title: string;
   subtitle: string;
   icon: React.ReactNode;
+  tone?: "neutral" | "brand";
 }) {
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 p-3.5 hover:bg-muted/30 transition group"
+      className="flex items-center gap-3 p-3.5 hover:bg-brand-soft transition-colors group"
     >
-      <div className="size-8 rounded-md bg-muted flex items-center justify-center shrink-0 text-muted-foreground group-hover:text-foreground transition">
+      <div
+        className={cn(
+          "size-9 rounded-md flex items-center justify-center shrink-0 transition-colors border",
+          tone === "brand"
+            ? "bg-brand text-foreground border-brand"
+            : "surface-pebble text-muted-foreground border-soft group-hover:text-foreground group-hover:border-strong"
+        )}
+      >
         {icon}
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-sm font-medium truncate">{title}</div>
         <div className="text-xs text-muted-foreground truncate">{subtitle}</div>
       </div>
-      <ArrowRight className="size-3 text-muted-foreground/50 group-hover:translate-x-0.5 transition" />
+      <ArrowRight className="size-3.5 text-muted-foreground/50 group-hover:text-foreground group-hover:translate-x-0.5 transition" />
     </Link>
   );
 }
 
 function RecentEmptyState() {
   return (
-    <div className="border rounded-lg p-8 text-center bg-muted/10">
-      <FileText className="size-5 text-muted-foreground mx-auto mb-2" />
-      <p className="text-sm font-medium mb-1">No documents yet.</p>
-      <p className="text-xs text-muted-foreground mb-4">
+    <div className="surface-raised border border-soft rounded-xl shadow-sm-cool p-10 text-center">
+      <div className="size-10 mx-auto mb-3 rounded-lg surface-pebble border border-soft flex items-center justify-center">
+        <FileText className="size-4 text-muted-foreground" />
+      </div>
+      <p className="text-sm font-semibold mb-1">No documents yet.</p>
+      <p className="text-xs text-muted-foreground mb-5 max-w-xs mx-auto">
         Pick a builder from the right and your first doc shows up here.
       </p>
       <Button asChild size="sm">
@@ -539,8 +551,20 @@ function ToolRow({
   const canActivate = !isPlanned && !isWaitlist;
 
   return (
-    <div className="flex items-center gap-6 p-5">
-      <div className="shrink-0 size-12 rounded-md bg-muted flex items-center justify-center">
+    <div
+      className={cn(
+        "flex items-center gap-6 p-5 transition-colors",
+        state === "active" && "hover:bg-brand-soft"
+      )}
+    >
+      <div
+        className={cn(
+          "shrink-0 size-12 rounded-lg flex items-center justify-center border",
+          state === "active"
+            ? "bg-brand text-foreground border-brand"
+            : "surface-pebble text-muted-foreground border-soft"
+        )}
+      >
         <Icon className="size-5" strokeWidth={1.5} />
       </div>
       <div className="flex-1 min-w-0">
